@@ -1,0 +1,132 @@
+# cilium install --version 1.17.5   --set ipam.operator.clusterPoolIPv4PodCIDRList=10.32.0.0/16 --set ipam.mode=kubernetes   --set kubeProxyReplacement=true   --set gatewayAPI.enabled=true   --set k8sServiceHost=entry.home.arpa   --set k8sServicePort=6443 --set install-iptables-rules=true
+# Identify the cluster and set the service host and port
+cluster:
+  name: kubernetes
+  id: 1
+
+# Entry point for the Cilium service
+k8sServiceHost: entry.home.arpa
+k8sServicePort: 6443
+
+# Gateway API support
+gatewayAPI:
+  enabled: true
+
+# KubeProxy replacement
+kubeProxyReplacement: true
+
+# Security context for Cilium components
+securityContext:
+  capabilities:
+    ciliumAgent:
+      - CHOWN
+      - KILL
+      - NET_ADMIN
+      - NET_RAW
+      - IPC_LOCK
+      - SYS_ADMIN
+      - SYS_RESOURCE
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+    cleanCiliumState:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - SYS_RESOURCE
+
+# Necessary if cluster is using systemd cgroup driver
+cgroup:
+  autoMount:
+    enabled: false
+  hostRoot: /sys/fs/cgroup
+# IPAM configuration
+ipam:
+  mode: kubernetes
+  operator:
+    clusterPoolIPv4PodCIDRList:
+      - 10.32.0.0/16
+
+# Ingress controller configuration
+ingressController:
+  enabled: false
+  default: true
+  loadbalancerMode: shared
+  service:
+    annotations:
+      io.cilium/lb-ipam-ips: 192.168.1.34   # First usable IP in the pool
+
+# Operator configuration
+operator:
+  rollOutPods: true
+  replicas: 2
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+
+# Cilium agent configuration
+rollOutCiliumPods: true
+resources:
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+# Rate limiting for Kubernetes client
+k8sClientRateLimit:
+  qps: 20
+  burst: 100
+
+# L2 announcements and external IPs
+l2announcements:
+  enabled: true
+externalIPs:
+  enabled: true
+
+# Enable Cilium Endpoint Slice for better performance and scalability
+# https://docs.cilium.io/en/latest/network/kubernetes/ciliumendpointslice/
+enableCiliumEndpointSlice: true
+
+# Load balancing algorithm
+loadBalancer:
+  algorithm: maglev
+
+envoy:
+  securityContext:
+    capabilities:
+      keepCapNetBindService: true
+      envoy:
+        - NET_ADMIN
+        - PERFMON
+        - BPF
+
+# Enable Hubble for observability
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+    rollOutPods: true
+  ui:
+    enabled: true
+    rollOutPods: true
+
+# Debugging options
+debug:
+  enabled: true
+
+
+# authentication:
+#   enabled: false
+#   mutual:
+#     spire:
+#       enabled: false
+#       install:
+#         server:
+#           dataStorage:
+#             storageClass: cilium-spire-sc
