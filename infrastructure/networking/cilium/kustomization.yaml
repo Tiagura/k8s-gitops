@@ -2,8 +2,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+  - control-l2-announce.yaml
+  - default-l2-announce.yaml
   - ip-pool.yaml
-  - l2-policy.yaml 
+  - kube-api-vip.yaml
+  - l2-policy.yaml
+  - vip-pool.yaml
 
 helmCharts:
   - name: cilium

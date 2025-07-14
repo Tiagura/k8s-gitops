@@ -1,0 +1,50 @@
+defaultSettings:
+  # Path where Longhorn stores volume data on each node.
+  defaultDataPath: "/var/lib/longhorn"
+
+  # Minimal available disk space (in %) to consider a node schedulable for replicas.
+  storageMinimalAvailablePercentage: 10
+
+  # Allows thin provisioning by allowing volumes to overcommit disk space up to this %.
+  storageOverProvisioningPercentage: 100
+
+  # Allows recurring snapshots or backup jobs to run even if the volume is not attached.
+  allowRecurringJobWhileVolumeDetached: true
+
+  # Controls how Longhorn balances replicas across nodes.
+  # Options: disabled, least-effort, best-effort
+  replicaAutoBalance: best-effort
+
+  # Ensures pods are automatically deleted if the underlying node goes down.
+  nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+
+persistence:
+  # Use Longhorn's default StorageClass
+  defaultClass: true
+
+  # Number of replicas per volume. Minimum of X nodes is required for X replicas.
+  defaultClassReplicaCount: 2
+
+  # Default filesystem type used inside the volume.
+  defaultFsType: ext4
+
+  # Reclaim policy determines if volumes are retained or deleted after PVC deletion.
+  reclaimPolicy: Delete
+
+# Disable built-in ingress; Use Cilium Gateway API instead.
+ingress:
+  enabled: false
+
+# Disable pre-upgrade checks (useful for GitOps tools like ArgoCD to avoid sync issues).
+preUpgradeChecker:
+  jobEnabled: false
+
+# UI service - generally handled separately by Gateway API
+ui:
+  service:
+    type: ClusterIP
+
+# NOTES:
+# - Longhorn replicas (actual storage volumes) will automatically avoid master nodes because of the NoSchedule taint.
+# - Longhorn system components (manager, driver, csi) will run on all nodes to ensure availability and operation.
+# - You will configure HTTPRoute separately with Cilium Gateway API to expose the UI if needed.
