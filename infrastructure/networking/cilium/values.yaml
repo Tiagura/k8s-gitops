@@ -120,7 +120,6 @@ hubble:
 debug:
   enabled: true
 
-
 # authentication:
 #   enabled: false
 #   mutual:
