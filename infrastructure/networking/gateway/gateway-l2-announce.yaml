@@ -1,0 +1,14 @@
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: gateway-l2-policy
+  namespace: kube-system
+spec:
+  interfaces:
+    - e*
+  loadBalancerIPs: true
+  serviceSelector:
+    matchLabels:
+      gateway.networking.k8s.io/gateway-name: gateway-internal
+  nodeSelector:
+    matchLabels:
+      node-role.kubernetes.io/control-plane: ""
