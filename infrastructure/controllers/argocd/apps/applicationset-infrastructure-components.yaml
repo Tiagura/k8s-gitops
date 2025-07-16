@@ -36,15 +36,7 @@ spec:
           allowEmpty: false
         syncOptions:
           - CreateNamespace=true
-          - RespectIgnoreDifferences=true
-          - ApplyOutOfSyncOnly=true
           - ServerSideApply=true
       info:
         - name: Description
           value: 'Infrastructure component: {{path.basename}}'
-      retry:
-        limit: 5
-        backoff:
-          duration: 5s
-          factor: 2
-          maxDuration: 3m
