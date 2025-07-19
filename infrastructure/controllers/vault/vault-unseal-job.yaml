@@ -12,7 +12,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: vault-unseal
-              image: 1.19.0
+              image: hashicorp/vault:1.19.0
               command:
                 - /bin/sh
                 - -c
