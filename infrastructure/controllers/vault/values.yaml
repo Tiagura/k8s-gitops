@@ -1,0 +1,47 @@
+global:
+  enabled: true
+  tlsDisable: true
+
+server:
+  enabled: true
+
+  ui:
+    enabled: true
+
+  # Standalone Vault with persistent storage
+  standalone:
+    enabled: true
+    config: |
+      ui = true
+      listener "tcp" {
+        address = "0.0.0.0:8200"
+        tls_disable = 1
+      }
+      storage "file" {
+        path = "/vault/data"
+      }
+
+  dataStorage:
+    enabled: true
+    size: 1Gi
+
+  # Recommended resource requests/limits
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 500m
+    limits:
+      memory: 1Gi
+      cpu: 1
+
+  ingress:
+    enabled: false  # Handled via Gateway API
+
+service:
+  enabled: true
+  type: ClusterIP
+
+# UI Service Type (not used directly since Gateway API is in place)
+ui:
+  enabled: true
+  serviceType: "ClusterIP"
