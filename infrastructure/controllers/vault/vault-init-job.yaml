@@ -10,7 +10,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: vault-init
-          image: ${vault_image}
+          image: hashicorp/vault:1.19.0
           command:
             - /bin/sh
             - -c
