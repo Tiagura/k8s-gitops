@@ -2,6 +2,11 @@ global:
   enabled: true
   tlsDisable: true
 
+image:
+  repository: hashicorp/vault
+  tag: 1.19.0
+  pullPolicy: IfNotPresent
+
 server:
   enabled: true
 
