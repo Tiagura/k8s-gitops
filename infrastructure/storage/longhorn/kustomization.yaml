@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: longhorn
 resources:
   - namespace.yaml
-  - httproute.yaml
+  - http-route.yaml
   - externalsecret.yaml
 helmCharts:
   - name: longhorn
