@@ -39,32 +39,6 @@ ingress:
 preUpgradeChecker:
   jobEnabled: false
 
-# Longhorn Manager Deployment
-longhornManager:
-  # Tolerations to allow Longhorn manager pods to run on all nodes, including masters (for control operations).
-  tolerations:
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
-  # nodeSelector left empty to allow managers to run on all nodes.
-  nodeSelector: {}
-
-# Longhorn Driver Deployment (CSI driver)
-longhornDriver:
-  tolerations:
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
-  nodeSelector: {}
-
-# CSI Components (Provisioner, Attacher, etc.)
-csi:
-  tolerations:
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
-  nodeSelector: {}
-
 # UI service - generally handled separately by Gateway API
 ui:
   service:
