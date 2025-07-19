@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - control-l2-announce.yaml
   - default-l2-announce.yaml
-  - gateway-l2-announce.yaml
   - ip-pool.yaml
   - kube-api-vip.yaml
   - l2-policy.yaml
