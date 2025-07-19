@@ -4,7 +4,6 @@ namespace: longhorn
 resources:
   - namespace.yaml
   - http-route.yaml
-  - externalsecret.yaml
 helmCharts:
   - name: longhorn
     repo: https://charts.longhorn.io
