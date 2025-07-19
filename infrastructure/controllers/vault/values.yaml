@@ -9,6 +9,17 @@ image:
 
 server:
   enabled: true
+  extraInitContainers:
+    - name: vault-init
+      image: hashicorp/vault:1.19.0
+      command:
+        - "sh"
+        - "-c"
+        - |
+          vault operator init -key-shares=1 -key-threshold=1 -format=json > /vault/data/init.json || true
+      volumeMounts:
+        - name: data
+          mountPath: /vault/data
 
   ui:
     enabled: true

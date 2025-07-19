@@ -3,8 +3,6 @@ kind: Kustomization
 namespace: vault
 resources:
   - namespace.yaml
-  - vault-init-job.yaml
-  - vault-unseal-job.yaml
   - http-route.yaml
 helmCharts:
   - name: vault
