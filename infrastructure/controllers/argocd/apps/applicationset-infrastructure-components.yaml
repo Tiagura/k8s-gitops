@@ -11,6 +11,7 @@ spec:
         directories:
           - path: infrastructure/controllers/*
           - path: infrastructure/networking/*
+          - path: infrastructure/storage/*
   template:
     metadata:
       name: '{{path.basename}}'
