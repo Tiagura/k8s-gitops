@@ -1,1 +1,6 @@
+# Ignore Charts
+infrastructure/networking/cilium/charts/*
 infrastructure/controllers/argocd/charts/*
+
+# Ignore private keys
+sops.key
