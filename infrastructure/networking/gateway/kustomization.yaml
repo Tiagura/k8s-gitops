@@ -4,9 +4,7 @@ kind: Kustomization
 resources:
   - class.yaml
   - namespace.yaml
-  - gateway-l2-announce.yaml
   - gateway-internal.yaml
-  - gateway-internal-svc.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
