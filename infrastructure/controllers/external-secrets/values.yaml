@@ -5,3 +5,7 @@ certController:
   create: false
 webhook:
   create: false
+crds:
+  install: true
+  # -- Keep CRDs on chart uninstall
+  keep: false
