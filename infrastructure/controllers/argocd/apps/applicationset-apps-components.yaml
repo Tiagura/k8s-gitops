@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: user-apps
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/Tiagura/k8s-gitops.git
+        revision: HEAD
+        directories:
+          - path: user-apps/*/*
+  template:
+    metadata:
+      name: '{{path.basename}}'
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+        argocd.argoproj.io/compare-options: ServerSideDiff=true
+      labels:
+        app.kubernetes.io/part-of: user-apps
+    spec:
+      project: user-apps
+      source:
+        repoURL: https://github.com/Tiagura/k8s-gitops.git
+        targetRevision: HEAD
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{path.basename}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+          - RespectIgnoreDifferences=true
+          - ApplyOutOfSyncOnly=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m
+      info:
+        - name: Description
+          value: 'App component: {{path.basename}}'

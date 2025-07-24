@@ -2,5 +2,10 @@
 infrastructure/networking/cilium/charts/*
 infrastructure/controllers/argocd/charts/*
 
-# Ignore private keys
-sops.key
+# Ignore Keys
+*.b64
+*.crt
+*.key
+
+# Ignore Base Sealed Secrets
+infrastructure/controllers/sealed-secrets/sealed-secrets-key.yaml
