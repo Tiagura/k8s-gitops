@@ -1,0 +1,18 @@
+existingSecret: sealed-secrets-key
+
+serviceAccount:
+  create: true
+  name: sealed-secrets-controller
+
+rbac:
+  create: true
+
+# Optionally, if you want to customize other settings:
+controller:
+  affinity: {}
+  tolerations: []
+  nodeSelector: {}
+
+# Disable key generation since we're providing our own
+key:
+  generate: false
