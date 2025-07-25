@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: infrastructure
+  name: user-apps
   namespace: argocd
 spec:
   generators:
@@ -9,17 +9,17 @@ spec:
         repoURL: https://github.com/Tiagura/k8s-gitops.git
         revision: HEAD
         directories:
-          - path: apps/*/*
+          - path: user-apps/*/*
   template:
     metadata:
-      name: 'apps-{{path.basename}}'
+      name: 'user-apps-{{path.basename}}'
       annotations:
         argocd.argoproj.io/sync-wave: "2"
         argocd.argoproj.io/compare-options: ServerSideDiff=true
       labels:
-        app.kubernetes.io/part-of: infrastructure
+        app.kubernetes.io/part-of: user-apps
     spec:
-      project: infrastructure
+      project: user-apps
       source:
         repoURL: https://github.com/Tiagura/k8s-gitops.git
         targetRevision: HEAD
@@ -37,6 +37,12 @@ spec:
           - ServerSideApply=true
           - RespectIgnoreDifferences=true
           - ApplyOutOfSyncOnly=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m
       info:
         - name: Description
           value: 'App component: {{path.basename}}'
