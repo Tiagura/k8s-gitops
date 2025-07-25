@@ -13,8 +13,6 @@ spec:
       labels:
         app: excalidraw
     spec:
-      securityContext:
-        runAsNonRoot: true
       containers:
         - name: excalidraw
           image: excalidraw/excalidraw:latest
