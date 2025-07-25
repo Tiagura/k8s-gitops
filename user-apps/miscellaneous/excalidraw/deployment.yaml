@@ -21,5 +21,6 @@ spec:
           ports:
             - containerPort: 80
           securityContext:
-            allowPrivilegeEscalation: false
-            privileged: false
+            runAsUser: 1001
+            runAsGroup: 1001
+            runAsNonRoot: true
