@@ -6,7 +6,6 @@ infrastructure/controllers/argocd/charts/*
 *.b64
 *.crt
 *.key
-*.pub
 
 # Ignore Base Sealed Secrets
 infrastructure/controllers/sealed-secrets/sealed-secrets-key.yaml

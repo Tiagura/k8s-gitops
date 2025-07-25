@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: excalidraw
+  namespace: excalidraw
+spec:
+  selector:
+    app: excalidraw
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
