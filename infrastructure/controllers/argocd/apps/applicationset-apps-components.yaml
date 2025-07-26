@@ -12,7 +12,7 @@ spec:
           - path: user-apps/*/*
   template:
     metadata:
-      name: 'user-apps-{{path.basename}}'
+      name: '{{path.basename}}'
       annotations:
         argocd.argoproj.io/sync-wave: "2"
         argocd.argoproj.io/compare-options: ServerSideDiff=true
