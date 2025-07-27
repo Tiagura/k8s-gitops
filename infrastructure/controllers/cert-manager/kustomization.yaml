@@ -14,3 +14,5 @@ helmCharts:
     namespace: cert-manager
     valuesFile: values.yaml
     includeCRDs: true
+    additionalAnnotations:
+      argocd.argoproj.io/sync-wave: "0"
