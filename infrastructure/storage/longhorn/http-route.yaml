@@ -8,7 +8,7 @@ spec:
     - name: gateway-internal
       namespace: gateway
   hostnames:
-    - "longhorn.k8s.home-tm.duckdns.org"
+    - "longhorn.tamhomelab.com"
   rules:
     - matches:
         - path:

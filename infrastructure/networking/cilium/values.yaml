@@ -121,12 +121,13 @@ hubble:
 debug:
   enabled: true
 
-# authentication:
-#   enabled: false
-#   mutual:
-#     spire:
-#       enabled: false
-#       install:
-#         server:
-#           dataStorage:
-#             storageClass: cilium-spire-sc
+# mTLS configuration
+authentication:
+  enabled: false
+  mutual:
+    spire:
+      enabled: false
+      install:
+        server:
+          dataStorage:
+            storageClass: cilium-spire-sc

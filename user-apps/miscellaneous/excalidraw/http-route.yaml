@@ -10,7 +10,7 @@ spec:
       name: gateway-internal
       namespace: gateway
   hostnames:
-    - "excalidraw.k8s.home-tm.duckdns.org"
+    - "excalidraw.tamhomelab.com"
   rules:
     - matches:
         - path:

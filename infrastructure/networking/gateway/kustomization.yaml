@@ -5,6 +5,7 @@ resources:
   - class.yaml
   - namespace.yaml
   - gateway-internal.yaml
+  - gateway-external.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
