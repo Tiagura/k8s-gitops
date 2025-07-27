@@ -10,7 +10,7 @@ spec:
     server: https://acme-v02.api.letsencrypt.org/directory
     email: marqueshomelab@proton.me
     privateKeySecretRef:
-      name: cloudflare-token-secret
+      name: cloudflare-acme-account-key
     solvers:
       - dns01:
           cloudflare:
