@@ -1,0 +1,58 @@
+global:
+  leaderElection:
+    namespace: cert-manager
+crds:
+  enabled: true
+  keep: true
+
+# Use the modern, structured configuration for controller settings
+config:
+  apiVersion: controller.config.cert-manager.io/v1alpha1
+  kind: ControllerConfiguration
+  enableGatewayAPI: true
+extraArgs:
+  - "--dns01-recursive-nameservers-only"
+  - "--dns01-recursive-nameservers=1.1.1.1:53,8.8.8.8:53,9.9.9.9:53"
+  - "--dns01-check-retry-period=10s"
+  - "--max-concurrent-challenges=60"
+  - "--enable-certificate-owner-ref=true"
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
+  seccompProfile:
+    type: RuntimeDefault
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 20m
+    memory: 128Mi
+webhook:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    seccompProfile:
+      type: RuntimeDefault
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+cainjector:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    seccompProfile:
+      type: RuntimeDefault
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 20m
+      memory: 128Mi

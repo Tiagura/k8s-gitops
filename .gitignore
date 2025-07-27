@@ -9,3 +9,6 @@ infrastructure/controllers/argocd/charts/*
 
 # Ignore Base Sealed Secrets
 infrastructure/controllers/sealed-secrets/sealed-secrets-key.yaml
+
+# Ignore all *-secret.yaml files
+*-secret.yaml

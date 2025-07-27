@@ -5,6 +5,10 @@ resources:
   - class.yaml
   - namespace.yaml
   - gateway-internal.yaml
+  - gateway-external.yaml
+  - http-redirect-internal.yaml
+  - http-redirect-external.yaml
+  - certificate.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
