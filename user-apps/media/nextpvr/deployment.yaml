@@ -23,22 +23,22 @@ spec:
           ports:
             - containerPort: 8866
           volumeMounts:
-            - name: data
+            - name: nextpvr-data
               mountPath: /config
               subPath: config
-            - name: data
+            - name: nextpvr-data
               mountPath: /recordings
               subPath: videos
-            - name: data
+            - name: nextpvr-data
               mountPath: /buffer
               subPath: videos
             - name: localtime
               mountPath: /etc/localtime
               readOnly: true
       volumes:
-        - name: data
+        - name: nextpvr-data
           persistentVolumeClaim:
-            claimName: nextpvr-data
+            claimName: nextpvr-pvc
         - name: localtime
           hostPath:
             path: /etc/localtime
