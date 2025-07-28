@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stremio
+  namespace: stremio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stremio
+  template:
+    metadata:
+      labels:
+        app: stremio
+    spec:
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001    
+      containers:
+        - name: stremio
+          image: tsaridas/stremio-docker:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NO_CORS
+              value: "1"
+            - name: AUTO_SERVER_URL
+              value: "1"
+            # - name: IPADDRESS
+            #   value: "192.168.1.10"
+          volumeMounts:
+            - name: stremio-data
+              mountPath: /root/.stremio-server
+      volumes:
+        - name: stremio-data
+          persistentVolumeClaim:
+            claimName: stremio-pvc
