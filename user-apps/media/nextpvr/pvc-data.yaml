@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: stremio-pvc
-  namespace: stremio
+  name: nextpvr-pvc
+  namespace: nextpvr
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 5Gi
+      storage: 128Mi
   storageClassName: longhorn
