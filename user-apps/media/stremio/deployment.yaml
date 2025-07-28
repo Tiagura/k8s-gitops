@@ -13,10 +13,6 @@ spec:
       labels:
         app: stremio
     spec:
-      securityContext:
-        runAsUser: 1001
-        runAsGroup: 1001
-        fsGroup: 1001
       containers:
         - name: stremio
           image: tsaridas/stremio-docker:latest
@@ -29,6 +25,9 @@ spec:
               value: "1"
             - name: APP_PATH
               value: "/srv/stremio-config"
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
           volumeMounts:
             - name: stremio-data
               mountPath: /srv/stremio-config
