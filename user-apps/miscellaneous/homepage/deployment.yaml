@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homepage
+  namespace: homepage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homepage
+  template:
+    metadata:
+      labels:
+        app: homepage
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+
+      containers:
+        - name: homepage
+          image: ghcr.io/gethomepage/homepage:latest@sha256:63434aafeb3d49be1f21ebd3c5d777fe5b7794c31342daad4e96f09b72a57188
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            # Mount individual config files from ConfigMap into /app/config
+            - name: homepage-config
+              mountPath: /app/config/bookmarks.yaml
+              subPath: bookmarks.yaml
+
+            - name: homepage-config
+              mountPath: /app/config/custom.css
+              subPath: custom.css
+
+            - name: homepage-config
+              mountPath: /app/config/custom.js
+              subPath: custom.js
+
+            - name: homepage-config
+              mountPath: /app/config/docker.yaml
+              subPath: docker.yaml
+
+            - name: homepage-config
+              mountPath: /app/config/kubernetes.yaml
+              subPath: kubernetes.yaml
+
+            - name: homepage-config
+              mountPath: /app/config/proxmox.yaml
+              subPath: proxmox.yaml
+
+            - name: homepage-config
+              mountPath: /app/config/services.yaml
+              subPath: services.yaml
+            
+            - name: homepage-config
+              mountPath: /app/config/settings.yaml
+              subPath: settings.yaml
+
+            - name: homepage-config
+              mountPath: /app/config/widgets.yaml
+              subPath: widgets.yaml
+
+            # Mount writable logs directory
+            - name: tmp
+              mountPath: /app/config/logs
+
+          env:
+            - name: HOMEPAGE_ALLOWED_HOSTS
+              value: homepage.tamhomelab.com
+          securityContext:
+            allowPrivilegeEscalation: false
+
+      volumes:
+        - name: homepage-config
+          configMap:
+            name: homepage-config
+        - name: tmp
+          emptyDir: {}

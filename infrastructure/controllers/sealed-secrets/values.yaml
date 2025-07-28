@@ -1,9 +1,5 @@
 existingSecret: sealed-secrets-key
 
-crds:
-  enabled: true
-  keep: true
-
 serviceAccount:
   create: true
   name: sealed-secrets-controller

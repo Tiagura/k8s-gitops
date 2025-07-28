@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextpvr
+  namespace: nextpvr
+spec:
+  selector:
+    app: nextpvr
+  ports:
+    - protocol: TCP
+      port: 8866
+      targetPort: 8866

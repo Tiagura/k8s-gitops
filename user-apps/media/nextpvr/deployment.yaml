@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextpvr
+  namespace: nextpvr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextpvr
+  template:
+    metadata:
+      labels:
+        app: nextpvr
+    spec:
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+        runAsNonRoot: true
+      containers:
+        - name: nextpvr
+          image: nextpvr/nextpvr_amd64:stable@sha256:b5c2908e786b969318dcd2f52dde484713149c2abaf30b641c482a7a4cc9e31b
+          ports:
+            - containerPort: 8866
+          volumeMounts:
+            - name: nextpvr-data
+              mountPath: /config
+              subPath: config
+            - name: nextpvr-data
+              mountPath: /recordings
+              subPath: videos
+            - name: nextpvr-data
+              mountPath: /buffer
+              subPath: videos
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+      volumes:
+        - name: nextpvr-data
+          persistentVolumeClaim:
+            claimName: nextpvr-pvc
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File

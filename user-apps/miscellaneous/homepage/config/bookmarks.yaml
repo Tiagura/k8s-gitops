@@ -1,0 +1,25 @@
+---
+- Social:
+    - Instagram:
+        - abbr: INSTA
+          href: https://instagram.com/
+    - WhatsApp:
+        - abbr: Whats
+          href: https://web.whatsapp.com/
+    - X:
+        - abbr: X
+          href: https://x.com/
+    - Reddit:
+        - abbr: RE
+          href: https://reddit.com/
+
+- Entertainment:
+    - YouTube:
+        - abbr: YT
+          href: https://youtube.com/
+    - Anime:
+        - href: https://hianime.to/recently-updated
+    - Manga:
+        - href: https://www.natomanga.com/
+    - 9GAG:
+        - href: https://9gag.com/

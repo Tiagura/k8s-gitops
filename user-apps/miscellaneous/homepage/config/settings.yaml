@@ -1,0 +1,41 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/settings/
+
+title: Homepage
+
+background:
+  image: https://images6.alphacoders.com/129/1293302.jpg
+  opacity: 75
+
+theme: dark
+color: stone
+cardBlur: md
+
+headerStyle: clean
+
+quicklaunch:
+  searchDescriptions: true
+  hideInternetSearch: true
+  showSearchSuggestions: true
+  hideVisitURL: true
+  provider: duckduckgo # google, duckduckgo, bing, baidu, brave or custom
+
+useEqualHeights: true
+
+statusStyle: "dot"
+showStats: true
+
+layout:
+    Miscellaneous:
+      style: row
+      columns: 4
+    Media:
+      style: row
+      columns: 2
+    Network Services:
+      style: row
+      columns: 2
+    Monitoring:
+    Management:
+    Infrastructure:
