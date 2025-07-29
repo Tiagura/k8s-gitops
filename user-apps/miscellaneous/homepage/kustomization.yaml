@@ -5,19 +5,16 @@ resources:
   - deployment.yaml
   - http-route.yaml
   - namespace.yaml
-  - pvc-config.yaml
   - service.yaml
 
 configMapGenerator:
   - name: homepage-config
     files:
       - config/bookmarks.yaml
-      - config/custom.js
-      - config/customn.css
-      - config/docker.yaml
       - config/kubernetes.yaml
       - config/services.yaml
       - config/settings.yaml
+      - config/widgets.yaml
 
 generatorOptions:
   disableNameSuffixHash: true

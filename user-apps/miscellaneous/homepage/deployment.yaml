@@ -26,25 +26,10 @@ spec:
           ports:
             - containerPort: 3000
           volumeMounts:
-            - name: config
-              mountPath: /app/config
-
-            # Mount individual config files into the config dir
+            # Mount individual config files from ConfigMap into /app/config
             - name: homepage-config
               mountPath: /app/config/bookmarks.yaml
               subPath: bookmarks.yaml
-
-            - name: homepage-config
-              mountPath: /app/config/custom.js
-              subPath: custom.js
-
-            - name: homepage-config
-              mountPath: /app/config/custom.css
-              subPath: custom.css
-
-            - name: homepage-config
-              mountPath: /app/config/docker.yaml
-              subPath: docker.yaml
 
             - name: homepage-config
               mountPath: /app/config/kubernetes.yaml
@@ -72,9 +57,6 @@ spec:
             allowPrivilegeEscalation: false
 
       volumes:
-        - name: config
-          persistentVolumeClaim:
-            claimName: homepage-config-pvc
         - name: homepage-config
           configMap:
             name: homepage-config
