@@ -3,6 +3,15 @@ kind: HTTPRoute
 metadata:
   name: excalidraw
   namespace: excalidraw
+  annotations:
+    gethomepage.dev/href: "https://excalidraw.tamhomelab.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: "https://raw.githubusercontent.com/excalidraw/excalidraw/refs/heads/master/public/favicon.ico"
+    gethomepage.dev/description: "Whiteboard"
+    gethomepage.dev/group: "Miscellaneous"
+    gethomepage.dev/name: "Excalidraw"
+    gethomepage.dev/pod-selector: ""
+    gethomepage.dev/weight: "1"
 spec:
   parentRefs:
     - group: gateway.networking.k8s.io

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homepage
+  namespace: homepage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homepage
+  template:
+    metadata:
+      labels:
+        app: homepage
+    spec:
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+        runAsNonRoot: true
+
+      containers:
+        - name: homepage
+          image: ghcr.io/gethomepage/homepage:latest@sha256:63434aafeb3d49be1f21ebd3c5d777fe5b7794c31342daad4e96f09b72a57188
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+          env:
+            - name: HOMEPAGE_ALLOWED_HOSTS
+              value: "home.tamhomelab.com"
+          securityContext:
+            allowPrivilegeEscalation: false
+
+      volumes:
+        - name: config-volume
+          configMap:
+            name: homepage-config
