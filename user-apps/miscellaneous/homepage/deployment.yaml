@@ -72,11 +72,6 @@ spec:
             allowPrivilegeEscalation: false
 
       volumes:
-        - name: homepage-config-pvc
-          configMap:
-            name: homepage-config
-
-      volumes:
         - name: config
           persistentVolumeClaim:
             claimName: homepage-config-pvc
