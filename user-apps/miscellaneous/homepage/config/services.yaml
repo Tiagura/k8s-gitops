@@ -1,3 +1,4 @@
+---
 # - Miscellaneous:
     # - Excalidraw:
     #     icon: https://raw.githubusercontent.com/excalidraw/excalidraw/refs/heads/master/public/favicon.ico
@@ -24,9 +25,9 @@
         href: https://login.tailscale.com/admin/machines/
         description: Exit Node Machine
 
-- Monitoring:
+# - Monitoring:
 
-- Management:
+# - Management:
 
 - Infrastructure:
     - GMKTEC NucBox M5 PLUS:
