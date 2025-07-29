@@ -5,9 +5,8 @@ metadata:
   namespace: homepage
 spec:
   selector:
+    app: homepage
   ports:
     - protocol: TCP
       port: 3000
       targetPort: 3000
-  selector:
-    app.kubernetes.io/name: homepage
