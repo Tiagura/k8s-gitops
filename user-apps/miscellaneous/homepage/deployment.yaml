@@ -47,8 +47,9 @@ spec:
               mountPath: /app/config/widgets.yaml
               subPath: widgets.yaml
 
+            # Mount writable logs directory
             - name: tmp
-              mountPath: /tmp
+              mountPath: /app/config/logs
 
           env:
             - name: HOMEPAGE_ALLOWED_HOSTS
