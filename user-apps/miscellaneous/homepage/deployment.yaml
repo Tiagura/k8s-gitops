@@ -32,12 +32,24 @@ spec:
               subPath: bookmarks.yaml
 
             - name: homepage-config
+              mountPath: /app/config/custom.css
+              subPath: custom.css
+
+            - name: homepage-config
+              mountPath: /app/config/custom.js
+              subPath: custom.js
+
+            - name: homepage-config
               mountPath: /app/config/docker.yaml
               subPath: docker.yaml
 
             - name: homepage-config
               mountPath: /app/config/kubernetes.yaml
               subPath: kubernetes.yaml
+
+            - name: homepage-config
+              mountPath: /app/config/proxmox.yaml
+              subPath: proxmox.yaml
 
             - name: homepage-config
               mountPath: /app/config/services.yaml
