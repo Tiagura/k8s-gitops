@@ -1,6 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: stremio
+commonLabels:
+  app.kubernetes.io/name: stremio
+  app.kubernetes.io/managed-by: argocd
+
 resources:
   - namespace.yaml
   - service.yaml
