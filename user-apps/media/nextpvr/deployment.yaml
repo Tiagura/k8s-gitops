@@ -21,7 +21,6 @@ spec:
       containers:
         - name: nextpvr
           image: nextpvr/nextpvr_amd64:stable@sha256:b5c2908e786b969318dcd2f52dde484713149c2abaf30b641c482a7a4cc9e31b
-          imagePullPolicy: Always
           ports:
             - containerPort: 8866
           volumeMounts:
