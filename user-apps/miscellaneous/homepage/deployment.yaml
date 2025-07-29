@@ -22,11 +22,49 @@ spec:
       containers:
         - name: homepage
           image: ghcr.io/gethomepage/homepage:latest@sha256:63434aafeb3d49be1f21ebd3c5d777fe5b7794c31342daad4e96f09b72a57188
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
           volumeMounts:
-            - name: homepage-config-pvc
+            - name: config
               mountPath: /app/config
+
+            # Mount individual config files into the config dir
+            - name: homepage-config
+              mountPath: /app/config/bookmarks.yaml
+              subPath: bookmarks.yaml
+
+            - name: homepage-config
+              mountPath: /app/config/custom.js
+              subPath: custom.js
+
+            - name: homepage-config
+              mountPath: /app/config/custom.css
+              subPath: custom.css
+
+            - name: homepage-config
+              mountPath: /app/config/docker.yaml
+              subPath: docker.yaml
+
+            - name: homepage-config
+              mountPath: /app/config/kubernetes.yaml
+              subPath: kubernetes.yaml
+
+            - name: homepage-config
+              mountPath: /app/config/services.yaml
+              subPath: services.yaml
+            
+            - name: homepage-config
+              mountPath: /app/config/settings.yaml
+              subPath: settings.yaml
+
+            - name: homepage-config
+              mountPath: /app/config/widgets.yaml
+              subPath: widgets.yaml
+
+            - name: tmp
+              mountPath: /tmp
+
           env:
             - name: HOMEPAGE_ALLOWED_HOSTS
               value: homepage.tamhomelab.com
@@ -37,3 +75,13 @@ spec:
         - name: homepage-config-pvc
           configMap:
             name: homepage-config
+
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: homepage-config-pvc
+        - name: homepage-config
+          configMap:
+            name: homepage-config
+        - name: tmp
+          emptyDir: {}
