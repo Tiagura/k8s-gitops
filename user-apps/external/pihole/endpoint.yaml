@@ -5,7 +5,7 @@ metadata:
   namespace: pihole
   labels:
     kubernetes.io/service-name: pihole
-    endpointslice.kubernetes.io/managed-by: cluster-admins
+    endpointslice.kubernetes.io/managed-by: argocd
 
 addressType: FQDN
 endpoints:
