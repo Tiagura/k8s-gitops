@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole
+  namespace: pihole
+  annotations:
+    gethomepage.dev/href: "https://pihole.tamhomelab.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/icon: "https://wp-cdn.pi-hole.net/wp-content/uploads/2016/12/Vortex-R.png"
+    gethomepage.dev/description: "Main DNS Server"
+    gethomepage.dev/group: "Network Services"
+    gethomepage.dev/name: "Pihole"
+    gethomepage.dev/pod-selector: ""
+    gethomepage.dev/weight: "1"
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
