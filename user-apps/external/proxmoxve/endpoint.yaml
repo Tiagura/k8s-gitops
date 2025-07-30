@@ -5,13 +5,21 @@ metadata:
   namespace: proxmoxve
   labels:
     kubernetes.io/service-name: proxmoxve
-    endpointslice.kubernetes.io/managed-by: argocd
-addressType: FQDN
+    endpointslice.kubernetes.io/managed-by: cluster-admins
+
+ddressType: IPv4
 endpoints:
-  - addresses: 
-      - proxmoxve.home.arpa
+  - addresses:
+      - 192.168.1.5
     conditions:
       ready: true
+
+# addressType: FQDN
+# endpoints:
+#   - addresses: 
+#       - proxmoxve.home.arpa
+#     conditions:
+#       ready: true
 
 ports:
   - name: https
