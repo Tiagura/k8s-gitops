@@ -2,6 +2,16 @@ configs:
   cm:
     create: true
     application.resourceTrackingMethod: "annotation+label"
+    resource.inclusions: |
+      - apiGroups:
+          - discovery.k8s.io
+        kinds:
+          - EndpointSlice
+        clusters:
+          - '*'  # all clusters
+        namespaces:
+          - '*'  # all namespaces
+        labelSelector: git-managed-inclusion=true
   cmp:
     create: true
     plugins:

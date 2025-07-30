@@ -6,7 +6,7 @@ metadata:
   labels:
     kubernetes.io/service-name: pihole
     endpointslice.kubernetes.io/managed-by: argocd
-
+    git-managed-inclusion: "true"
 addressType: FQDN
 endpoints:
   - addresses: 
