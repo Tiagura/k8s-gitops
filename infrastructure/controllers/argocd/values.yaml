@@ -2,11 +2,6 @@ configs:
   cm:
     create: true
     application.resourceTrackingMethod: "annotation+label"
-    resource.exclusions: |
-      - apiGroups:
-          - discovery.k8s.io
-        kinds:
-          - EndpointSlice
   cmp:
     create: true
     plugins:
