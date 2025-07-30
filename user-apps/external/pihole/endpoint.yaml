@@ -10,7 +10,7 @@ metadata:
 addressType: FQDN
 endpoints:
   - addresses: 
-      - pihole
+      - pihole.home.arpa
     conditions:
       ready: true
 
