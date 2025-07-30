@@ -20,6 +20,7 @@ spec:
         - type: RequestRedirect
           requestRedirect:
             path:
+              type: ReplacePrefixMatch
               replacePrefixMatch: /admin/
       backendRefs: [] # No backend for redirect-only rule
 

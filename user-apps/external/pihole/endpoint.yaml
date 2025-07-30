@@ -8,7 +8,11 @@ metadata:
     endpointslice.kubernetes.io/managed-by: cluster-admins
 
 addressType: FQDN
-address: "pihole"
+endpoints:
+  - addresses: 
+      - pihole
+    conditions:
+      ready: true
 
 ports:
   - name: http
