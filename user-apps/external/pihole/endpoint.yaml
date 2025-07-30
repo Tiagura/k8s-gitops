@@ -17,3 +17,4 @@ endpoints:
 ports:
   - name: http
     port: 80
+    protocol: TCP
