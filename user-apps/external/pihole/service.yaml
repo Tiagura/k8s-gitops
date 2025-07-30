@@ -4,6 +4,8 @@ metadata:
   name: pihole
   namespace: pihole
 spec:
+  type: ExternalName
+  externalName: pihole.home.arpa
   ports:
     - name: http
       port: 80
