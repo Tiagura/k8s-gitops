@@ -2,56 +2,6 @@ configs:
   cm:
     create: true
     application.resourceTrackingMethod: "annotation+label"
-    # This overrides the default resource.exclusions.
-    # If the upstream chart adds new exclusions in future releases, update this block accordingly.
-    resource.exclusions: |
-      - apiGroups:
-          - ''
-        kinds:
-          - Endpoints
-      - apiGroups:
-          - coordination.k8s.io
-        kinds:
-          - Lease
-      - apiGroups:
-          - authentication.k8s.io
-          - authorization.k8s.io
-        kinds:
-          - SelfSubjectReview
-          - TokenReview
-          - LocalSubjectAccessReview
-          - SelfSubjectAccessReview
-          - SelfSubjectRulesReview
-          - SubjectAccessReview
-      - apiGroups:
-          - certificates.k8s.io
-        kinds:
-          - CertificateSigningRequest
-      - apiGroups:
-          - cert-manager.io
-        kinds:
-          - CertificateRequest
-      - apiGroups:
-          - cilium.io
-        kinds:
-          - CiliumIdentity
-          - CiliumEndpoint
-          - CiliumEndpointSlice
-      - apiGroups:
-          - kyverno.io
-          - reports.kyverno.io
-          - wgpolicyk8s.io
-        kinds:
-          - PolicyReport
-          - ClusterPolicyReport
-          - EphemeralReport
-          - ClusterEphemeralReport
-          - AdmissionReport
-          - ClusterAdmissionReport
-          - BackgroundScanReport
-          - ClusterBackgroundScanReport
-          - UpdateRequest
-    resource.customizations.ignoreResourceUpdates.discovery.k8s.io_EndpointSlice: ""  # Disable the ignore
   cmp:
     create: true
     plugins:
