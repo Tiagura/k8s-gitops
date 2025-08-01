@@ -16,10 +16,11 @@
         description: Watch Films and Series
 
 - Network Services:
-    - Pi-hole:
+    - Pihole:
         icon: https://wp-cdn.pi-hole.net/wp-content/uploads/2016/12/Vortex-R.png
         href: http://pihole.tamhomelab.com
         description: Main DNS Server
+        siteMonitor: http://pihole
     - Tailscale:
         icon: https://play-lh.googleusercontent.com/wczDL05-AOb39FcL58L32h6j_TrzzGTXDLlOrOmJ-aNsnoGsT1Gkk2vU4qyTb7tGxRw
         href: https://login.tailscale.com/admin/machines/
@@ -33,3 +34,4 @@
     - GMKTEC NucBox M5 PLUS:
         icon: https://img.icons8.com/fluency/2x/proxmox.png
         href: https://proxmox.tamhomelab.com
+        ping: proxmox
