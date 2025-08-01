@@ -6,6 +6,7 @@ commonLabels:
   app.kubernetes.io/managed-by: argocd
 
 resources:
+  - nextpvr-credentials-secret.yaml
   - deployment.yaml
   - http-route.yaml
   - namespace.yaml
