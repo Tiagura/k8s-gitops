@@ -28,7 +28,12 @@
 
 # - Monitoring:
 
-# - Management:
+- Management:
+    - ArgoCD:
+        icon: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
+        href: https://argocd.tamhomelab.com
+        description: DevOps Management
+        siteMonitor: https://argocd.tamhomelab.com/healthz
 
 - Infrastructure:
     - GMKTEC NucBox M5 PLUS:
