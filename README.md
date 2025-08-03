@@ -43,7 +43,7 @@ Before deploying this setup, make sure you have the following:
 - **Self-Managing:** ArgoCD manages itself, so the cluster remains consistent with the Git repository.
 - **External & Internal Access to Services**  
   - Internal: All services are accessible inside the home network.  
-  - External: Select services are available from the internet through **Cloudflare Tunnel**.
+  - External: Selected services are available from the internet through **Cloudflare Tunnel**.
 
 
 ## Cluster Components
