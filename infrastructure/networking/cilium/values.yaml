@@ -90,10 +90,6 @@ l2announcements:
 externalIPs:
   enabled: true
 
-# Enable Cilium Endpoint Slice for better performance and scalability
-# https://docs.cilium.io/en/latest/network/kubernetes/ciliumendpointslice/
-enableCiliumEndpointSlice: true
-
 # Load balancing algorithm
 loadBalancer:
   algorithm: maglev
