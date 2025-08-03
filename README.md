@@ -6,43 +6,25 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 
 - [GitOps-Driven Kubernetes Cluster with ArgoCD](#gitops-driven-kubernetes-cluster-with-argocd)
   - [Table of Contents](#table-of-contents)
-  - [Prerequisites](#prerequisites)
   - [Features](#features)
   - [Cluster Components](#cluster-components)
     - [Infrastructure](#infrastructure)
     - [Applications](#applications)
-
-## Prerequisites
-
-Before deploying this setup, make sure you have the following:
-
-1. **A Kubernetes cluster** with:
-   - Gateway API enabled
-   - Without kube-proxy → See [Cilium KubeProxy-Free Docs](https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/)
-   - If Gateway APIs are **not installed**, run:
-     ```bash
-     kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml
-     kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/experimental-install.yaml
-     ```
-   - **Tip:** If you don't already have a Kubernetes cluster but have access to a **Proxmox node/cluster**, you can use my other project — which I also use to create my own cluster.  
-     It comes preconfigured with the **Gateway API CRDs installed** and **kube-proxy installation skipped**:  
-     [Tiagura/proxmox-k8s-IaC (GatewayAPI branch)](https://github.com/Tiagura/proxmox-k8s-IaC/tree/GatewayAPI)
-
-
-2. **A domain configured on Cloudflare**
-
-3. **Local CLI tools installed**:
-   - [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl)
-   - [`kustomize`](https://kubectl.docs.kubernetes.io/installation/kustomize/) (Normally installed when `kubectl` is installed)
-   - [`kubeseal`](https://github.com/bitnami-labs/sealed-secrets?tab=readme-ov-file#kubeseal)
-   - [`cilium CLI`](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/#install-the-cilium-cli)
+  - [Prerequisites](#prerequisites)
+  - [Bootstrapping the Cluster](#bootstrapping-the-cluster)
+    - [1. Install Cilium CNI and Wait for It to Be Ready](#1-install-cilium-cni-and-wait-for-it-to-be-ready)
+    - [2. Setup Sealed Secrets](#2-setup-sealed-secrets)
+    - [3. Create Encryption Keys for Sealed Secrets](#3-create-encryption-keys-for-sealed-secrets)
+    - [4. Create the Kubernetes Secret Manifest](#4-create-the-kubernetes-secret-manifest)
+    - [5. Deploy ArgoCD Main Components and CRDs](#5-deploy-argocd-main-components-and-crds)
+    - [6. Bootstrap the GitOps Loop](#6-bootstrap-the-gitops-loop)
 
 
 ## Features
 
 - **GitOps Pattern:** Flattened ApplicationSets provide a clean separation of concerns between infrastructure and applications.
-- **App of Apps Pattern:** Manage multiple applications from a single ArgoCD application. Automatically detect and deploy changes from your Git repository to your Kubernetes cluster.
-- **Self-Managing:** ArgoCD manages itself, so the cluster remains consistent with the Git repository.
+- **App of Apps Pattern:** Enables management of multiple applications through a single ArgoCD application, automatically detecting and deploying changes from the Git repository to the Kubernetes cluster.
+- **Self-Management:** ArgoCD manages its own installation and configuration, while continuously reconciling all other infrastructure components and applications declared in this repository—ensuring the entire cluster remains consistent with the Git source of truth.
 - **External & Internal Access to Services**  
   - Internal: All services are accessible inside the home network.  
   - External: Selected services are available from the internet through **Cloudflare Tunnel**.
@@ -73,3 +55,142 @@ Before deploying this setup, make sure you have the following:
 | <img src="https://www.stremio.com/website/stremio-logo-small.png" width="50"/> | [Stremio](https://www.stremio.com/) | Media streaming |
 
 
+## Prerequisites
+
+Before deploying this setup, make sure you have the following:
+
+1. **A Kubernetes cluster** with:
+   - Gateway API enabled
+   - Without kube-proxy → See [Cilium KubeProxy-Free Docs](https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/)
+   - If Gateway APIs are **not installed**, run:
+     ```bash
+     kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml
+     kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/experimental-install.yaml
+     ```
+   - **Tip:** If you don't already have a Kubernetes cluster but have access to a **Proxmox node/cluster**, you can use my other project — which I also use to create my own cluster.  
+     It comes preconfigured with the **Gateway API CRDs installed** and **kube-proxy installation skipped**:  
+     [Tiagura/proxmox-k8s-IaC (GatewayAPI branch)](https://github.com/Tiagura/proxmox-k8s-IaC/tree/GatewayAPI)
+
+2. **A domain configured on Cloudflare**
+
+3. **Local CLI tools installed**:
+   - [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl)
+   - [`kustomize`](https://kubectl.docs.kubernetes.io/installation/kustomize/) (Normally installed when `kubectl` is installed)
+   - [`kubeseal`](https://github.com/bitnami-labs/sealed-secrets?tab=readme-ov-file#kubeseal)
+   - [`cilium CLI`](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/#install-the-cilium-cli)
+
+## Bootstrapping the Cluster
+
+Follow these steps to bootstrap your Kubernetes cluster with all the necessary components and start the GitOps workflow:
+
+
+### 1. Install Cilium CNI and Wait for It to Be Ready
+
+Make sure you have the `cilium` CLI installed locally.
+
+```bash
+cilium install --values infrastructure/networking/cilium/values.yaml
+cilium status --wait
+```
+
+
+### 2. Setup Sealed Secrets
+
+Create the namespace for sealed-secrets:
+
+```bash
+kubectl create namespace sealed-secrets
+```
+
+Download the Sealed Secrets controller manifest:
+
+```bash
+curl -Lo sealed-secrets-controller.yaml https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.30.0/controller.yaml
+```
+
+Replace all namespace references from `kube-system` to `sealed-secrets`:
+
+```bash
+sed -i 's/namespace: kube-system/namespace: sealed-secrets/g' sealed-secrets-controller.yaml
+```
+
+Apply the modified manifest:
+
+```bash
+kubectl apply -f sealed-secrets-controller.yaml
+```
+
+
+### 3. Create Encryption Keys for Sealed Secrets
+
+Generate a private key:
+
+```bash
+openssl genrsa -out sealed-secrets.key 4096
+```
+
+Generate a self-signed certificate:
+
+```bash
+openssl req -x509 -new -nodes -key sealed-secrets.key -subj "/CN=sealed-secret" -days <DAYS_NUMBER> -out sealed-secrets.crt
+```
+
+Base64 encode the key and certificate:
+
+```bash
+base64 -w0 sealed-secrets.key > key.b64
+base64 -w0 sealed-secrets.crt > crt.b64
+```
+
+
+### 4. Create the Kubernetes Secret Manifest
+
+Edit `sealed-secrets-key.yaml` (for example with `nano sealed-secrets-key.yaml`) and paste the following, replacing `<contents-of-crt.b64>` and `<contents-of-key.b64>` with the base64-encoded contents from above:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sealed-secrets-key
+  namespace: sealed-secrets
+type: kubernetes.io/tls
+data:
+  tls.crt: <contents-of-crt.b64>
+  tls.key: <contents-of-key.b64>
+```
+
+Apply the secret to the cluster:
+
+```bash
+kubectl apply -f infrastructure/controllers/sealed-secrets/sealed-secrets-key.yaml
+```
+
+
+### 5. Deploy ArgoCD Main Components and CRDs
+
+Apply ArgoCD manifests via `kustomize` with Helm enabled:
+
+```bash
+kustomize build infrastructure/controllers/argocd --enable-helm | kubectl apply -f -
+```
+
+Wait for ArgoCD CRDs to be established:
+
+```bash
+kubectl wait --for condition=established --timeout=60s crd/applications.argoproj.io
+```
+
+Wait for ArgoCD server deployment to be ready:
+
+```bash
+kubectl wait --for=condition=Available deployment/argocd-server -n argocd --timeout=300s
+```
+
+
+### 6. Bootstrap the GitOps Loop
+
+Now that ArgoCD is running and its CRDs are ready, apply the root application to start the self-managing GitOps workflow:
+
+```bash
+kubectl apply -f infrastructure/controllers/argocd/root.yaml
+```
