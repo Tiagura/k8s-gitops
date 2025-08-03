@@ -3,8 +3,6 @@
   "helm-values": {
     "enabled": true
   },
-  "schedule": ["before 7am on Monday"], 
-  "timezone": "Europe/Lisbon",
   "regexManagers": [
     {
       "description": "Update Helm chart versions in kustomization.yaml",
@@ -23,19 +21,44 @@
       ],
       "datasourceTemplate": "docker",
       "versioningTemplate": "docker"
+    },
+    {
+      "description": "Update Sealed Secrets release URL in README.md",
+      "fileMatch": ["README\\.md"],
+      "matchStrings": [
+        "https://github\\.com/bitnami-labs/sealed-secrets/releases/download/v(?<currentValue>[^/]+)/controller\\.yaml"
+      ],
+      "depNameTemplate": "bitnami-labs/sealed-secrets",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "description": "Update Gateway API release URL in README.md",
+      "fileMatch": ["README\\.md"],
+      "matchStrings": [
+        "https://github\\.com/kubernetes-sigs/gateway-api/releases/download/v(?<currentValue>[^/]+)/standard-install\\.yaml",
+        "https://github\\.com/kubernetes-sigs/gateway-api/releases/download/v(?<currentValue>[^/]+)/experimental-install\\.yaml"
+      ],
+      "depNameTemplate": "kubernetes-sigs/gateway-api",
+      "datasourceTemplate": "github-releases"
     }
   ],
   "packageRules": [
     {
+      "matchFiles": ["^infrastructure/"],
+      "automerge": false
+    },
+    {
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["digest"],
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
     },
     {
       "matchDatasources": ["helm", "github-releases"],
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
+    },
+    {
+      "matchManagers": ["regex"],
+      "automerge": true
     }
   ],
   "dependencyDashboard": false

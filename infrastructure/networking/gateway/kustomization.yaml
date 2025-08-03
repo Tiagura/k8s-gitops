@@ -4,11 +4,8 @@ kind: Kustomization
 resources:
   - class.yaml
   - namespace.yaml
-  - gateway-internal.yaml
-  - gateway-external.yaml
-  - http-redirect-internal.yaml
-  - http-redirect-external.yaml
-  - certificate.yaml
+  - gateway.yaml
+  - http-redirect.yaml
 
 generatorOptions:
   disableNameSuffixHash: true

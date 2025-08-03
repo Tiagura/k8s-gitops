@@ -1,0 +1,21 @@
+tunnel: k8s-tunnel
+metrics: 0.0.0.0:2000
+credentials-file: /etc/cloudflared/credentials/tunnel.json
+no-autoupdate: true
+loglevel: debug
+transport-loglevel: debug
+ingress:
+  - hostname: "*.tamhomelab.com"
+    service: https://cilium-gateway-gateway.gateway.svc.cluster.local:443
+    originRequest:
+      noTLSVerify: true
+      originServerName: "*.tamhomelab.com"
+      logHeaders: true
+      headers:
+        - name: CF-Connecting-IP
+        - name: X-Forwarded-For
+        - name: True-Client-IP
+        - name: CF-IPCountry
+        - name: CF-Ray
+        - name: User-Agent
+  - service: http_status:404
