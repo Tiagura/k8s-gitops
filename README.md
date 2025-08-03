@@ -24,8 +24,10 @@ Before deploying this setup, make sure you have the following:
      kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml
      kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/experimental-install.yaml
      ```
-   - **Tip:** If you don't already have a Kubernetes cluster but have access to a **Proxmox node/cluster**, you can use my other project to create one:  
+   - **Tip:** If you don't already have a Kubernetes cluster but have access to a **Proxmox node/cluster**, you can use my other project — which I also use to create my own cluster.  
+     It comes preconfigured with the **Gateway API CRDs installed** and **kube-proxy installation skipped**:  
      [Tiagura/proxmox-k8s-IaC (GatewayAPI branch)](https://github.com/Tiagura/proxmox-k8s-IaC/tree/GatewayAPI)
+
 
 2. **A domain configured on Cloudflare**
 
