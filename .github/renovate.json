@@ -3,6 +3,8 @@
   "helm-values": {
     "enabled": true
   },
+  "schedule": ["before 7am on Monday"], 
+  "timezone": "Europe/Lisbon",
   "regexManagers": [
     {
       "description": "Update Helm chart versions in kustomization.yaml",
@@ -14,10 +16,10 @@
       "registryUrlTemplate": "{{registryUrl}}"
     },
     {
-      "description": "Update only digest for images using latest@sha256 in deployment.yaml",
+      "description": "Update digest for images using latest@sha256 or stable@sha256 in deployment.yaml",
       "fileMatch": ["deployment\\.yaml$"],
       "matchStrings": [
-        "image:\\s+(?<depName>[^\\s:@]+):latest@sha256:(?<currentValue>[a-f0-9]{64})"
+        "image:\\s+(?<depName>[^\\s:@]+):(latest|stable)@sha256:(?<currentValue>[a-f0-9]{64})"
       ],
       "datasourceTemplate": "docker",
       "versioningTemplate": "docker"
@@ -27,11 +29,13 @@
     {
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["digest"],
-      "automerge": true
+      "automerge": true,
+      "automergeType": "branch"
     },
     {
       "matchDatasources": ["helm", "github-releases"],
-      "automerge": true
+      "automerge": true,
+      "automergeType": "branch"
     }
   ],
   "dependencyDashboard": false
