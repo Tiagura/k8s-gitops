@@ -3,7 +3,7 @@
   "helm-values": {
     "enabled": true
   },
-  "schedule": ["before 7am on Monday"], 
+  "schedule": ["before 7am on Monday"],
   "timezone": "Europe/Lisbon",
   "regexManagers": [
     {
@@ -26,6 +26,10 @@
     }
   ],
   "packageRules": [
+    {
+      "matchFiles": ["^infrastructure/"],
+      "automerge": false
+    },
     {
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["digest"],
