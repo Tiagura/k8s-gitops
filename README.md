@@ -18,6 +18,16 @@ This repository contains the configuration and manifests for a **GitOps-driven K
     - [4. Create the Kubernetes Secret Manifest](#4-create-the-kubernetes-secret-manifest)
     - [5. Deploy ArgoCD Main Components and CRDs](#5-deploy-argocd-main-components-and-crds)
     - [6. Bootstrap the GitOps Loop](#6-bootstrap-the-gitops-loop)
+    - [7. Optional: Access ArgoCD Web GUI](#7-optional-access-argocd-web-gui)
+      - [Get the ArgoCD Initial Admin Password](#get-the-argocd-initial-admin-password)
+      - [Access the Web GUI](#access-the-web-gui)
+      - [Changing Login Credentials](#changing-login-credentials)
+  - [Verification](#verification)
+    - [1. Verify Nodes Are Ready](#1-verify-nodes-are-ready)
+    - [2. Verify CNI Functionality](#2-verify-cni-functionality)
+    - [3. Verify All Pods Are Running](#3-verify-all-pods-are-running)
+    - [4. Check That Secrets Have Been Populated](#4-check-that-secrets-have-been-populated)
+    - [5. Check ArgoCD Applications Sync Status](#5-check-argocd-applications-sync-status)
 
 
 ## Features
@@ -193,4 +203,82 @@ Now that ArgoCD is running and its CRDs are ready, apply the root application to
 
 ```bash
 kubectl apply -f infrastructure/controllers/argocd/root.yaml
+```
+
+### 7. Optional: Access ArgoCD Web GUI
+
+After ArgoCD is up and running, you can access its **Web GUI** for a visual overview of your cluster's current status.  
+The Web GUI provides insight into the synchronization state of applications, health status of resources, and allows you to perform certain operations directly from the interface.
+
+
+#### Get the ArgoCD Initial Admin Password
+
+Run the following command to retrieve the initial admin password:
+
+```bash
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+```
+
+
+#### Access the Web GUI
+
+1. Open your browser and navigate to your ArgoCD server's URL or IP.  
+2. Use the following credentials to log in:
+   - **Username:** `admin`
+   - **Password:** _(value retrieved from the previous command)_
+
+
+#### Changing Login Credentials
+
+You can change the default admin password using the **ArgoCD CLI**.  
+For instructions, refer to the official [ArgoCD documentation](https://argo-cd.readthedocs.io/)
+
+
+## Verification
+
+After bootstrapping, wait a few minutes and verify that all components are healthy and running correctly.
+
+
+### 1. Verify Nodes Are Ready
+
+Check that all your Kubernetes nodes are in the `Ready` state:
+
+```bash
+kubectl get nodes
+```
+
+
+### 2. Verify CNI Functionality
+
+Run a Cilium connectivity test to ensure that networking is functioning as expected:
+
+```bash
+cilium connectivity test
+```
+
+
+### 3. Verify All Pods Are Running
+
+It may take **~15 minutes**(or more depending on nodes' resources and cluster components number) for all container images to pull and pods to become ready.
+
+```bash
+kubectl get pods -A
+```
+
+
+### 4. Check That Secrets Have Been Populated
+
+Verify that Sealed Secrets resources exist:
+
+```bash
+kubectl get sealedsecrets -A
+```
+
+
+### 5. Check ArgoCD Applications Sync Status
+
+Ensure that the `STATUS` column eventually shows `Synced` for all applications:
+
+```bash
+kubectl get applications -n argocd -w
 ```
