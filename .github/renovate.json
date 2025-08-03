@@ -3,13 +3,6 @@
   "helm-values": {
     "enabled": true
   },
-  "helmRepos": {
-    "argo-cd": "https://argoproj.github.io/argo-helm",
-    "cert-manager": "https://charts.jetstack.io",
-    "sealed-secrets": "https://bitnami-labs.github.io/sealed-secrets",
-    "cilium": "https://helm.cilium.io/",
-    "longhorn": "https://charts.longhorn.io"
-  },
   "regexManagers": [
     {
       "description": "Update Helm chart versions in kustomization.yaml",
@@ -17,16 +10,17 @@
       "matchStrings": [
         "name:\\s+(?<depName>[^\\s]+)\\s+repo:\\s+(?<registryUrl>[^\\s]+)\\s+version:\\s+(?<currentValue>[^\\s]+)"
       ],
-      "datasourceTemplate": "helm"
+      "datasourceTemplate": "helm",
+      "registryUrlTemplate": "{{registryUrl}}"
     },
     {
-    "description": "Update only digest for images using latest@sha256 in deployment.yaml",
-    "fileMatch": ["deployment\\.yaml$"],
-    "matchStrings": [
-        "image:\\s+(?<depName>[^\\s:@]+):latest@sha256:(?<currentDigest>[a-f0-9]{64})"
-    ],
-    "datasourceTemplate": "docker",
-    "versioningTemplate": "docker"
+      "description": "Update only digest for images using latest@sha256 in deployment.yaml",
+      "fileMatch": ["deployment\\.yaml$"],
+      "matchStrings": [
+        "image:\\s+(?<depName>[^\\s:@]+):latest@sha256:(?<currentValue>[a-f0-9]{64})"
+      ],
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
     }
   ],
   "packageRules": [
