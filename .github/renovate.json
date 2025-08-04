@@ -3,8 +3,6 @@
   "helm-values": {
     "enabled": true
   },
-  "schedule": ["before 7am on Monday"],
-  "timezone": "Europe/Lisbon",
   "regexManagers": [
     {
       "description": "Update Helm chart versions in kustomization.yaml",
