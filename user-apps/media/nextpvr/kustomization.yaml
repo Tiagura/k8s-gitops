@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: nextpvr
-commonLabels:
+labels:
   app.kubernetes.io/name: nextpvr
   app.kubernetes.io/managed-by: argocd
 
@@ -9,7 +9,7 @@ resources:
   - credentials-update-job.yaml
   - deployment.yaml
   - http-route-external.yaml
-  - http-route.yaml
+  - http-route-internal.yaml
   - namespace.yaml
   - nextpvr-credentials-secret-sealed.yaml
   - pvc-data.yaml
