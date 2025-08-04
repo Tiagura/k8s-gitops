@@ -16,6 +16,10 @@
         description: Watch Films and Series
 
 - Network Services:
+    - Cloudflared:
+        icon: https://raw.githubusercontent.com/cloudflare/cloudflared/refs/heads/main/images/favicon.png
+        href: https://dash.cloudflare.com/login
+        description: External Access
     - Pihole:
         icon: https://wp-cdn.pi-hole.net/wp-content/uploads/2016/12/Vortex-R.png
         href: http://pihole.tamhomelab.com

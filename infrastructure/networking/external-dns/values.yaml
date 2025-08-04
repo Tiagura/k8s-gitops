@@ -1,0 +1,56 @@
+replicaCount: 1
+
+serviceAccount:
+  create: false
+  name: external-dns
+
+rbac:
+  create: false
+
+provider: cloudflare
+
+cloudflare:
+  proxied: true # Set to false if you want DNS only, true if using CF proxy
+
+# Only watch Gateway API HTTPRoutes
+sources:
+  - gateway-httproute
+  - gateway-tlsroute
+  - gateway-tcproute
+  - gateway-udproute
+
+domainFilters:
+  - tamhomelab.com
+
+# Optional: set an owner ID for TXT records to avoid collisions
+txtOwnerId: external-dns-cloudflare
+
+extraArgs:
+  # Gateway API filtering
+  - --label-filter=dns-scope=external
+  - --gateway-label-filter=dns-scope=external
+  - --target=$(CF_TUNNEL_TARGET)
+
+  # Cloudflare-specific tuning
+  - --cloudflare-regional-services
+  - --cloudflare-region-key=eu
+  - --cloudflare-record-comment="provisioned by external-dns"
+
+# Environment variables for provider auth and tunnel target
+env:
+  - name: CF_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: cloudflare-api-token-secret
+        key: api-token
+  - name: CF_TUNNEL_TARGET
+    valueFrom:
+      secretKeyRef:
+        name: cloudflare-target-secret
+        key: target
+
+# Optional pod annotations (helpful for monitoring/logging)
+podAnnotations: {}
+
+# Logs verbosity
+logLevel: debug
