@@ -59,6 +59,11 @@
       "matchDatasources": ["helm", "github-releases"],
       "automerge": true,
       "automergeType": "branch"
+    },
+    {
+      "matchManagers": ["regex"],
+      "automerge": true,
+      "automergeType": "branch"
     }
   ],
   "dependencyDashboard": false
