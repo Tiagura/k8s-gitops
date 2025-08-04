@@ -2,8 +2,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: excalidraw
 labels:
-  app.kubernetes.io/name: excalidraw
-  app.kubernetes.io/managed-by: argocd
+  - pairs:
+      app.kubernetes.io/name: excalidraw
+      app.kubernetes.io/managed-by: argocd
+    includeSelectors: true
 
 resources:
   - namespace.yaml
