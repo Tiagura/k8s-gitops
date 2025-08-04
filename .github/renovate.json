@@ -52,18 +52,15 @@
     {
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["digest"],
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
     },
     {
       "matchDatasources": ["helm", "github-releases"],
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
     },
     {
       "matchManagers": ["regex"],
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
     }
   ],
   "dependencyDashboard": false
