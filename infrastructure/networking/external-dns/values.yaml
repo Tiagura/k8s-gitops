@@ -26,7 +26,7 @@ domainFilters:
 txtOwnerId: external-dns-cloudflare
 
 extraArgs:
-  - --default-targets=${CF_TUNNEL_TARGET}
+  - --default-targets=$(CF_TUNNEL_TARGET)
   # Gateway API filtering
   - --gateway-label-filter=dns-scope=external
 
