@@ -6,6 +6,7 @@ namespace: external-dns
 resources:
   - namespace.yaml
   - cloudflare-api-token-secret-sealed.yaml
+  - cloudflare-target-secret-sealed.yaml
   - rbac.yaml
 
 helmCharts:
