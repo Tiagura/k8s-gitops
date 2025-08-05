@@ -8,7 +8,7 @@ labels:
     includeSelectors: true
 
 resources:
+  - namespace.yaml
   - cloudflared-tunnel-token-secret-sealed.yaml
   - config-map.yaml
   - deployment.yaml
-  - namespace.yaml
