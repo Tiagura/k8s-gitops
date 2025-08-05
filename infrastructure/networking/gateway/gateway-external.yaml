@@ -3,6 +3,8 @@ kind: Gateway
 metadata:
   name: gateway-external
   namespace: gateway
+  labels:
+    dns-scope: external
   annotations:
     cert-manager.io/cluster-issuer: cloudflare-cluster-issuer
 spec:
