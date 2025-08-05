@@ -46,7 +46,7 @@ env:
     valueFrom:
       secretKeyRef:
         name: cloudflare-target-secret
-        key: tunnel-target
+        key: target
 
 # Optional pod annotations (helpful for monitoring/logging)
 podAnnotations: {}
