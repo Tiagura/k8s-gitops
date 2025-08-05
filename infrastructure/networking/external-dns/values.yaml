@@ -42,11 +42,6 @@ env:
       secretKeyRef:
         name: cloudflare-api-token-secret
         key: api-token
-  - name: CF_TUNNEL_TARGET
-    valueFrom:
-      secretKeyRef:
-        name: cloudflare-target-secret
-        key: target
 
 # Optional pod annotations (helpful for monitoring/logging)
 podAnnotations: {}
