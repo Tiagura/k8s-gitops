@@ -31,8 +31,8 @@ extraArgs:
   - --gateway-label-filter=dns-scope=external
 
   # Cloudflare-specific tuning
-  # - --cloudflare-regional-services # Incompatible for version 1.15.0
-  - --cloudflare-region-key=eu
+  # - --cloudflare-regional-services  # Incompatible for version 1.15.0
+  # - --cloudflare-region-key=eu      # Incompatible for version 1.15.0
   - --cloudflare-record-comment="provisioned by external-dns"
 
 # Environment variables for provider auth and tunnel target
