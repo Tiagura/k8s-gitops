@@ -29,7 +29,6 @@ extraArgs:
   # Gateway API filtering
   - --label-filter=dns-scope=external
   - --gateway-label-filter=dns-scope=external
-  - --target=$(CF_TUNNEL_TARGET)
 
   # Cloudflare-specific tuning
   - --cloudflare-regional-services
