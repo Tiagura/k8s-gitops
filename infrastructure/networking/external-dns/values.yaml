@@ -27,7 +27,6 @@ txtOwnerId: external-dns-cloudflare
 
 extraArgs:
   # Gateway API filtering
-  - --label-filter=dns-scope=external
   - --gateway-label-filter=dns-scope=external
 
   # Cloudflare-specific tuning
