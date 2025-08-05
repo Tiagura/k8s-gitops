@@ -26,8 +26,6 @@ domainFilters:
 txtOwnerId: external-dns-cloudflare
 
 extraArgs:
-  - --managed-record-types-filter=A,AAAA,CNAME
-
   # Gateway API filtering
   - --gateway-label-filter=dns-scope=external
 
