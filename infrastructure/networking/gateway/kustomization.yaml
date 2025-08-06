@@ -4,10 +4,8 @@ kind: Kustomization
 resources:
   - class.yaml
   - namespace.yaml
-  - gateway-internal.yaml
-  - gateway-external.yaml
-  - http-redirect-internal.yaml
-  - http-redirect-external.yaml
+  - gateway.yaml
+  - http-redirect.yaml
   - certificate.yaml
 
 generatorOptions:

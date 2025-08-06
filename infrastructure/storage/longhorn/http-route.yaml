@@ -5,7 +5,7 @@ metadata:
   namespace: longhorn
 spec:
   parentRefs:
-    - name: gateway-internal
+    - name: gateway
       namespace: gateway
   hostnames:
     - "longhorn.tamhomelab.com"
