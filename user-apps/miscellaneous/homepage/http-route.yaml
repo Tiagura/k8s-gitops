@@ -7,7 +7,7 @@ spec:
   parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway
-      name: gateway-internal
+      name: gateway
       namespace: gateway
   hostnames:
     - "homepage.tamhomelab.com"

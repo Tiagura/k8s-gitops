@@ -10,8 +10,7 @@ labels:
 resources:
   - credentials-update-job.yaml
   - deployment.yaml
-  - http-route-external.yaml
-  - http-route-internal.yaml
+  - http-route.yaml
   - namespace.yaml
   - nextpvr-credentials-secret-sealed.yaml
   - pvc-data.yaml

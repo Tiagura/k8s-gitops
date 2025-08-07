@@ -7,6 +7,8 @@ serviceAccount:
 rbac:
   create: true
 
+createController: false # Set to false if controller is already deployed i.e. bootstrapped
+
 # Optionally, if you want to customize other settings:
 controller:
   affinity: {}
