@@ -28,6 +28,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
     - [3. Verify All Pods Are Running](#3-verify-all-pods-are-running)
     - [4. Check That Secrets Have Been Populated](#4-check-that-secrets-have-been-populated)
     - [5. Check ArgoCD Applications Sync Status](#5-check-argocd-applications-sync-status)
+  - [Extra Documentation](#extra-documentation)
 
 
 ## Features
@@ -282,3 +283,7 @@ Ensure that the `STATUS` column eventually shows `Synced` for all applications:
 ```bash
 kubectl get applications -n argocd -w
 ```
+
+## Extra Documentation
+
+Additional information on setup and how things work can be found in the folder [`docs`](./docs/)
