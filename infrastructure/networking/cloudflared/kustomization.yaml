@@ -7,8 +7,16 @@ labels:
       app.kubernetes.io/managed-by: argocd
     includeSelectors: true
 
+configMapGenerator:
+  - name: config
+    namespace: cloudflared
+    files:
+      - config.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
 resources:
-  - cloudflared-tunnel-token-secret-sealed.yaml
-  - config-map.yaml
-  - deployment.yaml
   - namespace.yaml
+  - cloudflared-tunnel-creds-secret-sealed.yaml
+  - deployment.yaml

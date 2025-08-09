@@ -22,12 +22,8 @@ spec:
         seccompProfile:
           type: RuntimeDefault
         sysctls:
-        # Allows ICMP traffic (ping, traceroute) to resources behind cloudflared.
           - name: net.ipv4.ping_group_range
             value: "65532 65532"
-      # Spread pods across nodes to avoid single points of failure.
-      # This is a best-effort attempt to ensure that cloudflared pods are not scheduled
-      # on the same node, which can help with availability in case of node failures.
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -48,12 +44,6 @@ spec:
             - --config
             - /etc/cloudflared/config.yaml
             - run
-          env:
-            - name: TUNNEL_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: cloudflared-tunnel-token-secret
-                  key: api-token
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -80,12 +70,22 @@ spec:
               memory: 64Mi
             limits:
               cpu: 200m
-              memory: 128Mi
+              memory: 256Mi
           volumeMounts:
             - name: config
-              mountPath: /etc/cloudflared
+              mountPath: /etc/cloudflared/config.yaml
+              subPath: config.yaml
+              readOnly: true
+            - name: credentials
+              mountPath: /etc/cloudflared/credentials
               readOnly: true
       volumes:
         - name: config
           configMap:
-            name: cloudflared-config
+            name: config
+        - name: credentials
+          secret:
+            secretName: cloudflared-credentials-secret
+            items:
+              - key: credentials.json
+                path: tunnel.json
