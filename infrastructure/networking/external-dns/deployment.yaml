@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns
+  namespace: external-dns
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: external-dns
+  template:
+    metadata:
+      labels:
+        app: external-dns
+    spec:
+      serviceAccountName: external-dns
+      containers:
+        - name: external-dns
+          image: registry.k8s.io/external-dns/external-dns:v0.18.0
+          args:
+            # Gateway API sources
+            - --source=gateway-httproute
+            - --source=gateway-tlsroute
+            - --source=gateway-tcproute
+            - --source=gateway-udproute
+
+            # Label filter for HTTPRoutes
+            - --label-filter=external-dns/enabled=true
+
+            # Cloudflare settings
+            - --domain-filter=tamhomelab.com
+            - --provider=cloudflare
+            - --cloudflare-proxied
+            - --cloudflare-dns-records-per-page=5000
+            - --cloudflare-record-comment=provisioned-by-external-dns
+            - --registry=txt
+            - --txt-owner-id=my-cluster
+
+            # Always create CNAME records pointing to Cloudflare Tunnel
+            - --policy=upsert-only
+          env:
+            - name: CF_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflare-api-token-secret
+                  key: api-token

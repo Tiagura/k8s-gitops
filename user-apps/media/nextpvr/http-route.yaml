@@ -3,6 +3,9 @@ kind: HTTPRoute
 metadata:
   name: nextpvr
   namespace: nextpvr
+  labels:
+    external-dns/enabled: "true"
+  annotations:
 spec:
   parentRefs:
     - group: gateway.networking.k8s.io

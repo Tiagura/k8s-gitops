@@ -50,10 +50,11 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 | <img src="https://argo-cd.readthedocs.io/en/stable/assets/logo.png" width="50"/> | [ArgoCD](https://argo-cd.readthedocs.io/) | GitOps continuous delivery controller |
 | <img src="https://raw.githubusercontent.com/cert-manager/cert-manager/refs/heads/master/logo/logo-small.png" width="50"/> | [Cert-Manager](https://cert-manager.io/) | Automated TLS certificate management |
 | <img src="https://camo.githubusercontent.com/4759101d66da36edea0998f8da3084921bd4f4eed32b999dde06685d7ac9f068/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f686f6d6172722d6c6162732f64617368626f6172642d69636f6e732f7376672f63696c69756d2e737667" width="50"/> | [Cilium](https://cilium.io/) | Super CNI with advanced networking. Uses eBPF and has observability and security. Also acts as a kube-proxy replacement in this case |
-| <img src="https://cdn-1.webcatalog.io/catalog/cloudflare-zero-trust/cloudflare-zero-trust-icon-filled-256.webp?v=1714773945620" width="50"/> | [Cloudflare Zero Trust](https://www.cloudflare.com/zero-trust/) | External secure access and tunneling |
-| <img src="https://avatars.githubusercontent.com/u/34656521?v=4" width="50"/> | [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) | Encrypt and manage Kubernetes secrets securely |
+| <img src="https://cdn-1.webcatalog.io/catalog/cloudflare-zero-trust/cloudflare-zero-trust-icon-unplated.png?v=1714773945620" width="50"/> | [Cloudflare Zero Trust](https://www.cloudflare.com/zero-trust/) | External secure access and tunneling |
+| <img src="https://kubernetes-sigs.github.io/external-dns/latest/docs/img/external-dns.png" width="50"/> | [External DNS](https://kubernetes-sigs.github.io/external-dns/latest/) | DNS synchronisation and automation |
 | <img src="https://longhorn.io/img/logos/longhorn-icon-color.png" width="50"/> | [Longhorn](https://longhorn.io/) | Distributed block storage for Kubernetes |
-| <img src="https://docs.renovatebot.com/assets/images/logo.png" width="50"/> | [Renovate](https://docs.renovatebot.com/) | Automated dependency updates |
+| <img src="https://docs.renovatebot.com/assets/images/logo.png" width="50"/> | [Renovate](https://docs.renovatebot.com/) | Automated dependency updates (Github Application) |
+| <img src="https://avatars.githubusercontent.com/u/34656521?v=4" width="50"/> | [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) | Encrypt and manage Kubernetes secrets securely |
 
 
 ### Applications
@@ -61,7 +62,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 | Logo | Name | Purpose |
 |------|------|---------|
 | <img src="https://svgicons.com/api/ogimage/?id=221729&n=file-type-excalidraw" width="50"/> | [Excalidraw](https://excalidraw.com/) | Whiteboard |
-| <img src="https://raw.githubusercontent.com/gethomepage/homepage/refs/heads/dev/public/android-chrome-192x192.png" width="50"/> | [Homepage](https://gethomepage.dev/) | Dashboard for self-hosted services |
+| <img src="https://raw.githubusercontent.com/gethomepage/homepage/refs/heads/dev/public/android-chrome-192x192.png" width="50"/> | [Homepage](https://gethomepage.dev/) | Dashboard  |
 | <img src="https://www.filecroco.com/wp-content/uploads/2019/05/nextpvr-icon.png" width="50"/> | [NextPVR](https://nextpvr.com/) | Live IPTV & DVR |
 | <img src="https://www.stremio.com/website/stremio-logo-small.png" width="50"/> | [Stremio](https://www.stremio.com/) | Media streaming |
 

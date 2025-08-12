@@ -5,6 +5,7 @@ metadata:
   namespace: gateway
   annotations:
     cert-manager.io/cluster-issuer: cloudflare-cluster-issuer
+    external-dns.alpha.kubernetes.io/target: tunnel.tamhomelab.com
 spec:
   addresses:
   - type: IPAddress
