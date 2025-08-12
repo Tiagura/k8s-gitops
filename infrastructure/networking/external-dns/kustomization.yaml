@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: external-dns
+labels:
+  - pairs:
+      app.kubernetes.io/name: external-dns
+      app.kubernetes.io/managed-by: argocd
+    includeSelectors: true
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+resources:
+  - namespace.yaml
+  - rbac.yaml
+  - cloudflare-api-token-secret-sealed.yaml
+  - deployment.yaml

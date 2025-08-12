@@ -28,7 +28,6 @@ Next, create the tunnel:
 cloudflared tunnel create <tunnel-name>
 ```
 
----
 
 ### 3. Create the sealed secret for Kubernetes
 
@@ -38,6 +37,7 @@ To allow ArgoCD to access the tunnel credentials and create the tunnel successfu
 kubectl create secret generic cloudflared-credentials-secret \
   --from-file=credentials.json=<path-to-credentials-json-file> \
   --type=Opaque \
+  --namespace=cloudflared \
   --dry-run=client -o yaml > cloudflared-tunnel-creds-secret.yaml
 ```
 
@@ -47,13 +47,12 @@ Then seal the secret with `kubeseal`:
 kubeseal --format=yaml --scope=cluster-wide --cert=<your-sealed-secrets-public-key.crt> < cloudflared-tunnel-creds-secret.yaml > infrastructure/networking/cloudflared/cloudflared-tunnel-creds-secret-sealed.yaml
 ```
 
----
 
 ### 4. Configure DNS
 
 You have two options:
 
-- Use ExternalDNS to automatically push DNS records to Cloudflare.
+- Use [ExternalDNS](https://github.com/kubernetes-sigs/external-dns) to automatically push DNS records to Cloudflare.
 - Or manually create DNS routes with:
 
 ```bash
@@ -66,7 +65,7 @@ cloudflared tunnel route dns <tunnel-name> "*.<your_domain>"
 
 ### 5. Additional security recommendations
 
-- Create Access policies restricting allowed emails (e.g., only family members and/or client from your home country only).
+- Create Access policies (e.g., restricting allowed emails for family members and/or client from your home country only).
 - Link to an app with authentication for added security.
 - In your Cloudflare Gateway, use firewall policies to restrict traffic to your home country, for example.
 
