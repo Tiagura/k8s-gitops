@@ -3,14 +3,11 @@ kind: HTTPRoute
 metadata:
   name: nextpvr
   namespace: nextpvr
-  labels:
-    external-dns/enabled: "true"
-  annotations:
 spec:
   parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway
-      name: gateway
+      name: gateway-internal
       namespace: gateway
   hostnames:
     - "nextpvr.tamhomelab.com"

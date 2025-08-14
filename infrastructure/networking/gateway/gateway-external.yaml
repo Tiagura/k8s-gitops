@@ -1,31 +1,26 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: gateway
+  name: gateway-external
   namespace: gateway
+  labels:
+    app: gateway-external
   annotations:
     cert-manager.io/cluster-issuer: cloudflare-cluster-issuer
     external-dns.alpha.kubernetes.io/target: tunnel.tamhomelab.com
 spec:
   addresses:
   - type: IPAddress
-    value: 192.168.1.35
+    value: 192.168.1.36
   gatewayClassName: cilium
   listeners:
-    - name: http
-      protocol: HTTP
-      port: 80
-      hostname: "*.tamhomelab.com"
-      allowedRoutes:
-        namespaces:
-          from: All
     - name: https
       protocol: HTTPS
       port: 443
       hostname: "*.tamhomelab.com"
       tls:
         certificateRefs:
-          - name: cert-tamhomelab
+          - name: cert-tamhomelab-external
             kind: Secret
             group: "" # required
       allowedRoutes:

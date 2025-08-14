@@ -8,10 +8,11 @@ labels:
     includeSelectors: true
 
 resources:
+  - namespace.yaml
   - credentials-update-job.yaml
   - deployment.yaml
   - http-route.yaml
-  - namespace.yaml
+  - http-route-external.yaml
   - nextpvr-credentials-secret-sealed.yaml
   - pvc-data.yaml
   - rbac.yaml

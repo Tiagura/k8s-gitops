@@ -12,4 +12,5 @@ resources:
   - service.yaml
   - deployment.yaml
   - http-route.yaml
+  - http-route-external.yaml
   - pvc-data.yaml

@@ -6,7 +6,7 @@ loglevel: debug
 transport-loglevel: debug
 ingress:
   - hostname: "*.tamhomelab.com"
-    service: https://cilium-gateway-gateway.gateway.svc.cluster.local:443
+    service: https://cilium-gateway-gateway-external.gateway.svc.cluster.local:443
     originRequest:
       noTLSVerify: true
       originServerName: "*.tamhomelab.com"
