@@ -11,6 +11,7 @@ resources:
   - deployment.yaml
   - http-route.yaml
   - namespace.yaml
+  - rbac.yaml
   - service.yaml
 
 configMapGenerator:

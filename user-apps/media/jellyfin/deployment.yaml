@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  namespace: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+      containers:
+        - name: jellyfin
+          image: jellyfin/jellyfin:latest@sha256:4985b1579fb7abf2d83a43ce8a6a679d358562096434a7c0a4a0337afff578c7
+          securityContext:
+            allowPrivilegeEscalation: false
+          ports:
+            - containerPort: 8096
+          volumeMounts:
+            - name: jellyfin-config
+              mountPath: /config
+            - name: jellyfin-cache
+              mountPath: /cache
+              subPath: cache
+            - name: iptv-playlist
+              mountPath: /m3u/iptv.m3u
+              subPath: iptv.m3u
+              readOnly: true
+      volumes:
+        - name: jellyfin-config
+          persistentVolumeClaim:
+            claimName: jellyfin-config-pvc
+        - name: jellyfin-cache
+          persistentVolumeClaim:
+            claimName: jellyfin-cache-pvc
+        - name: iptv-playlist
+          secret:
+            secretName: iptv-playlist
