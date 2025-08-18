@@ -13,3 +13,4 @@ resources:
   - deployment.yaml
   - http-route.yaml
   - http-route-external.yaml
+  - iptv-playlist-secret-sealed.yaml
