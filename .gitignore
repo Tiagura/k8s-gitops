@@ -15,3 +15,6 @@ infrastructure/controllers/sealed-secrets/sealed-secrets-key.yaml
 
 # Ignore other .yaml files
 sealed-secrets-controller.yaml
+
+# Ignore other files
+*.m3u

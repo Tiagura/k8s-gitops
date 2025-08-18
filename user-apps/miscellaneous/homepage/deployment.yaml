@@ -5,6 +5,8 @@ metadata:
   namespace: homepage
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app: homepage
@@ -18,7 +20,7 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
         runAsNonRoot: true
-
+      serviceAccountName: homepage-sa
       containers:
         - name: homepage
           image: ghcr.io/gethomepage/homepage:latest@sha256:63434aafeb3d49be1f21ebd3c5d777fe5b7794c31342daad4e96f09b72a57188
