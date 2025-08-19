@@ -35,6 +35,22 @@ spec:
               mountPath: /m3u/iptv.m3u
               subPath: iptv.m3u
               readOnly: true
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
       volumes:
         - name: jellyfin-config
           persistentVolumeClaim:
