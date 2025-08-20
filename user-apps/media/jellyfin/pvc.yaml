@@ -5,7 +5,7 @@ metadata:
   namespace: jellyfin
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce   # use RWO for SQLite stability
   resources:
     requests:
       storage: 5Gi
@@ -18,7 +18,7 @@ metadata:
   namespace: jellyfin
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce   # use RWO for SQLite stability
   resources:
     requests:
       storage: 5Gi

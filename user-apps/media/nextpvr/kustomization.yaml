@@ -14,6 +14,6 @@ resources:
   - http-route.yaml
   - http-route-external.yaml
   - nextpvr-credentials-secret-sealed.yaml
-  - pvc-data.yaml
+  - pvc.yaml
   - rbac.yaml
   - service.yaml
