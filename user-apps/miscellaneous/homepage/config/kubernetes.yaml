@@ -1,3 +1,4 @@
+mode: cluster
 gateway: true # enable gateway-api
 ingress: false
 traefik: false
