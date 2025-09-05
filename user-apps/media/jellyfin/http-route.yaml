@@ -7,9 +7,9 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Media
     gethomepage.dev/name: Jellyfin
-    gethomepage.dev/icon: https://camo.githubusercontent.com/d4195cafdf41c80ff0917713e60d6d539808ed04d2285ce613d46c0a857d7975/68747470733a2f2f75706c6f61642e77696b696d656469612e6f72672f77696b6970656469612f636f6d6d6f6e732f7468756d622f342f34312f4a656c6c7966696e5f2d5f69636f6e2d7472616e73706172656e742e7376672f3130323470782d4a656c6c7966696e5f2d5f69636f6e2d7472616e73706172656e742e7376672e706e673f3230323430383232323331383331
+    gethomepage.dev/icon: https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Jellyfin_-_icon-transparent.svg/1024px-Jellyfin_-_icon-transparent.svg.png?20240822231831
     gethomepage.dev/href: https://tv.tamhomelab.com
-    gethomepage.dev/description: Media Server
+    gethomepage.dev/description: Live TV
     gethomepage.dev/pod-selector: ""
 spec:
   parentRefs:

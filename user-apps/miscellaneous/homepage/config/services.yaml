@@ -6,14 +6,6 @@
         description: Whiteboard
 
 - Media:
-    - NextPVR:
-        icon: https://www.filecroco.com/wp-content/uploads/2019/05/nextpvr-icon.png
-        href: http://nextpvr.tamhomelab.com
-        description: Live IPTV
-    - Stremio:
-        icon: https://raw.githubusercontent.com/Stremio/stremio-web/refs/heads/development/images/icon.png
-        href: https://stremio.tamhomelab.com
-        description: Watch Films and Series
 
 - Network Services:
     - Pihole:

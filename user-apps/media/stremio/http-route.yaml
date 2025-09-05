@@ -3,6 +3,14 @@ kind: HTTPRoute
 metadata:
   name: stremio
   namespace: stremio
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Media
+    gethomepage.dev/name: Stremio
+    gethomepage.dev/icon: https://www.stremio.com/website/stremio-logo-small.png
+    gethomepage.dev/href: https://stremio.tamhomelab.com
+    gethomepage.dev/description: Watch Films and Series
+    gethomepage.dev/pod-selector: ""
 spec:
   parentRefs:
     - group: gateway.networking.k8s.io
