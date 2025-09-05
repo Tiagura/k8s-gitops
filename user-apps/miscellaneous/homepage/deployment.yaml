@@ -66,14 +66,13 @@ spec:
             - name: homepage-config
               mountPath: /app/config/widgets.yaml
               subPath: widgets.yaml
-
+              
             # Mount writable logs directory
             - name: tmp
               mountPath: /app/config/logs
-
-          env:
-            - name: HOMEPAGE_ALLOWED_HOSTS
-              value: homepage.tamhomelab.com
+          envFrom:
+            - secretRef:
+                name: homepage-vars
           securityContext:
             allowPrivilegeEscalation: false
 

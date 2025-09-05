@@ -32,10 +32,16 @@ layout:
       columns: 4
     Media:
       style: row
-      columns: 2
+      columns: 4
     Network Services:
       style: row
-      columns: 2
+      columns: 4
     Monitoring:
+      style: columns
+      columns: 4
     Management:
+      style: columns
+      columns: 4
     Infrastructure:
+      style: columns
+      columns: 4

@@ -1,24 +1,17 @@
 ---
-- Miscellaneous:
-    - Excalidraw:
-        icon: https://raw.githubusercontent.com/excalidraw/excalidraw/refs/heads/master/public/favicon.ico
-        href: https://excalidraw.tamhomelab.com
-        description: Whiteboard
+# - Miscellaneous:
 
-- Media:
-    - NextPVR:
-        icon: https://www.filecroco.com/wp-content/uploads/2019/05/nextpvr-icon.png
-        href: http://nextpvr.tamhomelab.com
-        description: Live IPTV
-    - Stremio:
-        icon: https://raw.githubusercontent.com/Stremio/stremio-web/refs/heads/development/images/icon.png
-        href: https://stremio.tamhomelab.com
-        description: Watch Films and Series
+# - Media:
 
 - Network Services:
+    - Cloudflared:
+        icon: https://cdn-1.webcatalog.io/catalog/cloudflare-zero-trust/cloudflare-zero-trust-icon-unplated.png?v=1714773945620
+        href: https://dash.cloudflare.com/
+        description: External Access
+        siteMonitor: http://cloudflared-metrics.cloudflared.svc.cluster.local:2000/ready
     - Pihole:
         icon: https://wp-cdn.pi-hole.net/wp-content/uploads/2016/12/Vortex-R.png
-        href: http://pihole.tamhomelab.com
+        href: http://pihole.{{HOMEPAGE_VAR_BASE_DOMAIN}}
         description: Main DNS Server
         siteMonitor: http://pihole
     - Tailscale:
@@ -28,15 +21,16 @@
 
 # - Monitoring:
 
-- Management:
-    - ArgoCD:
-        icon: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
-        href: https://argocd.tamhomelab.com
-        description: DevOps Management
-        siteMonitor: https://argocd.tamhomelab.com/healthz
+# - Management:
 
 - Infrastructure:
     - GMKTEC NucBox M5 PLUS:
         icon: https://img.icons8.com/fluency/2x/proxmox.png
-        href: https://proxmox.tamhomelab.com
+        href: https://proxmox.{{HOMEPAGE_VAR_BASE_DOMAIN}}
         ping: proxmox
+        widget:
+          type: proxmox
+          url: https://proxmox:8006
+          username: "{{HOMEPAGE_VAR_PROXMOX_USER}}"
+          password: "{{HOMEPAGE_VAR_PROXMOX_PWD}}"
+          #node: pve-1  # Uncomment if proxmox has more than 1 node

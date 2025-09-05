@@ -3,6 +3,14 @@ kind: HTTPRoute
 metadata:
   name: argocd
   namespace: argocd
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Management
+    gethomepage.dev/name: ArgoCD
+    gethomepage.dev/icon: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
+    gethomepage.dev/href: https://argocd.tamhomelab.com
+    gethomepage.dev/description: GitOps Management
+    gethomepage.dev/pod-selector: ""
 spec:
   parentRefs:
     - name: gateway-internal

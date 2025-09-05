@@ -50,16 +50,9 @@ spec:
             capabilities:
               drop:
                 - ALL
-          readinessProbe:
-            httpGet:
-              path: /metrics
-              port: 2000
-            initialDelaySeconds: 30
-            failureThreshold: 3
-            periodSeconds: 30
           livenessProbe:
             httpGet:
-              path: /metrics
+              path: /ready
               port: 2000
             initialDelaySeconds: 60
             failureThreshold: 5

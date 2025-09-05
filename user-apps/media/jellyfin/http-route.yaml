@@ -3,6 +3,14 @@ kind: HTTPRoute
 metadata:
   name: jellyfin
   namespace: jellyfin
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Media
+    gethomepage.dev/name: Jellyfin
+    gethomepage.dev/icon: https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Jellyfin_-_icon-transparent.svg/1024px-Jellyfin_-_icon-transparent.svg.png?20240822231831
+    gethomepage.dev/href: https://tv.tamhomelab.com
+    gethomepage.dev/description: Live TV
+    gethomepage.dev/pod-selector: ""
 spec:
   parentRefs:
     - group: gateway.networking.k8s.io

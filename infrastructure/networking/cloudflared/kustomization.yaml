@@ -20,3 +20,4 @@ resources:
   - namespace.yaml
   - cloudflared-tunnel-creds-secret-sealed.yaml
   - deployment.yaml
+  - service.yaml
