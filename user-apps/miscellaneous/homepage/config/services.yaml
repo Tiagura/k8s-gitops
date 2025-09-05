@@ -1,11 +1,11 @@
 ---
-- Miscellaneous:
-    - Excalidraw:
-        icon: https://raw.githubusercontent.com/excalidraw/excalidraw/refs/heads/master/public/favicon.ico
-        href: https://excalidraw.tamhomelab.com
-        description: Whiteboard
+# - Miscellaneous:
+#     - Excalidraw:
+#         icon: https://raw.githubusercontent.com/excalidraw/excalidraw/refs/heads/master/public/favicon.ico
+#         href: https://excalidraw.tamhomelab.com
+#         description: Whiteboard
 
-- Media:
+# - Media:
 
 - Network Services:
     - Pihole:
@@ -20,12 +20,12 @@
 
 # - Monitoring:
 
-- Management:
-    - ArgoCD:
-        icon: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
-        href: https://argocd.tamhomelab.com
-        description: DevOps Management
-        siteMonitor: https://argocd.tamhomelab.com/healthz
+# - Management:
+#     - ArgoCD:
+#         icon: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
+#         href: https://argocd.tamhomelab.com
+#         description: DevOps Management
+#         siteMonitor: https://argocd.tamhomelab.com/healthz
 
 - Infrastructure:
     - GMKTEC NucBox M5 PLUS:
