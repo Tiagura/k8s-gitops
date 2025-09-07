@@ -8,6 +8,7 @@
         icon: https://cdn-1.webcatalog.io/catalog/cloudflare-zero-trust/cloudflare-zero-trust-icon-unplated.png?v=1714773945620
         href: https://dash.cloudflare.com/
         description: External Access
+        siteMonitor: http://cloudflared-metrics.cloudflared.svc.cluster.local:2000/ready
     - Pihole:
         icon: https://wp-cdn.pi-hole.net/wp-content/uploads/2016/12/Vortex-R.png
         href: http://pihole.tamhomelab.com

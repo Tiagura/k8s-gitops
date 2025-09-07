@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudflared-metrics
+  namespace: cloudflared
+spec:
+  selector:
+    app: cloudflared
+  ports:
+    - name: liveness
+      port: 2000       # service port
+      targetPort: 2000 # container port
+      protocol: TCP
