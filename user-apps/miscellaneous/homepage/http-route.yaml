@@ -10,7 +10,7 @@ spec:
       name: gateway-internal
       namespace: gateway
   hostnames:
-    - "homepage.tamhomelab.com"
+    - "home.tamhomelab.com"
   rules:
     - matches:
         - path:
