@@ -28,3 +28,9 @@
         icon: https://img.icons8.com/fluency/2x/proxmox.png
         href: https://proxmox.{{HOMEPAGE_VAR_BASE_DOMAIN}}
         ping: proxmox
+        widget:
+          type: proxmox
+          url: https://proxmox:8006
+          username: "{{HOMEPAGE_VAR_PROXMOX_USER}}"
+          password: "{{HOMEPAGE_VAR_PROXMOX_PWD}}"
+          #node: pve-1  # Uncomment if proxmox has more than 1 node

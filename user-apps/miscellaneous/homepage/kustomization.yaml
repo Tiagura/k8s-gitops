@@ -9,6 +9,7 @@ labels:
 
 resources:
   - deployment.yaml
+  - homepage-vars-secret-sealed.yaml
   - http-route.yaml
   - namespace.yaml
   - rbac.yaml
