@@ -11,7 +11,7 @@
         siteMonitor: http://cloudflared-metrics.cloudflared.svc.cluster.local:2000/ready
     - Pihole:
         icon: https://wp-cdn.pi-hole.net/wp-content/uploads/2016/12/Vortex-R.png
-        href: http://pihole.tamhomelab.com
+        href: http://pihole.{{HOMEPAGE_VAR_BASE_DOMAIN}}
         description: Main DNS Server
         siteMonitor: http://pihole
     - Tailscale:
@@ -26,5 +26,5 @@
 - Infrastructure:
     - GMKTEC NucBox M5 PLUS:
         icon: https://img.icons8.com/fluency/2x/proxmox.png
-        href: https://proxmox.tamhomelab.com
+        href: https://proxmox.{{HOMEPAGE_VAR_BASE_DOMAIN}}
         ping: proxmox

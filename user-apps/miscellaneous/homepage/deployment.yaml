@@ -74,6 +74,8 @@ spec:
           env:
             - name: HOMEPAGE_ALLOWED_HOSTS
               value: homepage.tamhomelab.com
+            - name: HOMEPAGE_VAR_BASE_DOMAIN
+              value: tamhomelab.com
           securityContext:
             allowPrivilegeEscalation: false
 
