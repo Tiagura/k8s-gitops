@@ -23,6 +23,15 @@
       "versioningTemplate": "docker"
     },
     {
+      "description": "Update Sealed Secrets CRD URL in README.md",
+      "fileMatch": ["README\\.md"],
+      "matchStrings": [
+        "https://raw\\.githubusercontent\\.com/bitnami-labs/sealed-secrets/v(?<currentValue>[^/]+)/helm/sealed-secrets/crds/bitnami\\.com_sealedsecrets\\.yaml"
+      ],
+      "depNameTemplate": "bitnami-labs/sealed-secrets",
+      "datasourceTemplate": "github-releases"
+    },
+    {
       "description": "Update Gateway API release URL in README.md",
       "fileMatch": ["README\\.md"],
       "matchStrings": [
