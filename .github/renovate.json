@@ -23,15 +23,6 @@
       "versioningTemplate": "docker"
     },
     {
-      "description": "Update Sealed Secrets release URL in README.md",
-      "fileMatch": ["README\\.md"],
-      "matchStrings": [
-        "https://github\\.com/bitnami-labs/sealed-secrets/releases/download/v(?<currentValue>[^/]+)/controller\\.yaml"
-      ],
-      "depNameTemplate": "bitnami-labs/sealed-secrets",
-      "datasourceTemplate": "github-releases"
-    },
-    {
       "description": "Update Gateway API release URL in README.md",
       "fileMatch": ["README\\.md"],
       "matchStrings": [
