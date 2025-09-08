@@ -118,7 +118,7 @@ kubectl create namespace sealed-secrets
 Download the Sealed Secrets controller manifest:
 
 ```bash
-curl -Lo sealed-secrets-controller.yaml https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.30.0/controller.yaml
+curl -Lo sealed-secrets-controller.yaml https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.31.0/controller.yaml
 ```
 
 Replace all namespace references from `kube-system` to `sealed-secrets`:
