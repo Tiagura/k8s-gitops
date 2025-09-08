@@ -12,9 +12,9 @@ This repository contains the configuration and manifests for a **GitOps-driven K
     - [Applications](#applications)
   - [Prerequisites](#prerequisites)
   - [Bootstrapping the Cluster](#bootstrapping-the-cluster)
-    - [1. Install Cilium CNI and Wait for It to Be Ready](#1-install-cilium-cni-and-wait-for-it-to-be-ready)
-    - [2. Setup Sealed Secrets](#2-setup-sealed-secrets)
-    - [3. Create Encryption Keys for Sealed Secrets](#3-create-encryption-keys-for-sealed-secrets)
+    - [1. Install Cilium CNI and wait for it to be ready](#1-install-cilium-cni-and-wait-for-it-to-be-ready)
+    - [2. Install Sealed Secrets CRDs](#2-install-sealed-secrets-crds)
+    - [3. Create Encryption and Decryption Keys for Sealed Secrets](#3-create-encryption-and-decryption-keys-for-sealed-secrets)
     - [4. Create the Kubernetes Secret Manifest](#4-create-the-kubernetes-secret-manifest)
     - [5. Deploy ArgoCD Main Components and CRDs](#5-deploy-argocd-main-components-and-crds)
     - [6. Bootstrap the GitOps Loop](#6-bootstrap-the-gitops-loop)
@@ -75,7 +75,7 @@ Before deploying this setup, make sure you have the following:
 1. **A Kubernetes cluster** with:
    - Gateway API enabled
    - Without kube-proxy → See [Cilium KubeProxy-Free Docs](https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/)
-   - If Gateway APIs are **not installed**, run:
+   - If Gateway API is **not installed**, run:
      ```bash
      kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/standard-install.yaml
      kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/experimental-install.yaml
@@ -97,7 +97,7 @@ Before deploying this setup, make sure you have the following:
 Follow these steps to bootstrap your Kubernetes cluster with all the necessary components and start the GitOps workflow:
 
 
-### 1. Install Cilium CNI and Wait for It to Be Ready
+### 1. Install Cilium CNI and wait for it to be ready
 
 Make sure you have the `cilium` CLI installed locally.
 
@@ -107,34 +107,14 @@ cilium status --wait
 ```
 
 
-### 2. Setup Sealed Secrets
-
-Create the namespace for sealed-secrets:
+### 2. Install Sealed Secrets CRDs
 
 ```bash
-kubectl create namespace sealed-secrets
-```
-
-Download the Sealed Secrets controller manifest:
-
-```bash
-curl -Lo sealed-secrets-controller.yaml https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.31.0/controller.yaml
-```
-
-Replace all namespace references from `kube-system` to `sealed-secrets`:
-
-```bash
-sed -i 's/namespace: kube-system/namespace: sealed-secrets/g' sealed-secrets-controller.yaml
-```
-
-Apply the modified manifest:
-
-```bash
-kubectl apply -f sealed-secrets-controller.yaml
+kubectl apply -f https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/refs/heads/main/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
 ```
 
 
-### 3. Create Encryption Keys for Sealed Secrets
+### 3. Create Encryption and Decryption Keys for Sealed Secrets
 
 Generate a private key:
 
@@ -170,6 +150,14 @@ type: kubernetes.io/tls
 data:
   tls.crt: <contents-of-crt.b64>
   tls.key: <contents-of-key.b64>
+```
+
+  - **Note:** If you change the value of metadata.name, you must also update the `existingSecret` field in the [values file](infrastructure/controllers/sealed-secrets/values.yaml) to match. Otherwise, the controller won’t be able to find and use the correct key pair.
+
+Create the namespace for sealed-secrets:
+
+```bash
+kubectl create namespace sealed-secrets
 ```
 
 Apply the secret to the cluster:

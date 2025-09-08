@@ -1,20 +1,22 @@
+createController: true # Set to false if controller is already deployed i.e. bootstrapped
+
+fullnameOverride: sealed-secrets
+
 existingSecret: sealed-secrets-key
+# Disable key generation since we're providing our own
+key:
+  generate: false
 
 serviceAccount:
   create: true
-  name: sealed-secrets-controller
+  name: sealed-secrets-sa
 
 rbac:
   create: true
 
-createController: true # Set to false if controller is already deployed i.e. bootstrapped
 
 # Optionally, if you want to customize other settings:
 controller:
   affinity: {}
   tolerations: []
   nodeSelector: {}
-
-# Disable key generation since we're providing our own
-key:
-  generate: false
