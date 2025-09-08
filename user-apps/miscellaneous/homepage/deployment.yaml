@@ -26,7 +26,7 @@ spec:
       enableServiceLinks: true
       containers:
         - name: homepage
-          image: ghcr.io/gethomepage/homepage:latest@sha256:63434aafeb3d49be1f21ebd3c5d777fe5b7794c31342daad4e96f09b72a57188
+          image: ghcr.io/gethomepage/homepage:v1.4.5
           ports:
             - containerPort: 3000
           volumeMounts:

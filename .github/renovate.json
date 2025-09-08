@@ -3,9 +3,6 @@
   "helm-values": {
     "enabled": true
   },
-  "docker": {
-    "pinDigests": true
-  },
   "regexManagers": [
     {
       "description": "Update Helm chart versions in kustomization.yaml",
@@ -17,10 +14,10 @@
       "registryUrlTemplate": "{{registryUrl}}"
     },
     {
-      "description": "Update digest for images using latest@sha256 or stable@sha256 in deployment.yaml",
+      "description": "Update Docker images in deployment.yaml",
       "fileMatch": ["deployment\\.yaml$"],
       "matchStrings": [
-        "image:\\s+(?<depName>[^\\s:@]+):(?<currentValueTag>[^\\s@]+)(?:@sha256:(?<currentValue>[a-f0-9]{64}))?"
+        "image:\\s+(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)"
       ],
       "datasourceTemplate": "docker",
       "versioningTemplate": "docker"
@@ -52,7 +49,6 @@
     },
     {
       "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["digest"],
       "automerge": true
     },
     {
