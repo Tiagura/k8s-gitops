@@ -1,0 +1,21 @@
+fullnameOverride: metrics-server
+
+serviceAccount:
+  create: true
+  name: metrics-server-sa
+
+rbac:
+  create: true
+
+defaultArgs:
+  - --cert-dir=/tmp
+  - --kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP
+  - --kubelet-use-node-status-port
+  - --metric-resolution=15s
+  - --kubelet-insecure-tls  # Not safe for production. Set up proper TLS instead: https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-certs/#kubelet-serving-certs
+
+# See https://github.com/kubernetes-sigs/metrics-server#scaling
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
