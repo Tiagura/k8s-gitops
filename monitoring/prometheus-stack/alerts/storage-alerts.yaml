@@ -1,0 +1,45 @@
+# Adapted from: https://longhorn.io/docs/archives/1.6.1/monitoring/alert-rules-example/
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: storage-alerts
+  namespace: prometheus-stack
+  labels:
+    app.kubernetes.io/name: kube-prometheus-stack
+    app.kubernetes.io/instance: kube-prometheus-stack
+    app.kubernetes.io/managed-by: Helm
+    prometheus: kube-prometheus-stack-prometheus
+    role: alert-rules
+spec:
+  groups:
+    # Storage Alerts (Longhorn)
+    - name: storage.longhorn
+      interval: 30s
+      rules:
+        - alert: LonghornNodeDown
+          annotations:
+            description: There are {{$value}} Longhorn nodes which have been offline for more than 10 minutes.
+            summary: Longhorn nodes is offline
+          expr: (avg(longhorn_node_count_total) or on() vector(0)) - (count(longhorn_node_status{condition="ready"} == 1) or on() vector(0)) > 0
+          for: 10m
+          labels:
+            issue: There are {{$value}} Longhorn nodes are offline
+            severity: critical
+        - alert: LonghornVolumeUnhealthy
+          expr: longhorn_volume_robustness != 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Longhorn volume {{ $labels.volume }} is unhealthy"
+            description: |
+              Volume {{ $labels.volume }} robustness is {{ $value }} 
+              (0=unknown, 1=healthy, 2=degraded, 3=faulted).
+        - alert: LonghornNodeStorageSpaceLow
+          expr: (longhorn_node_storage_usage_bytes / longhorn_node_storage_capacity_bytes) * 100 > 90
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Longhorn node {{ $labels.node }} storage space is low"
+            description: "Longhorn node {{ $labels.node }} storage usage is above 90% (current value: {{ printf \"%.2f\" $value }}%)"

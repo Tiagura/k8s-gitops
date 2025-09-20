@@ -3,10 +3,10 @@ defaultSettings:
   defaultDataPath: "/var/lib/longhorn"
 
   # Minimal available disk space (in %) to consider a node schedulable for replicas.
-  storageMinimalAvailablePercentage: 10
+  storageMinimalAvailablePercentage: "10"
 
   # Allows thin provisioning by allowing volumes to overcommit disk space up to this %.
-  storageOverProvisioningPercentage: 100
+  storageOverProvisioningPercentage: "100"
 
   # Allows recurring snapshots or backup jobs to run even if the volume is not attached.
   allowRecurringJobWhileVolumeDetached: true

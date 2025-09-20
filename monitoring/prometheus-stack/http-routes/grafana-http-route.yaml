@@ -1,0 +1,32 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: grafana
+  namespace: prometheus-stack
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Monitoring
+    gethomepage.dev/name: Grafana
+    gethomepage.dev/icon: https://raw.githubusercontent.com/grafana/grafana/d199c33d7e0bc815ac456c3350e1bd45261ea0fd/public/img/grafana_icon.svg
+    gethomepage.dev/href: https://grafana.tamhomelab.com
+    gethomepage.dev/description: "Data Visualization & Monitoring"
+    gethomepage.dev/pod-selector: ""
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: gateway-internal
+      namespace: gateway
+  hostnames:
+    - grafana.tamhomelab.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: kube-prometheus-stack-grafana
+          port: 80
+          weight: 1

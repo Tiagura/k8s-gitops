@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gotify
+  namespace: goti-stack
+  labels:
+    app: gotify
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gotify
+  template:
+    metadata:
+      labels:
+        app: gotify
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+      containers:
+        - name: gotify
+          image: gotify/server:2.7.3
+          ports:
+            - containerPort: 80
+          env:
+            - name: GOTIFY_DEFAULTUSER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: goti-stack-config-secrets
+                  key: username
+            - name: GOTIFY_DEFAULTUSER_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: goti-stack-config-secrets
+                  key: password
+            - name: TZ
+              valueFrom:
+                secretKeyRef:
+                  name: goti-stack-config-secrets
+                  key: timezone
+          volumeMounts:
+            - name: gotify-data
+              mountPath: /app/data
+          resources:
+            requests:
+              cpu: "1m"
+              memory: "32Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+      volumes:
+        - name: gotify-data
+          persistentVolumeClaim:
+            claimName: gotify-data-pvc

@@ -1,0 +1,355 @@
+# kube-prometheus-stack configuration
+namespaceOverride: "prometheus-stack"
+# CRD Configuration - Essential for proper functioning
+crds:
+  enabled: true
+# Default rules for monitoring the cluster
+defaultRules:
+  rules:
+    # To scrape all of these components
+    # See https://github.com/prometheus-community/helm-charts/issues/204#issuecomment-765155883
+    # Also enable them below
+    etcd: false
+    kubeControllerManager: false
+    kubeScheduler: false
+    kubeProxy: false  # Cilium is used instead of kube-proxy
+    windows: false    # No Windows nodes in the cluster
+
+# Global settings
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+windowsMonitoring:
+  enabled: false
+
+# Alertmanager Configuration
+alertmanager:
+  enabled: true
+
+  # Alertmanager configuration
+  config:
+    global:
+      resolve_timeout: 5m
+
+    inhibit_rules:
+      - source_matchers:
+          - 'severity = critical'
+        target_matchers:
+          - 'severity = warning'
+        equal:
+          - 'cluster'
+          - 'service'
+
+      - source_matchers:
+          - 'alertname = NodeDown'
+        target_matchers:
+          - 'alertname =~ NodeDiskRunningFull|NodeFilesystemSpaceFillingUp|NodeMemoryHighUtilization'
+        equal:
+          - 'instance'
+      
+    route:
+      receiver: 'telegram-bot'
+      group_by: ['cluster', 'alertname', 'severity']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      routes:
+        - matchers:
+            - 'severity = critical'
+          receiver: 'telegram-bot'
+          group_wait: 5s
+          group_interval: 2m
+          repeat_interval: 5m
+
+        - matchers:
+            - 'severity = warning'
+          receiver: 'telegram-bot'
+          group_interval: 10m
+          repeat_interval: 2h
+
+        - matchers:
+            - 'alertname =~ NodeDown|KubeletDown|PrometheusDown'
+          receiver: 'telegram-bot'
+          group_wait: 5s
+          repeat_interval: 10m
+
+    receivers:
+      - name: 'null'
+      - name: 'telegram-bot'
+        telegram_configs:
+          - bot_token_file: "/etc/alertmanager/secrets/alertmanager-receivers-secret/telegram-bot-token"  # Path to the file in the secret
+            chat_id: 6429399734
+            parse_mode: HTML
+            send_resolved: true
+            message: |-
+              <b>[{{ .CommonLabels.severity | toUpper }}]</b> {{ .CommonLabels.alertname }}
+              (Cluster: {{ .CommonLabels.cluster }}, Namespace: {{ .CommonLabels.namespace }})
+              {{ range .Alerts }}
+              • <i>{{ .Annotations.summary }}</i>
+              {{ end }}       
+  # End of Alertmanager configuration
+
+  serviceAccount:
+    create: true
+    name: "alertmanager-sa"
+  # Alertmanager pod configuration
+  alertmanagerSpec:
+    # Secrets for alertmanager configuration
+    secrets:
+      - alertmanager-receivers-secret
+    strategy:
+      type: Recreate
+    # Storage for alertmanager
+    storage:
+      volumeClaimTemplate:
+        metadata:
+          annotations:
+            volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+        spec:
+          storageClassName: longhorn
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi
+    # Resource allocation
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
+    # Security context
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      fsGroup: 65534
+    # Retention
+    retention: 72h
+    
+# Grafana Configuration
+grafana:
+  enabled: true
+  serviceAccount:
+    create: true
+    name: "grafana-sa"
+  # Use an existing secret for the admin user.
+  admin:
+    existingSecret: grafana-secrets
+    userKey: grafana-admin-user
+    passwordKey: grafana-admin-password
+  deploymentStrategy:
+    type: Recreate
+  # Storage for Grafana
+  persistence:
+    enabled: true
+    storageClassName: longhorn
+    ## (Optional) Use this to bind the claim to an existing PersistentVolume (PV) by name.
+    # volumeName: ""
+    size: 5Gi
+    accessModes:
+      - ReadWriteOnce
+    annotations:
+      volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    # Resource allocation
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    fsGroup: 65534
+  # Default dashboards
+  defaultDashboardsEnabled: true
+  defaultDashboardsTimezone: utc
+  ## Grafana's primary configuration
+  grafana.ini:
+    server:
+      root_url: https://grafana.tamhomelab.com
+    security:
+      allow_embedding: true
+      cookie_secure: true
+      strict_transport_security: true
+    analytics:
+      reporting_enabled: false
+      check_for_updates: false
+    snapshots:
+      external_enabled: false
+    explore:
+      enabled: true
+    feature_toggles:
+      enable: correlations
+  # Plugins can be specified here
+  plugins:
+    - alexanderzobnin-zabbix-app
+    # Plugin version compatible with my zabbix server version
+    # - https://github.com/grafana/grafana-zabbix/releases/download/v5.2.0/alexanderzobnin-zabbix-app-5.2.0.linux_amd64.zip;Zabbix
+  # Additional data sources, with non sensitive data can be specified here, otherwise use configmaps +  extraEnv below to add such data sources
+  additionalDataSources: []
+  envFromSecrets:
+    - name: grafana-secrets
+
+# Node Exporter Configuration
+# Enable for node-level metrics
+nodeExporter:
+  enabled: true
+  hostRootFsMount:
+    enabled: true
+    mountPropagation: HostToContainer
+  # Resource allocation
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+# Prometheus Operator Configuration
+prometheusOperator:
+  enabled: true
+  serviceAccount:
+    create: true
+    name: "prometheus-operator-sa"
+  # Resource allocation
+  resources: 
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      cpu: 200m
+      memory: 200Mi
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    runAsGroup: 65534
+    fsGroup: 65534
+    seccompProfile:
+      type: RuntimeDefault
+  # Enable webhooks for ArgoCD compatibility
+  # Values comented in the default values.yaml from the chart
+  # Also see issue: https://github.com/prometheus-community/helm-charts/issues/4500#issuecomment-2693911587
+  admissionWebhooks:
+    enabled: true
+
+    annotations:
+      argocd.argoproj.io/hook: PreSync
+      argocd.argoproj.io/hook-delete-policy: HookSucceeded
+
+    mutatingWebhookConfiguration:
+      annotations:
+        argocd.argoproj.io/hook: PreSync
+
+    validatingWebhookConfiguration:
+      annotations:
+        argocd.argoproj.io/hook: PreSync
+
+    patch:
+      annotations:
+        argocd.argoproj.io/hook: PreSync
+        argocd.argoproj.io/hook-delete-policy: HookSucceeded
+
+# Prometheus Configuration
+prometheus:
+  enabled: true
+  serviceAccount:
+    create: true
+    name: "prometheus-sa"
+  prometheusSpec:
+    # Data retention
+    retention: 15d
+    retentionSize: 5GB
+    walCompression: true
+    # Storage for Prometheus
+    storageSpec:
+      volumeClaimTemplate:
+        metadata:
+          annotations:
+            volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+        spec:
+          storageClassName: longhorn
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+    # Resource allocation
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 2000m
+        memory: 1Gi
+    # Security context
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      fsGroup: 65534
+    # Scrape Configurations
+    scrapeInterval: 30s
+    scrapeTimeout: 10s
+    evaluationInterval: 30s
+    additionalScrapeConfigs:
+      # Scrape Tailscale metrics from the exit node
+      - job_name: 'tailscale-metrics'
+        static_configs:
+          - targets:
+            - 'tailscale-exit-node:5252'
+      # Scrape Cilium metrics
+      # See https://docs.cilium.io/en/stable/observability/metrics/#monitoring-metrics
+      # Cilium Agent metrics
+      - job_name: 'cilium-k8s-pods'
+        kubernetes_sd_configs:
+        - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: ${1}:${2}
+            target_label: __address__
+      # Cilium Hubble metrics
+      - job_name: 'cilium-k8s-endpoints'
+        scrape_interval: 30s
+        kubernetes_sd_configs:
+          - role: endpoints
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+            action: replace
+            target_label: __address__
+            regex: (.+)(?::\d+);(\d+)
+            replacement: $1:$2
+    # Enable dynamic service discovery
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+# Disable kubeProxy metrics as Cilium is used
+kubeProxy:
+  enabled: false
+
+# Component scraping the kube api server
+kubeApiServer:
+  enabled: true
+  tlsConfig:
+    serverName: kubernetes  # Set this to your cluster's API server name
+    insecureSkipVerify: false
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeEtcd:
+  enabled: false
+coreDns:
+  enabled: false
