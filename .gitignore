@@ -1,6 +1,5 @@
 # Ignore Charts
-infrastructure/networking/cilium/charts/*
-infrastructure/controllers/argocd/charts/*
+**/charts/*
 
 # Ignore Keys
 *.b64
@@ -12,6 +11,7 @@ infrastructure/controllers/sealed-secrets/sealed-secrets-key.yaml
 
 # Ignore all *-secret.yaml files
 *-secret.yaml
+*-secrets.yaml
 
 # Ignore other .yaml files
 sealed-secrets-controller.yaml

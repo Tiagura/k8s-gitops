@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: prometheus-stack
+resources:
+  # Not used anymore, can be used to monitor Proxmox VE via HTTP API
+  # However I'm now using OpenTelemetry integration instead, implemented in Proxmox VE 9
+  # link: https://www.zabbix.com/br/integrations/proxmox
+  # - zabbix-datasource.yaml  

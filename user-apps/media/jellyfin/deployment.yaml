@@ -8,6 +8,8 @@ spec:
   selector:
     matchLabels:
       app: jellyfin
+  strategy:
+    type: Recreate  # Because the RWO config PVC cannot be mounted to multiple pods
   template:
     metadata:
       labels:
@@ -20,7 +22,14 @@ spec:
         runAsNonRoot: true
       containers:
         - name: jellyfin
-          image: jellyfin/jellyfin:10.11.0-rc5
+          image: jellyfin/jellyfin:10.11.0
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "256Mi"
+            limits:
+              cpu: "2000m"
+              memory: "1.5Gi"
           securityContext:
             allowPrivilegeEscalation: false
           ports:
@@ -31,10 +40,6 @@ spec:
             - name: jellyfin-cache
               mountPath: /cache
               subPath: cache
-            - name: iptv-playlist
-              mountPath: /m3u/iptv.m3u
-              subPath: iptv.m3u
-              readOnly: true
           env:
             - name: NODE_NAME
               valueFrom:
@@ -58,6 +63,3 @@ spec:
         - name: jellyfin-cache
           persistentVolumeClaim:
             claimName: jellyfin-cache-pvc
-        - name: iptv-playlist
-          secret:
-            secretName: iptv-playlist
