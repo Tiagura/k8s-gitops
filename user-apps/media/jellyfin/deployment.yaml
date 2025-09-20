@@ -31,10 +31,6 @@ spec:
             - name: jellyfin-cache
               mountPath: /cache
               subPath: cache
-            - name: iptv-playlist
-              mountPath: /m3u/iptv.m3u
-              subPath: iptv.m3u
-              readOnly: true
           env:
             - name: NODE_NAME
               valueFrom:
@@ -58,6 +54,3 @@ spec:
         - name: jellyfin-cache
           persistentVolumeClaim:
             claimName: jellyfin-cache-pvc
-        - name: iptv-playlist
-          secret:
-            secretName: iptv-playlist

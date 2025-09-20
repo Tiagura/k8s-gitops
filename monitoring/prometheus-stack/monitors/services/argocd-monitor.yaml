@@ -1,0 +1,111 @@
+# Adapted from https://argo-cd.readthedocs.io/en/latest/operator-manual/metrics/#prometheus-operator
+# ServiceMonitor for ArgoCD
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: argocd-metrics
+  namespace: prometheus-stack
+  labels:
+    app.kubernetes.io/name: argocd
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-metrics
+      app.kubernetes.io/component: application-controller
+  namespaceSelector:
+    matchNames:
+      - argocd
+  endpoints:
+    - port: http-metrics
+      path: /metrics
+---
+# ServiceMonitor for ArgoCD ApplicationSet Controller
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: argocd-applicationset-controller-metrics
+  namespace: prometheus-stack
+  labels:
+    app.kubernetes.io/name: argocd-applicationset-controller
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-metrics
+      app.kubernetes.io/component: applicationset-controller
+  namespaceSelector:
+    matchNames:
+      - argocd
+  endpoints:
+    - port: http-metrics
+      path: /metrics
+---
+# ServiceMonitor for ArgoCD Redis
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: argocd-redis-metrics
+  namespace: prometheus-stack
+  labels:
+    app.kubernetes.io/name: argocd-redis
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+spec:
+  selector:
+    matchLabels: 
+      app.kubernetes.io/name: argocd-redis
+      app.kubernetes.io/component: redis
+  namespaceSelector:
+    matchNames:
+      - argocd
+  endpoints:
+    - port: http-metrics
+      path: /metrics
+---
+# ServiceMonitor for ArgoCD Repo Server
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: argocd-repo-server-metrics
+  namespace: prometheus-stack
+  labels:
+    app.kubernetes.io/name: argocd-repo-server
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-repo-server-metrics
+      app.kubernetes.io/component: repo-server
+  namespaceSelector:
+    matchNames:
+      - argocd
+  endpoints:
+    - port: http-metrics
+      path: /metrics
+---
+# ServiceMonitor for ArgoCD Server
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: argocd-server-metrics
+  namespace: prometheus-stack
+  labels:
+    app.kubernetes.io/name: argocd-server
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-server-metrics
+      app.kubernetes.io/component: server
+  namespaceSelector:
+    matchNames:
+      - argocd
+  endpoints:
+    - port: http-metrics
+      path: /metrics
+---

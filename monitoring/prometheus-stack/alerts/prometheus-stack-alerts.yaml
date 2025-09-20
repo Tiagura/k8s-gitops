@@ -1,0 +1,41 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: prometheus-stack-alerts
+  namespace: prometheus-stack
+  labels:
+    app.kubernetes.io/name: kube-prometheus-stack
+    app.kubernetes.io/instance: kube-prometheus-stack
+    app.kubernetes.io/managed-by: Helm
+    prometheus: kube-prometheus-stack-prometheus
+    role: alert-rules
+spec:
+  groups:
+    # Prometheus Stack Health
+    - name: monitoring.stack.health
+      interval: 30s
+      rules:
+        - alert: PrometheusTargetDown
+          expr: up == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Prometheus target {{ $labels.instance }} is down"
+            description: "Prometheus target {{ $labels.instance }} for job {{ $labels.job }} has been down for more than 2 minutes."
+        - alert: PrometheusConfigurationReloadFailure
+          expr: prometheus_config_last_reload_successful != 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Prometheus configuration reload failure"
+            description: "Prometheus {{ $labels.instance }} configuration reload has failed."
+        - alert: AlertmanagerConfigurationReloadFailure
+          expr: alertmanager_config_last_reload_successful != 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Alertmanager configuration reload failure"
+            description: "Alertmanager {{ $labels.instance }} configuration reload has failed."
