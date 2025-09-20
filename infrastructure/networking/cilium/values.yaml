@@ -112,10 +112,28 @@ hubble:
   ui:
     enabled: true
     rollOutPods: true
+  metrics:
+    enableOpenMetrics: true
+    enabled:
+      - dns
+      - drop
+      - tcp
+      - flow
+      - port-distribution
+      - icmp
+      - http
 
 # Debugging options
 debug:
   enabled: true
+
+# Enable Prometheus integration
+prometheus:
+  enabled: true
+
+operator:
+  prometheus:
+    enabled: true
 
 # mTLS configuration
 authentication:

@@ -1,0 +1,32 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: prometheus
+  namespace: prometheus-stack
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Monitoring
+    gethomepage.dev/name: Prometheus
+    gethomepage.dev/icon: https://raw.githubusercontent.com/prometheus/prometheus/906f6a33b60cec2596018ac8cc97ac41b16b06b7/documentation/images/prometheus-logo.svg
+    gethomepage.dev/href: https://prometheus.tamhomelab.com
+    gethomepage.dev/description: "Metrics Scraper"
+    gethomepage.dev/pod-selector: ""
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: gateway-internal
+      namespace: gateway
+  hostnames:
+    - prometheus.tamhomelab.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: kube-prometheus-stack-prometheus
+          port: 9090
+          weight: 1

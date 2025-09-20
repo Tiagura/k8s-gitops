@@ -1,0 +1,33 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: argocd-alerts
+  namespace: prometheus-stack
+  labels:
+    app.kubernetes.io/name: kube-prometheus-stack
+    app.kubernetes.io/instance: kube-prometheus-stack
+    app.kubernetes.io/managed-by: Helm
+    prometheus: kube-prometheus-stack-prometheus
+    role: alert-rules
+spec:
+  groups:
+    # ArgoCD Monitoring
+    - name: argocd.health
+      interval: 30s
+      rules:
+        - alert: ArgoCDApplicationNotSynced
+          expr: argocd_app_info{sync_status!="Synced"} > 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "ArgoCD Application {{ $labels.name }} is not synced"
+            description: "ArgoCD Application {{ $labels.name }} in project {{ $labels.project }} has been out of sync for more than 10 minutes."
+        - alert: ArgoCDApplicationUnhealthy
+          expr: argocd_app_info{health_status!="Healthy"} > 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "ArgoCD Application {{ $labels.name }} is unhealthy"
+            description: "ArgoCD Application {{ $labels.name }} in project {{ $labels.project }} is in an unhealthy state."
