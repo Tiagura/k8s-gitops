@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: prometheus-stack
+resources:
+  - ns.yaml
+  - alertmanager-config.yaml
+  - http-routes/
+  - secrets/
+  - dashboards/
+
+helmCharts:
+  - name: kube-prometheus-stack
+    repo: https://prometheus-community.github.io/helm-charts
+    version: 77.10.0
+    namespace: prometheus-stack
+    valuesFile: values.yaml
+    includeCRDs: true

@@ -1,0 +1,36 @@
+# NOTE: This only work if using the prometheus operator.
+# Otherwise, you need to configure Alertmanager directly.
+# Create a file with the desired configuration, e.g. alertmanager-config.yaml
+# Use patchesStrategicMerge: - alertmanager-config.yaml in your kustomization.yaml
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: alertmanager-config
+  namespace: prometheus-stack
+  labels:
+    release: kube-prometheus-stack   # Match with Alertmanager resource’s selector
+spec:
+  route:
+    receiver: "telegram"
+    groupBy: ["alertname", "namespace"]
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 9999h # Effectively disable repeat notifications
+
+  receivers:
+  - name: "telegram"
+    telegramConfigs:
+    - botToken:
+        name: alertmanager-secrets 
+        key: telegram-bot-token
+      chatID:
+        name: alertmanager-secrets
+        key: telegram-chat-id
+      parseMode: "HTML"
+      sendResolved: true
+      disableNotifications: false
+      message: |-
+        <b>{{ .CommonLabels.alertname }}</b>
+        {{ range .Alerts }}
+        • <i>{{ .Annotations.summary }}</i>
+        {{ end }}
