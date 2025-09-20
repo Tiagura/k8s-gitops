@@ -1,0 +1,6 @@
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+resources:
+  - grafana-http-route.yaml
+  - prometheus-http-route.yaml
+  - alertmanager-http-route.yaml

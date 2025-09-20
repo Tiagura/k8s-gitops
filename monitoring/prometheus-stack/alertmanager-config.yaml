@@ -1,0 +1,70 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: alertmanager-config
+  namespace: prometheus-stack
+  labels:
+    release: kube-prometheus-stack
+spec:
+  route:
+    receiver: telegram-main
+    groupBy: ['cluster', 'alertname', 'severity']
+    groupWait: 10s
+    groupInterval: 5m
+    repeatInterval: 12h
+    routes:
+      # Critical alerts
+      - match:
+          severity: critical
+        receiver: telegram-main
+        groupWait: 5s
+        groupInterval: 2m
+        repeatInterval: 5m
+
+      # Warning alerts
+      - match:
+          severity: warning
+        receiver: telegram-main
+        groupInterval: 10m
+        repeatInterval: 2h
+
+      # Infrastructure alerts
+      - match_re:
+          alertname: '^(NodeDown|KubeletDown|PrometheusDown)$'
+        receiver: telegram-main
+        groupWait: 5s
+        repeatInterval: 10m
+
+  inhibitRules:
+    # Suppress warning alerts if critical alerts are firing
+    - sourceMatchers:
+        severity: critical
+      targetMatchers:
+        severity: warning
+      equal:
+        - cluster
+        - service
+
+    # Suppress node alerts if the entire node is down
+    - sourceMatchers:
+        alertname: NodeDown
+      targetMatchers:
+        alertname: '^(NodeDiskRunningFull|NodeFilesystemSpaceFillingUp|NodeMemoryHighUtilization)$'
+      equal:
+        - instance
+
+  receivers:
+    - name: telegram-main
+      telegramConfigs:
+        - botToken:
+            name: alertmanager-secrets
+            key: telegram-bot-token
+          chatID: 6429399734  # Use your numeric Telegram chat ID
+          parseMode: HTML
+          sendResolved: true
+          message: |-
+            <b>[{{ .CommonLabels.severity | toUpper }}]</b> {{ .CommonLabels.alertname }}
+            (Cluster: {{ .CommonLabels.cluster }}, Namespace: {{ .CommonLabels.namespace }})
+            {{ range .Alerts }}
+            • <i>{{ .Annotations.summary }}</i>
+            {{ end }}

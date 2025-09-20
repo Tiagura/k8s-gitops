@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-zabbix-datasource
+  namespace: prometheus-stack
+  labels:
+    grafana_datasource: "1"
+data:
+  zabbix-datasource.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Zabbix
+        type: alexanderzobnin-zabbix-datasource
+        uid: zabbix
+        url: http://zabbix-host/zabbix/api_jsonrpc.php
+        access: proxy
+        jsonData:
+          username: $__env{GRAFANA_ZABBIX_USER}
+          trends: true
+          trendsFrom: '7d'
+          trendsRange: '4d'
+          cacheTTL: '1h'
+          alerting: true
+        secureJsonData:
+          password: $__env{GRAFANA_ZABBIX_PASSWORD}
+        version: 1
+        editable: false

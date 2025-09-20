@@ -1,0 +1,288 @@
+# kube-prometheus-stack configuration
+namespaceOverride: "prometheus-stack"
+# CRD Configuration - Essential for proper functioning
+crds:
+  enabled: true
+# Default rules for monitoring the cluster
+defaultRules:
+  rules:
+    # To scrape all of these components
+    # See https://github.com/prometheus-community/helm-charts/issues/204#issuecomment-765155883
+    # Also enable them below
+    etcd: false
+    kubeControllerManager: false
+    kubeScheduler: false
+    kubeProxy: false  # Cilium is used instead of kube-proxy
+    windows: false    # No Windows nodes in the cluster
+
+# Global settings
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+windowsMonitoring:
+  enabled: false
+
+# Alertmanager Configuration
+alertmanager:
+  enabled: true
+  serviceAccount:
+    create: true
+    name: "alertmanager-sa"
+    alertmanagerSpec:
+      # Used to force alertmanager to be enabled
+      # See https://github.com/prometheus-community/helm-charts/issues/1452
+      forceEnableClusterMode: true
+      strategy:
+        type: Recreate
+      # Storage for alertmanager
+      storage:
+        volumeClaimTemplate:
+          metadata:
+            annotations:
+              volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+          spec:
+            storageClassName: longhorn
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 2Gi
+      # Resource allocation
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 100m
+          memory: 128Mi
+      # Security context
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        fsGroup: 65534
+      # Retention
+      retention: 72h
+      # Configuration for alert routing (placeholder)
+      configSecret: ""
+    
+# Grafana Configuration
+grafana:
+  enabled: true
+  serviceAccount:
+    create: true
+    name: "grafana-sa"
+  # Use an existing secret for the admin user.
+  admin:
+    existingSecret: grafana-secrets
+    userKey: grafana-admin-user
+    passwordKey: grafana-admin-password
+  deploymentStrategy:
+    type: Recreate
+  # Storage for Grafana
+  persistence:
+    enabled: true
+    storageClassName: longhorn
+    ## (Optional) Use this to bind the claim to an existing PersistentVolume (PV) by name.
+    # volumeName: ""
+    size: 5Gi
+    accessModes:
+      - ReadWriteOnce
+    annotations:
+      volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    # Resource allocation
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    fsGroup: 65534
+  # Default dashboards
+  defaultDashboardsEnabled: true
+  defaultDashboardsTimezone: utc
+  ## Grafana's primary configuration
+  grafana.ini:
+    server:
+      root_url: https://grafana.tamhomelab.com
+    security:
+      allow_embedding: true
+      cookie_secure: true
+      strict_transport_security: true
+    analytics:
+      reporting_enabled: false
+      check_for_updates: false
+    snapshots:
+      external_enabled: false
+    explore:
+      enabled: true
+    feature_toggles:
+      enable: correlations
+  # Plugins can be specified here
+  plugins:
+    #- alexanderzobnin-zabbix-app
+    # Plugin version compatible with my zabbix server version
+    - https://github.com/grafana/grafana-zabbix/releases/download/v5.2.0/alexanderzobnin-zabbix-app-5.2.0.linux_amd64.zip;Zabbix
+  # Additional data sources can be specified here
+  additionalDataSources:
+    - name: Zabbix
+      type: alexanderzobnin-zabbix-datasource
+      uid: zabbix
+      url: http://zabbix-host/zabbix/api_jsonrpc.php
+      access: proxy
+      jsonData:
+        username: $__env{GRAFANA_ZABBIX_USER}
+        trends: true
+        trendsFrom: '7d'
+        trendsRange: '4d'
+        cacheTTL: '1h'
+        alerting: true
+      secureJsonData:
+        password: $__env{GRAFANA_ZABBIX_PASSWORD}
+      version: 1
+      editable: false
+  # need to use extraEnv instead of env cause if env is used, it overwrites the values passed in admin.existingSecret
+  extraEnv:
+  - name: GRAFANA_ZABBIX_USER
+    valueFrom:
+      secretKeyRef:
+        name: grafana-secrets
+        key: grafana-zabbix-user
+  - name: GRAFANA_ZABBIX_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: grafana-secrets
+        key: grafana-zabbix-password
+
+# Node Exporter Configuration
+# Enable for node-level metrics
+nodeExporter:
+  enabled: true
+  hostRootFsMount:
+    enabled: true
+    mountPropagation: HostToContainer
+  # Resource allocation
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+# Prometheus Operator Configuration
+prometheusOperator:
+  enabled: true
+  serviceAccount:
+    create: true
+    name: "prometheus-operator-sa"
+  # Resource allocation
+  resources: 
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      cpu: 200m
+      memory: 200Mi
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    runAsGroup: 65534
+    fsGroup: 65534
+    seccompProfile:
+      type: RuntimeDefault
+  # Enable webhooks for ArgoCD compatibility
+  # Values comented in the default values.yaml from the chart
+  # Also see issue: https://github.com/prometheus-community/helm-charts/issues/4500#issuecomment-2693911587
+  admissionWebhooks:
+    enabled: true
+
+    annotations:
+      argocd.argoproj.io/hook: PreSync
+      argocd.argoproj.io/hook-delete-policy: HookSucceeded
+
+    mutatingWebhookConfiguration:
+      annotations:
+        argocd.argoproj.io/hook: PreSync
+
+    validatingWebhookConfiguration:
+      annotations:
+        argocd.argoproj.io/hook: PreSync
+
+    patch:
+      annotations:
+        argocd.argoproj.io/hook: PreSync
+        argocd.argoproj.io/hook-delete-policy: HookSucceeded
+
+# Prometheus Configuration
+prometheus:
+  enabled: true
+  serviceAccount:
+    create: true
+    name: "prometheus-sa"
+  prometheusSpec:
+    # Data retention
+    retention: 15d
+    retentionSize: 5GB
+    walCompression: true
+    # Storage for Prometheus
+    storageSpec:
+      volumeClaimTemplate:
+        metadata:
+          annotations:
+            volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+        spec:
+          storageClassName: longhorn
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+    # Resource allocation
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 2000m
+        memory: 1Gi
+    # Security context
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      fsGroup: 65534
+    # Scrape Configurations
+    scrapeInterval: 30s
+    scrapeTimeout: 10s
+    evaluationInterval: 30s
+    additionalScrapeConfigs:
+      - job_name: 'tailscale-metrics'
+        static_configs:
+          - targets:
+            - 'tailscale-exit-node:5252'
+    # Enable dynamic service discovery
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+# Disable kubeProxy metrics as Cilium is used
+kubeProxy:
+  enabled: false
+
+# Component scraping the kube api server
+kubeApiServer:
+  enabled: true
+  tlsConfig:
+    serverName: kubernetes  # Set this to your cluster's API server name
+    insecureSkipVerify: false
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeEtcd:
+  enabled: false
+coreDns:
+  enabled: false
