@@ -13,40 +13,52 @@ spec:
     groupInterval: 5m
     repeatInterval: 12h
     routes:
-      - match:
-          severity: critical
+      - matchers:
+          - name: severity
+            value: critical
+            matchType: =
         receiver: telegram-main
         groupWait: 5s
         groupInterval: 2m
         repeatInterval: 5m
 
-      - match:
-          severity: warning
+      - matchers:
+          - name: severity
+            value: warning
+            matchType: =
         receiver: telegram-main
         groupInterval: 10m
         repeatInterval: 2h
 
-      - match_re:
-          alertname: '^(NodeDown|KubeletDown|PrometheusDown)$'
+      - matchers:
+          - name: alertname
+            value: "NodeDown|KubeletDown|PrometheusDown"
+            matchType: =~
         receiver: telegram-main
         groupWait: 5s
         repeatInterval: 10m
 
   inhibitRules:
-    # Suppress warning alerts if critical alerts are firing
     - sourceMatch:
-        severity: critical
+        - name: severity
+          value: critical
+          matchType: =
       targetMatch:
-        severity: warning
+        - name: severity
+          value: warning
+          matchType: =
       equal:
         - cluster
         - service
 
-    # Suppress node alerts if the entire node is down
     - sourceMatch:
-        alertname: NodeDown
+        - name: alertname
+          value: NodeDown
+          matchType: =
       targetMatch:
-        alertname: 'NodeDiskRunningFull|NodeFilesystemSpaceFillingUp|NodeMemoryHighUtilization'
+        - name: alertname
+          value: "NodeDiskRunningFull|NodeFilesystemSpaceFillingUp|NodeMemoryHighUtilization"
+          matchType: =~
       equal:
         - instance
 
