@@ -13,7 +13,6 @@ spec:
     groupInterval: 5m
     repeatInterval: 12h
     routes:
-      # Critical alerts
       - match:
           severity: critical
         receiver: telegram-main
@@ -21,14 +20,12 @@ spec:
         groupInterval: 2m
         repeatInterval: 5m
 
-      # Warning alerts
       - match:
           severity: warning
         receiver: telegram-main
         groupInterval: 10m
         repeatInterval: 2h
 
-      # Infrastructure alerts
       - match_re:
           alertname: '^(NodeDown|KubeletDown|PrometheusDown)$'
         receiver: telegram-main
@@ -37,19 +34,19 @@ spec:
 
   inhibitRules:
     # Suppress warning alerts if critical alerts are firing
-    - sourceMatchers:
+    - sourceMatch:
         severity: critical
-      targetMatchers:
+      targetMatch:
         severity: warning
       equal:
         - cluster
         - service
 
     # Suppress node alerts if the entire node is down
-    - sourceMatchers:
+    - sourceMatch:
         alertname: NodeDown
-      targetMatchers:
-        alertname: '^(NodeDiskRunningFull|NodeFilesystemSpaceFillingUp|NodeMemoryHighUtilization)$'
+      targetMatch:
+        alertname: 'NodeDiskRunningFull|NodeFilesystemSpaceFillingUp|NodeMemoryHighUtilization'
       equal:
         - instance
 
@@ -59,7 +56,7 @@ spec:
         - botToken:
             name: alertmanager-secrets
             key: telegram-bot-token
-          chatID: 6429399734  # Use your numeric Telegram chat ID
+          chatID: 6429399734
           parseMode: HTML
           sendResolved: true
           message: |-
