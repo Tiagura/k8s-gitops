@@ -1,0 +1,19 @@
+# Adapted from: https://longhorn.io/docs/archives/1.6.1/monitoring/integrating-with-rancher-monitoring/
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: longhorn-svc-metrics
+  namespace: prometheus-stack
+  labels:
+    app.kubernetes.io/name: longhorn
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+spec:
+  selector:
+    matchLabels:
+      app: longhorn-manager
+  namespaceSelector:
+    matchNames:
+    - longhorn
+  endpoints:
+  - port: manager

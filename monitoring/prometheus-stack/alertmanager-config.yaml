@@ -8,7 +8,7 @@ metadata:
 spec:
   route:
     receiver: telegram-main
-    groupBy: ['cluster', 'alertname', 'severity']
+    groupBy: ['cluster', 'alertname', 'severity', 'namespace']
     groupWait: 10s
     groupInterval: 5m
     repeatInterval: 12h

@@ -1,3 +1,4 @@
+# Adapted from: https://longhorn.io/docs/archives/1.6.1/monitoring/alert-rules-example/
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -15,6 +16,15 @@ spec:
     - name: storage.longhorn
       interval: 30s
       rules:
+        - alert: LonghornNodeDown
+          annotations:
+            description: There are {{$value}} Longhorn nodes which have been offline for more than 10 minutes.
+            summary: Longhorn nodes is offline
+          expr: (avg(longhorn_node_count_total) or on() vector(0)) - (count(longhorn_node_status{condition="ready"} == 1) or on() vector(0)) > 0
+          for: 10m
+          labels:
+            issue: There are {{$value}} Longhorn nodes are offline
+            severity: critical
         - alert: LonghornVolumeHealthy
           expr: longhorn_volume_state{state!~"attached|detached"} > 0
           for: 5m
