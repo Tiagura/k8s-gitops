@@ -4,10 +4,12 @@ namespace: prometheus-stack
 resources:
   - namespace.yaml
   - alertmanager-config.yaml
-  - http-routes/
-  - secrets/
-  - dashboards/
   - alerts/
+  - dashboards/
+  #- datasources/
+  - http-routes/
+  - monitors/
+  - secrets/
 
 helmCharts:
   - name: kube-prometheus-stack
