@@ -29,6 +29,9 @@ alertmanager:
     create: true
     name: "alertmanager-sa"
     alertmanagerSpec:
+      # AlertManager Configuration
+      alertmanagerConfiguration:
+        name: alertmanager-config
       # Used to force alertmanager to be enabled
       # See https://github.com/prometheus-community/helm-charts/issues/1452
       forceEnableClusterMode: true
@@ -259,10 +262,25 @@ prometheus:
     scrapeTimeout: 10s
     evaluationInterval: 30s
     additionalScrapeConfigs:
+      # Scrape Tailscale metrics from the exit node
       - job_name: 'tailscale-metrics'
         static_configs:
           - targets:
             - 'tailscale-exit-node:5252'
+      # Scrape Cilium metrics
+      - job_name: 'cilium-k8s-endpoints'
+        scrape_interval: 30s
+        kubernetes_sd_configs:
+          - role: endpoints
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+            action: replace
+            target_label: __address__
+            regex: (.+)(?::\d+);(\d+)
+            replacement: $1:$2
     # Enable dynamic service discovery
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
