@@ -4,7 +4,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: argocd-metrics
-  namespace: argocd
+  namespace: prometheus-stack
   labels:
     app.kubernetes.io/name: argocd
     release: kube-prometheus-stack
@@ -26,7 +26,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: argocd-server-metrics
-  namespace: argocd
+  namespace: prometheus-stack
   labels:
     app.kubernetes.io/name: argocd-server
     release: kube-prometheus-stack
@@ -48,7 +48,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: argocd-repo-server-metrics
-  namespace: argocd
+  namespace: prometheus-stack
   labels:
     app.kubernetes.io/name: argocd-repo-server
     release: kube-prometheus-stack

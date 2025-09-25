@@ -18,8 +18,6 @@ crds:
   keep: false
 
 controller:
-  metrics:
-    enabled: true
   resources:
     requests:
       cpu: 100m
@@ -29,8 +27,6 @@ controller:
       memory: 2Gi
 
 dex:
-  metrics:
-    enabled: true
   resources:
     requests:
       cpu: 20m
@@ -40,8 +36,6 @@ dex:
       memory: 256Mi
 
 redis:
-  metrics:
-    enabled: true
   resources:
     requests:
       cpu: 100m
@@ -51,8 +45,6 @@ redis:
       memory: 128Mi
 
 server:
-  metrics:
-    enabled: true
   resources:
     requests:
       cpu: 50m
@@ -62,8 +54,6 @@ server:
       memory: 256Mi
 
 repoServer:
-  metrics:
-    enabled: true
   containerSecurityContext:
     readOnlyRootFilesystem: true
   volumes:
@@ -120,3 +110,8 @@ notifications:
     limits:
       cpu: 1000m
       memory: 128Mi
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
