@@ -21,6 +21,8 @@ spec:
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:10.11.0-rc5
+          strategy:
+            type: Recreate  # Because the RWO config PVC cannot be mounted to multiple pods
           resources:
             limits:
               memory: "1Gi"
