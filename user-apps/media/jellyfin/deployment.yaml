@@ -21,6 +21,10 @@ spec:
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:10.11.0-rc5
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "2000m"
           securityContext:
             allowPrivilegeEscalation: false
           ports:
