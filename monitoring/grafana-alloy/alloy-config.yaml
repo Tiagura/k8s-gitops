@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alloy-config
+  namespace: grafana-alloy
+data:
+  alloy-config.hcl: |
+    logging {
+      level = "info"
+      format = "logfmt"
+    }
+
+    otelcol.receiver.otlp "proxmox-cluster" {
+      http {
+        endpoint = "0.0.0.0:4318"
+      }
+      output {
+        metrics = [otelcol.exporter.prometheus.k8s_prometheus.input]
+      }
+    }
+
+    otelcol.exporter.prometheus "k8s_prometheus" {
+      forward_to = [prometheus.remote_write.default.receiver]
+    }
+
+    prometheus.remote_write "default" {
+      endpoint {
+        url = "http://kube-prometheus-stack-prometheus.prometheus-stack.svc.cluster.local:9090/api/v1/write"
+      }
+    }

@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: grafana-alloy
+
+resources:
+  - namespace.yaml
+  - alloy-config.yaml
+
+helmCharts:
+  - name: kube-prometheus-stack
+    repo: https://grafana.github.io/helm-charts
+    version: 1.3.1
+    releaseName: grafana-alloy
+    namespace: grafana-alloy
+    valuesFile: values.yaml

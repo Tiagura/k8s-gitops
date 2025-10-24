@@ -1,0 +1,74 @@
+nameOverride: alloy
+
+crds:
+  create: false
+
+alloy:
+  configMap:
+    content: |-
+      // Write your Alloy config here:
+      logging {
+        level = "info"
+        format = "logfmt"
+      }
+
+alloy:
+  configMap:
+    create: false          # We are using an existing ConfigMap
+    name: alloy-config     # Name of the ConfigMap you just applied
+    key: alloy-config.hcl  # The key inside the ConfigMap
+
+  # Set to https because my proxmox nodes will push to alloy with https
+  listenScheme: "https"
+
+  # Disable anonymous usage reporting.
+  enableReporting: false
+
+  # Security context for the Alloy container.
+  securityContext:
+    fsGroup: 1000
+    runAsUser: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+
+# Don't need rbac since alloy is not accessing the k8s api
+rbac:
+  create: false
+  
+# Don't need a service account since rbac is disabled
+serviceAccount:
+  create: false
+
+# No need to use the config reloader, Reloader in use for the cluster in general
+configReloader:
+  enabled: false
+
+# Since Alloy will push to prometheus, no need to use statefulset or daemonset
+controller:
+  type: deployment
+  # 1 replica is sufficient
+  replicas: 1
+
+  # Disable autoscaling
+  autoscaling:
+    enabled: false
+
+# Disable ingress since not needed
+ingress:
+  enabled: false
+
+# -- RelabelConfigs to apply to samples before scraping
+# ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#relabelconfig
+relabelings: []
+# - sourceLabels: [__meta_kubernetes_pod_node_name]
+#   separator: ;
+#   regex: ^(.*)$
+#   targetLabel: nodename
+#   replacement: $1
+#   action: replace
+
+  extraPorts: []
+  - name: otel
+    port: 4318
+    targetPort: 4318
+    protocol: "TCP"
