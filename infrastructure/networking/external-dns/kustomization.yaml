@@ -7,9 +7,6 @@ labels:
       app.kubernetes.io/managed-by: argocd
     includeSelectors: true
 
-generatorOptions:
-  disableNameSuffixHash: true
-
 resources:
   - namespace.yaml
   - rbac.yaml
