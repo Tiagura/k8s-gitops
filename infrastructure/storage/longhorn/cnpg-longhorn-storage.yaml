@@ -1,0 +1,20 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: cnpg-longhorn-storage
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Delete
+parameters:
+  numberOfReplicas: "1"
+  staleReplicaTimeout: "1440" # 1 day
+  fsType: "ext4"
+  # Use to target specific disks by labels
+  # diskSelector: ""
+  dataLocality: "strict-local"
+  # Disable all recurring jobs (no snapshots or backups)
+  # This will be done via cloud-native-postgresql's own backup/snapshot management
+  recurringJobSelector: '[]'

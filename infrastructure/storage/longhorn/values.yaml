@@ -2,6 +2,9 @@ defaultSettings:
   # Path where Longhorn stores volume data on each node.
   defaultDataPath: "/var/lib/longhorn"
 
+  # Percentage of disk space that is not allocated to the default disk on each new Longhorn node.
+  storageReservedPercentageForDefaultDisk: "20"
+
   # Minimal available disk space (in %) to consider a node schedulable for replicas.
   storageMinimalAvailablePercentage: "10"
 
@@ -11,12 +14,49 @@ defaultSettings:
   # Allows recurring snapshots or backup jobs to run even if the volume is not attached.
   allowRecurringJobWhileVolumeDetached: true
 
-  # Controls how Longhorn balances replicas across nodes.
-  # Options: disabled, least-effort, best-effort
+  # Enables Kubernetes Cluster Autoscaler integration for Longhorn.
+  kubernetesClusterAutoscalerEnabled: true
+
+  ## Node and Pod Policies
+  # Ensures pods are automatically deleted if the underlying node goes down.
+  # Allows Longhorn to reschedule pods on healthy nodes.
+  nodeDownPodDeletionPolicy: "delete-both-statefulset-and-deployment-pod"
+
+  # Action Longhorn takes when a node with the last healthy replica of a volume is drained.
+  # Current: Block node drain if it contains the last healthy replica, prevents accidental data loss when draining nodes
+  nodeDrainPolicy: "block-if-contains-last-replica"
+
+  # Enables Longhorn to automatically delete orphaned resources and their associated data or processes (e.g., stale replicas). 
+  orphanResourceAutoDeletion: "replica-data;instance"
+
+  # Automatically deletes pods when their associated volumes are unexpectedly detached.
+  # Helps recover from node failures quickly
+  autoDeletePodWhenVolumeDetachedUnexpectedly: true
+
+  # Prevention from scheduling replicas on a cordoned Kubernetes node
+  disableSchedulingOnCordonedNode: true
+
+  ## Replicas
+  # Controls how Longhorn balances replicas across nodes. Options: disabled, least-effort, best-effort
   replicaAutoBalance: best-effort
 
-  # Ensures pods are automatically deleted if the underlying node goes down.
-  nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+  # Number of replicas rebuilds per node
+  concurrentReplicaRebuildPerNodeLimit: "3"
+
+  ## Snapshots
+  # Snapshot data integrity verification mode. Options: "enable" or "fast-check" with fastReplicaRebuildEnabled
+  snapshotDataIntegrity: "enable"
+  # Allows fast rebuilding of replicas using the checksum of snapshot disk files
+  fastReplicaRebuildEnabled: "true"
+
+defaultBackupStore:
+  # Endpoint used to access the default backupstore.
+  backupTarget: "s3://longhorn-backup-bucket@weur/"
+  # K8s secret associated with the default backup target.
+  backupTargetCredentialSecret: "s3-remote-backup"
+  # Number of seconds that Longhorn waits before checking the default backupstore for new backups.
+  # The default value is "300". When the value is "0", polling is disabled.
+  pollInterval: "300"
 
 persistence:
   # Use Longhorn's default StorageClass
@@ -39,12 +79,7 @@ ingress:
 preUpgradeChecker:
   jobEnabled: false
 
-# UI service - generally handled separately by Gateway API
+# UI service - to be handled separately by Gateway API
 ui:
   service:
     type: ClusterIP
-
-# NOTES:
-# - Longhorn replicas (actual storage volumes) will automatically avoid master nodes because of the NoSchedule taint.
-# - Longhorn system components (manager, driver, csi) will run on all nodes to ensure availability and operation.
-# - You will configure HTTPRoute separately with Cilium Gateway API to expose the UI if needed.

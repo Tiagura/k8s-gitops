@@ -1,0 +1,65 @@
+# Tier 1: Critical - Daily at 04:00
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: critical-backup
+  namespace: longhorn
+spec:
+  cron: "0 4 * * *" # Daily at 4 AM
+  task: "backup"
+  groups: ["critical"]
+  retain: 30 # Keep 1 month
+  concurrency: 1
+  labels:
+    data-tier: "critical"
+
+---
+# Tier 2: Important - Every 3 days at 05:00
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: important-backup
+  namespace: longhorn
+spec:
+  cron: "0 5 */3 * *" # Every 3 days at 5 AM
+  task: "backup"
+  groups: ["important"]
+  retain: 10 # Keep 1 month
+  concurrency: 1
+  labels:
+    data-tier: "important"
+
+---
+# Tier 3: Standard - Weekly on Sunday at 06:00
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: standard-backup
+  namespace: longhorn
+spec:
+  cron: "0 6 * * 0" # Sunday at 6 AM
+  task: "backup"
+  groups: ["standard"]
+  retain: 8 # Keep 2 months
+  concurrency: 1
+  labels:
+    data-tier: "standard"
+
+---
+# Tier 4: Full-System - Weekly on Sunday at 
+# apiVersion: longhorn.io/v1beta2
+# kind: RecurringJob
+# metadata:
+#   name: fullsystem-backup
+#   namespace: longhorn
+# spec:
+#   cron: "0 2 * * 1" # Monday at 2 AM
+#   task: "backup"
+#   groups:
+#     - critical
+#     - important
+#     - standard
+#   retain: 8 # 2 months
+#   concurrency: 1
+#   labels:
+#     backup-type: "full-system"

@@ -1,0 +1,49 @@
+nameOverride: "cloudnative-pg"
+fullnameOverride: "cloudnative-pg"
+
+replicaCount: 1
+
+config:
+  # Enable job cleanup and set retention policies
+  data:
+    ENABLE_AZURE_PVC_UPDATES: "false"
+    INHERITED_ANNOTATIONS: "argocd.argoproj.io/sync-wave"
+    INHERITED_LABELS: "app.kubernetes.io/managed-by"
+    # Configure job TTL and cleanup
+    JOB_TTL_SECONDS_AFTER_FINISHED: "3600" # Clean up completed jobs after 1 hour
+    FAILED_JOB_TTL_SECONDS_AFTER_FINISHED: "7200" # Clean up failed jobs after 2 hours
+
+serviceAccount:
+  create: true
+  name: "cloudnative-pg-operator-sa"
+
+# Adjust them as necessary, and remove the curly braces after 'resources:'.
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+monitoring:
+  # Needs Prometheus Operator to be installed in the cluster, and it is in monitoring/prometheus-stack
+  podMonitorEnabled: true
+  
+  grafanaDashboard:
+    create: true
+    # Namespace where Prometheus Stack is installed
+    namespace: "prometheus-stack"
+    
+    # Because sidecarLabel and sidecarLabelValue will be DEPRECATED in future releases
+    # Preemptively set them to empty strings to avoid any issues
+    # And declare the dashboard label in 'labels' section below
+    sidecarLabel: ""
+    sidecarLabelValue: ""
+
+    labels:
+      grafana_dashboard: "1"
+    
+    annotations:
+      # Create dashboard after the prometheus stack is deployed
+      argocd.argoproj.io/sync-wave: "3"

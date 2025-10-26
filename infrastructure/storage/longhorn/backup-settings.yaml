@@ -1,0 +1,33 @@
+## Settings related to Longhorn backups
+apiVersion: longhorn.io/v1beta2
+kind: Setting
+metadata:
+  name: backup-compression-method
+  namespace: longhorn
+value: "gzip" 
+---
+#  Maximum number of worker threads that can concurrently run for each backup
+apiVersion: longhorn.io/v1beta2
+kind: Setting
+metadata:
+  name: backup-concurrent-limit
+  namespace: longhorn
+value: "2"
+---
+# Maximum number of volumes that can be concurrently restored on each node using a backup. 
+# When the value is "0", restoration of volumes using a backup is disabled.
+apiVersion: longhorn.io/v1beta2
+kind: Setting
+metadata:
+  name: concurrent-volume-backup-restore-per-node-limit
+  namespace: longhorn
+value: "2"
+---
+# Automatically mark the latest snapshot and its parent files as removed during a filesystem trim. 
+# Longhorn does not remove snapshots containing multiple child files.
+apiVersion: longhorn.io/v1beta2
+kind: Setting
+metadata:
+  name: remove-snapshots-during-filesystem-trim
+  namespace: longhorn
+value: "true"

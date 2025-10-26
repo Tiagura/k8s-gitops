@@ -7,3 +7,4 @@ resources:
   - kubernetes-alerts.yaml
   - prometheus-stack-alerts.yaml
   - storage-alerts.yaml
+  - storage-backup-alerts.yaml

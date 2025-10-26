@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: cloudnative-pg
+
+labels:
+  - pairs:
+      app.kubernetes.io/name: cloudnative-pg-barman-plugin
+      app.kubernetes.io/managed-by: argocd
+    includeSelectors: true  
+
+# Because the plugin needs cert-manager crds to be present before being installed
+# The plugin should be installed at the same sync-wave as cert-manager
+# To avoid errors/warnings during ArgoCD sync
+# Probably works fine without it too, but better be safe than sorry
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "1"
+
+resources:
+  - https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v0.9.0/manifest.yaml
+  - barmanObjectStore.yaml
+  - barman-s3-credentials-secret-sealed.yaml
+
+# replacements:
+#   - source:
+#       kind: Secret
+#       name: barman-s3-credentials
+#       fieldPath: data.AWS_ENDPOINTS
+#     targets:
+#       - select:
+#           kind: ObjectStore
+#           name: barman-object-store
+#         fieldPaths:
+#           - spec.configuration.endpointURL
+
+patches:
+  # Only patch the RoleBinding subject namespace, nothing else needed
+  - target:
+      kind: RoleBinding
+    patch: |-
+      - op: replace
+        path: /subjects/0/namespace
+        value: cloudnative-pg

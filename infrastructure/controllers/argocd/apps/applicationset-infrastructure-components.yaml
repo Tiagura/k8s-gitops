@@ -12,6 +12,8 @@ spec:
           - path: infrastructure/controllers/*
           - path: infrastructure/networking/*
           - path: infrastructure/storage/*
+          - path: infrastructure/databases/cloudnative-pg
+          - path: infrastructure/databases/cloudnative-pg-apps-databases/*/*
   template:
     metadata:
       name: '{{path.basename}}'

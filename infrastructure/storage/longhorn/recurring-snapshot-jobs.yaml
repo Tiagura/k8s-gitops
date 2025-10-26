@@ -1,0 +1,46 @@
+# Tier 1: Critical - Every 3 hours
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: critical-snapshot
+  namespace: longhorn
+spec:
+  cron: "0 */3 * * *" # Every 3 hours
+  task: "snapshot"
+  groups: ["critical"]
+  retain:  8 # Keep 1 day's worth
+  concurrency: 2
+  labels:
+    data-tier: "critical"
+
+---
+# Tier 2: Important - Every 6 Hours
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: important-snapshot
+  namespace: longhorn
+spec:
+  cron: "0 */6 * * *" # Every 6 hours
+  task: "snapshot"
+  groups: ["important"]
+  retain: 16 # 2 days
+  concurrency: 2
+  labels:
+    data-tier: "important"
+
+---
+# Tier 3: Standard - Daily Snapshots at 06:00
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: standard-snapshot
+  namespace: longhorn
+spec:
+  cron: "0 6 * * *" # Daily at 06:00
+  task: "snapshot"
+  groups: ["standard"]
+  retain: 7 # 1 week
+  concurrency: 2
+  labels:
+    data-tier: "standard"

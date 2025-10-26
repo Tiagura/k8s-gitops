@@ -20,9 +20,13 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
         runAsNonRoot: true
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [44, 104, 1000]
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: jellyfin
-          image: jellyfin/jellyfin:10.11.0
+          image: jellyfin/jellyfin:10.11.1
           resources:
             requests:
               cpu: "10m"
@@ -32,6 +36,8 @@ spec:
               memory: "1.5Gi"
           securityContext:
             allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
           ports:
             - containerPort: 8096
           volumeMounts:
@@ -61,5 +67,4 @@ spec:
           persistentVolumeClaim:
             claimName: jellyfin-config-pvc
         - name: jellyfin-cache
-          persistentVolumeClaim:
-            claimName: jellyfin-cache-pvc
+          emptyDir: {}

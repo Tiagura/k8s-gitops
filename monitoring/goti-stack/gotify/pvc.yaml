@@ -3,10 +3,14 @@ kind: PersistentVolumeClaim
 metadata:
   name: gotify-data-pvc
   namespace: goti-stack
+  annotations:
+    longhorn.io/recurring-job-source: enabled
+    longhorn.io/recurring-job-group: standard
+    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
 spec:
+  storageClassName: longhorn
   accessModes:
     - ReadWriteOnce   # use RWO for SQLite stability
   resources:
     requests:
       storage: "32Mi"
-  storageClassName: longhorn

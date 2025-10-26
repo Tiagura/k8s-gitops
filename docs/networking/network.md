@@ -46,8 +46,16 @@ infrastructure/networking/
 - VIPs, L2/LB policies, and IP pools are defined in manifests and automatically synchronized by ArgoCD.
 
 ### Cloudflare Tunnel
+- Securely expose internal services (e.g. dashboards, web apps) to the internet.
+- Avoid the need for port-forwarding, static IPs, or direct ingress exposure.
+- Tunnel traffic from Cloudflare’s global edge to the cluster over an authenticated, encrypted connection.
+- Deployed declaratively via manifests under [`infrastructure/networking/cloudflared/`](../../infrastructure/networking/cloudflared//)
 
 ### ExternalDNS
+- Dynamically synchronize DNS records in Cloudflare based on Gateway API routes.
+- Ensure DNS entries stay consistent with the cluster’s actual exposed services.
+- Eliminate manual DNS management for public endpoints.
+- Deployed declaratively via manifests under [`infrastructure/networking/external-dns/`](../../infrastructure/networking/external-dns/)
 
 ## IP Allocations
 
