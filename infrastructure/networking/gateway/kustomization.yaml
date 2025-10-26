@@ -7,6 +7,3 @@ resources:
   - gateway-internal.yaml
   - gateway-external.yaml
   - http-redirect-internal.yaml
-
-generatorOptions:
-  disableNameSuffixHash: true
