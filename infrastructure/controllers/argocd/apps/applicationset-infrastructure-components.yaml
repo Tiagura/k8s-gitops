@@ -12,7 +12,7 @@ spec:
           - path: infrastructure/controllers/*
           - path: infrastructure/networking/*
           - path: infrastructure/storage/*
-          - path: infrastructure/databases/*/*
+          - path: infrastructure/databases/*/*/*
   template:
     metadata:
       name: '{{path.basename}}'
