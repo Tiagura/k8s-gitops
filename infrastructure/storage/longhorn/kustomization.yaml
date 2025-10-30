@@ -4,6 +4,11 @@ namespace: longhorn
 resources:
   - namespace.yaml
   - http-route.yaml
+  - s3-remote-backup-secret-sealed.yaml
+  - backup-settings.yaml
+  - recurring-backup-jobs.yaml
+  - recurring-snapshot-jobs.yaml
+  
 helmCharts:
   - name: longhorn
     repo: https://charts.longhorn.io
