@@ -2,7 +2,6 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: stremio-external
-  namespace: stremio
 spec:
   parentRefs:
     - group: gateway.networking.k8s.io

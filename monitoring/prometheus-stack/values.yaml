@@ -103,9 +103,6 @@ alertmanager:
     # Storage for alertmanager
     storage:
       volumeClaimTemplate:
-        metadata:
-          annotations:
-            volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
         spec:
           storageClassName: longhorn
           accessModes:
@@ -151,8 +148,6 @@ grafana:
     size: 1Gi
     accessModes:
       - ReadWriteOnce
-    annotations:
-      volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
     # Resource allocation
   resources:
     requests:
@@ -272,9 +267,6 @@ prometheus:
     # Storage for Prometheus
     storageSpec:
       volumeClaimTemplate:
-        metadata:
-          annotations:
-            volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
         spec:
           storageClassName: longhorn
           accessModes:

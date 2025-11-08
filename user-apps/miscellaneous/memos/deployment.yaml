@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: memos
+  name: memos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memos
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: memos
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - image: neosmemo/memos:0.24
+        name: memos
+        ports:
+        - containerPort: 5230
+          name: memos-pod
+        livenessProbe:
+          httpGet:
+            path: /
+            port: memos-pod
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /
+            port: memos-pod
+          initialDelaySeconds: 15
+          periodSeconds: 30
+        envFrom:
+        - configMapRef:
+            name: memos-configuration
+        resources:
+          requests:
+            memory: 16Mi
+          limits:
+            memory: 32Mi
+        volumeMounts:
+        - mountPath: /var/opt/memos
+          name: memos-data
+        - mountPath: /var/log/memos/audit.log
+          name: memos-log
+          subPath: audit.log
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+      volumes:
+      - name: memos-data
+        persistentVolumeClaim:
+          claimName: memos-pvc
+      - name: memos-log
+        emptyDir: {}

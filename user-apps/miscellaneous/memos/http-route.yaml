@@ -1,0 +1,53 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: memos
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Miscellaneous
+    gethomepage.dev/name: Memos
+    gethomepage.dev/icon: https://raw.githubusercontent.com/usememos/memos/refs/heads/main/web/public/logo.webp
+    gethomepage.dev/href: https://notes.tamhomelab.com
+    gethomepage.dev/description: Notes
+    gethomepage.dev/pod-selector: ""
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: gateway-internal
+      namespace: gateway
+  hostnames:
+    - "notes.tamhomelab.com"
+  rules:
+    # gRPC traffic
+    - matches:
+        - path:
+            type: RegularExpression
+            value: "/grpc.*"          #for any GRPC help methods
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: memos-svc
+          port: 10001
+          weight: 1
+    - matches:
+        - path:
+            type: RegularExpression
+            value: "/memos.api.v1.*"  #for GRPC methods used by the usememos.
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: memos-svc
+          port: 10001
+          weight: 1
+    # Web UI / REST API
+    - matches:
+        - path:
+            type: PathPrefix
+            value: "/"
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: memos-svc
+          port: 10002
+          weight: 1

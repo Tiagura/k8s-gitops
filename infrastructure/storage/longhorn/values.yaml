@@ -44,8 +44,8 @@ defaultSettings:
   concurrentReplicaRebuildPerNodeLimit: "3"
 
   ## Snapshots
-  # Snapshot data integrity verification mode. Options: "enable" or "fast-check" with fastReplicaRebuildEnabled
-  snapshotDataIntegrity: "enable"
+  # Snapshot data integrity verification mode. Options: "disabled","enabled" or "fast-check" with fastReplicaRebuildEnabled
+  snapshotDataIntegrity: "enabled"
   # Allows fast rebuilding of replicas using the checksum of snapshot disk files
   fastReplicaRebuildEnabled: "true"
 

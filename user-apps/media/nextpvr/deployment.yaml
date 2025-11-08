@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nextpvr
-  namespace: nextpvr
 spec:
   replicas: 1
   selector:

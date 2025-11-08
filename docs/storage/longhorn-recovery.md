@@ -34,23 +34,25 @@ Remember that the recurring snapshots and backups jobs are only for PV/PVC using
 ## Prerequisites
 
 - **Configured default backup target**: This target defines where all recurring backup jobs will be stored. Longhorn supports multiple types of backup destinations, including: NFS, SMB/CIFS, Azure Blob Storage and S3 Object Storage.
-  > Saving to **S3-compatible** object storage is preferable. There are various solutions: self-hosted like Garage or MinIO, as well as cloud providers such as AWS S3, Azure Blob Storage, and others.
+  > Saving to **S3-compatible** object storage is preferable. There are various solutions: self-hosted like Garage or MinIO, as well as cloud providers such as AWS S3 and others.
 
 - **Volume Grouping**: To include a volume in Longhorn’s recurring snapshot or backup jobs, you can either
-  - Option 1 - Annotate the PVC (recommended)
-    ```yaml
-    annotations:
-      longhorn.io/recurring-job-source: enabled
-      longhorn.io/recurring-job-group: [standard | important | critical]
-    ```
-  - Option 2 - Label the Longhorn Volume directly:
+  - Option 1 - Label the PVC (recommended)
     ```yaml
     labels:
-      data-tier: [standard | important | critical]
+      recurring-job.longhorn.io/source: enabled
+      recurring-job-group.longhorn.io/<standard | important | critical>: enabled
     ```
+  - Option 2 - Label the Longhorn Volume directly. Apply the same labels as option 1.
 
-  > **Note**: By default all volumes belong to the default group — which, by design, is not configured.
-  To include a default snapshot and/or backup behaviour, you can either: 1. add the "default" group to your existing standard jobs (groups: ["standard"] → groups: ["standard", "default"]) 2. Create a dedicated recurring job specifically for the default group.
+  > **Note**: By default all volumes belong to the default group - which, by design, is not configured.
+  To include a default snapshot and/or backup behaviour, you can either: 1. add the "default" group to the existing standard jobs (`groups: ["standard"]` → `groups: ["standard", "default"]`) 2. Create a dedicated recurring job specifically for the default group.
+
+  > **Note**: By default all volumes belong to the default group. If the default group is configured and another group is assigned to a PV/PVC (for example, `recurring-job-group.longhorn.io/standard: enabled`), the recurring job groups will stack, causing snapshot and backup duplication. To prevent this behavior, explicitly disable the default group by adding the following label to the PV/PVC:
+    ```yaml
+    labels:
+      recurring-job-group.longhorn.io/default: disabled
+    ```
 
 ## Snapshot Management
 
@@ -291,7 +293,8 @@ The configured alerts (defined in the [`storage-backup-alerts.yaml`](../../monit
 
 ## Resources
 
-- [Setting a Backup Target](https://longhorn.io/docs/1.10.0/snapshots-and-backups/backup-and-restore/set-backup-target/)
-- [Create a Backup](https://longhorn.io/docs/1.10.0/snapshots-and-backups/backup-and-restore/create-a-backup/)
-- [Create a Snapshot](https://longhorn.io/docs/1.10.0/snapshots-and-backups/setup-a-snapshot/)
+- [Recurring Snapshots and Backups](https://longhorn.io/docs/latest/snapshots-and-backups/scheduling-backups-and-snapshots/)
+- [Setting a Backup Target](https://longhorn.io/docs/latest/snapshots-and-backups/backup-and-restore/set-backup-target/)
+- [Create a Backup](https://longhorn.io/docs/latest/snapshots-and-backups/backup-and-restore/create-a-backup/)
+- [Create a Snapshot](https://longhorn.io/docs/latest/snapshots-and-backups/setup-a-snapshot/)
 - [Single Volume Restore Community](https://medium.com/@mahdad.ghasemian/restoring-data-using-longhorn-528c33535915)

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: chrome
+spec:
+  selector:
+    app: chrome
+  ports:
+    - name: chrome-svc
+      port: 9222
+      protocol: TCP
+      targetPort: chrome-pod
+  type: ClusterIP

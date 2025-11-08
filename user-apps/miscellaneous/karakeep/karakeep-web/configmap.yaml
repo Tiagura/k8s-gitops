@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: karakeep-configuration
+data:
+  # See the full list of configuration options at: https://docs.karakeep.app/configuration/
+  # Add any non-secret configuration values here
+  KARAKEEP_VERSION: release
+  # Endpoint URLs
+  NEXTAUTH_URL: "https://karakeep.tamhomelab.com"
+  MEILI_ADDR: "http://meilisearch.karakeep.svc.cluster.local:7700"  
+  BROWSER_WEB_URL: "http://chrome.karakeep.svc.cluster.local:9222"
+  # Data directory
+  DATA_DIR: /data   # DON'T EVER CHANGE 
+  # Authentication / Signup settings
+  DISABLE_SIGNUPS: "false"
+  # Crawler settings
+  CRAWLER_ENABLE_ADBLOCKER: "true"
+  CRAWLER_JOB_TIMEOUT_SEC: "60"
+  # OCR settings
+  OCR_LANGS: "eng"

@@ -2,13 +2,11 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: job-exec-sa
-  namespace: nextpvr
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: job-exec-role
-  namespace: nextpvr
 rules:
 - apiGroups: [""]
   resources: ["pods"]
@@ -21,7 +19,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: job-exec-rolebinding
-  namespace: nextpvr
 subjects:
 - kind: ServiceAccount
   name: job-exec-sa

@@ -1,15 +1,16 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: goti-stack
-
+namespace: memos
 labels:
   - pairs:
-      app.kubernetes.io/name: goti-stack
+      app.kubernetes.io/name: memos
       app.kubernetes.io/managed-by: argocd
     includeSelectors: true
 
 resources:
   - namespace.yaml
-  - goti-stack-config-secrets-sealed.yaml
-  - gotify/
-  - gotigram/
+  - deployment.yaml
+  - service.yaml
+  - http-route.yaml
+  - pvc.yaml
+  - configmap.yaml
