@@ -110,7 +110,7 @@ cilium status --wait
 ### 2. Install Sealed Secrets CRDs
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.32.2/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
+kubectl apply -f https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.33.1/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
 ```
 
 
