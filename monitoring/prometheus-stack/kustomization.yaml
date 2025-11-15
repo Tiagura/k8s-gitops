@@ -6,7 +6,7 @@ resources:
   - namespace.yaml
   - alerts/
   - dashboards/
-  - datasources/
+  # - datasources/
   - http-routes/
   - monitors/
   - secrets/
