@@ -45,5 +45,5 @@ monitoring:
       grafana_dashboard: "1"
     
     annotations:
-      # Create dashboard after the prometheus stack is deployed
+      # Create dashboard when the prometheus stack is deployed
       argocd.argoproj.io/sync-wave: "3"

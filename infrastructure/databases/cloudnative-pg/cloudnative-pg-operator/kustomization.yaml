@@ -8,9 +8,6 @@ labels:
       app.kubernetes.io/managed-by: argocd
     includeSelectors: true
 
-commonAnnotations:
-  argocd.argoproj.io/sync-wave: "-10"
-
 resources:
   - rbac.yaml
 
@@ -22,3 +19,17 @@ helmCharts:
     namespace: cloudnative-pg
     valuesFile: values.yaml
     includeCRDs: true
+
+# Find solution to override only PodMonitor sync wave
+# Issue: https://github.com/kubernetes-sigs/kustomize/issues/3046
+# patchesJson6902:
+#   - target:
+#       group: monitoring.coreos.com
+#       version: v1
+#       kind: PodMonitor
+#       name: .*
+#       namespace: cloudnative-pg
+#     patch: |
+#       - op: replace
+#         path: /metadata/annotations/argocd.argoproj.io~1sync-wave
+#         value: "3"

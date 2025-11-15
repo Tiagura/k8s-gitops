@@ -2,7 +2,6 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: gateway-external
-  namespace: gateway
   labels:
     app: gateway-external
   annotations:

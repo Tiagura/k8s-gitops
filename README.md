@@ -9,6 +9,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
   - [Features](#features)
   - [Cluster Components](#cluster-components)
     - [Infrastructure](#infrastructure)
+    - [Monitoring](#monitoring)
     - [Applications](#applications)
   - [Prerequisites](#prerequisites)
   - [Bootstrapping the Cluster](#bootstrapping-the-cluster)
@@ -16,9 +17,10 @@ This repository contains the configuration and manifests for a **GitOps-driven K
     - [2. Install Sealed Secrets CRDs](#2-install-sealed-secrets-crds)
     - [3. Create Encryption and Decryption Keys for Sealed Secrets](#3-create-encryption-and-decryption-keys-for-sealed-secrets)
     - [4. Create the Kubernetes Secret Manifest](#4-create-the-kubernetes-secret-manifest)
-    - [5. Deploy ArgoCD Main Components and CRDs](#5-deploy-argocd-main-components-and-crds)
-    - [6. Bootstrap the GitOps Loop](#6-bootstrap-the-gitops-loop)
-    - [7. Optional: Access ArgoCD Web GUI](#7-optional-access-argocd-web-gui)
+    - [5. Apply the Secret Manifest](#5-apply-the-secret-manifest)
+    - [6. Deploy ArgoCD Main Components and CRDs](#6-deploy-argocd-main-components-and-crds)
+    - [7. Bootstrap the GitOps Loop](#7-bootstrap-the-gitops-loop)
+    - [8. Optional: Access ArgoCD Web GUI](#8-optional-access-argocd-web-gui)
       - [Get the ArgoCD Initial Admin Password](#get-the-argocd-initial-admin-password)
       - [Access the Web GUI](#access-the-web-gui)
       - [Changing Login Credentials](#changing-login-credentials)
@@ -33,12 +35,16 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 
 ## Features
 
-- **GitOps Pattern:** Flattened ApplicationSets provide a clean separation of concerns between infrastructure and applications.
+- **GitOps Pattern:** Uses ApplicationSets to create separate ArgoCD Applications for infrastructure and workloads, keeping deployments modular, clear, and easy to manage.
 - **App of Apps Pattern:** Enables management of multiple applications through a single ArgoCD application, automatically detecting and deploying changes from the Git repository to the Kubernetes cluster.
 - **Self-Management:** ArgoCD manages its own installation and configuration, while continuously reconciling all other infrastructure components and applications declared in this repository—ensuring the entire cluster remains consistent with the Git source of truth.
 - **External & Internal Access to Services**  
   - Internal: All services are accessible inside the home network.  
   - External: Selected services are available from the internet through **Cloudflare Tunnel**.
+- **Monitoring**: Full observability of the cluster, including node metrics, cluster health, ArgoCD applications, and other critical components, with dashboards and alerts.
+- **Backups:**
+  - PV/PVC: Tiered backup strategy for all volumes, with automated snapshots and retention policies.
+  - Database: Backups of database data to ensure recoverability and integrity.
 
 
 ## Cluster Components
@@ -50,11 +56,22 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 | <img src="https://argo-cd.readthedocs.io/en/stable/assets/logo.png" width="50"/> | [ArgoCD](https://argo-cd.readthedocs.io/) | GitOps continuous delivery controller |
 | <img src="https://raw.githubusercontent.com/cert-manager/cert-manager/refs/heads/master/logo/logo-small.png" width="50"/> | [Cert-Manager](https://cert-manager.io/) | Automated TLS certificate management |
 | <img src="https://camo.githubusercontent.com/4759101d66da36edea0998f8da3084921bd4f4eed32b999dde06685d7ac9f068/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f686f6d6172722d6c6162732f64617368626f6172642d69636f6e732f7376672f63696c69756d2e737667" width="50"/> | [Cilium](https://cilium.io/) | Super CNI with advanced networking. Uses eBPF and has observability and security. Also acts as a kube-proxy replacement in this case |
+| <img src="https://cloudnative-pg.io/images/hero_image.png" width="50"/> | [CloudNativePG](https://cloudnative-pg.io/) | Operator for managing PostgreSQL clusters, with automated scaling, failover, and backups (with [Barman Cloud plugin](https://cloudnative-pg.io/plugin-barman-cloud/)) |
 | <img src="https://cdn-1.webcatalog.io/catalog/cloudflare-zero-trust/cloudflare-zero-trust-icon-unplated.png?v=1714773945620" width="50"/> | [Cloudflare Zero Trust](https://www.cloudflare.com/zero-trust/) | External secure access and tunneling |
 | <img src="https://kubernetes-sigs.github.io/external-dns/latest/docs/img/external-dns.png" width="50"/> | [External DNS](https://kubernetes-sigs.github.io/external-dns/latest/) | DNS synchronisation and automation |
 | <img src="https://longhorn.io/img/logos/longhorn-icon-color.png" width="50"/> | [Longhorn](https://longhorn.io/) | Distributed block storage for Kubernetes |
 | <img src="https://docs.renovatebot.com/assets/images/logo.png" width="50"/> | [Renovate](https://docs.renovatebot.com/) | Automated dependency updates (Github Application) |
 | <img src="https://avatars.githubusercontent.com/u/34656521?v=4" width="50"/> | [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) | Encrypt and manage Kubernetes secrets securely |
+
+### Monitoring
+
+| Logo | Name | Purpose |
+|------|---------|-------------|
+| <img src="https://raw.githubusercontent.com/stakater/ForecastleIcons/refs/heads/master/alert-manager.png" width="50"/> | [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/) | Manages and routes alerts |
+| <img src="https://gotify.net/img/logo.png" width="50"/> | [Gotify](https://gotify.net/) | Push notification server |
+| <img src="https://raw.githubusercontent.com/Tiagura/gotigram/refs/heads/main/images/logo_no_background.png" width="50"/> | [Gotigram](https://github.com/Tiagura/gotigram) | Forwards Gotify notifications to Telegram |
+| <img src="https://raw.githubusercontent.com/grafana/grafana/d199c33d7e0bc815ac456c3350e1bd45261ea0fd/public/img/grafana_icon.svg" width="50"/> | [Grafana](https://grafana.com/) | Data Visualization |
+| <img src="https://raw.githubusercontent.com/prometheus/prometheus/906f6a33b60cec2596018ac8cc97ac41b16b06b7/documentation/images/prometheus-logo.svg" width="50"/> | [Prometheus](https://prometheus.io/) | Metrics collection and monitoring |
 
 
 ### Applications
@@ -63,8 +80,9 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 |------|------|---------|
 | <img src="https://svgicons.com/api/ogimage/?id=221729&n=file-type-excalidraw" width="50"/> | [Excalidraw](https://excalidraw.com/) | Whiteboard |
 | <img src="https://raw.githubusercontent.com/gethomepage/homepage/refs/heads/dev/public/android-chrome-192x192.png" width="50"/> | [Homepage](https://gethomepage.dev/) | Dashboard  |
-| <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Jellyfin_-_icon-transparent.svg/1024px-Jellyfin_-_icon-transparent.svg.png?20240822231831" width="50"/> | [Jellyfin](https://jellyfin.org/) | LiveTV (my use case)  |
-| <img src="https://www.filecroco.com/wp-content/uploads/2019/05/nextpvr-icon.png" width="50"/> | [NextPVR](https://nextpvr.com/) | Live IPTV & DVR |
+| <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Jellyfin_-_icon-transparent.svg/1024px-Jellyfin_-_icon-transparent.svg.png?20240822231831" width="50"/> | [Jellyfin](https://jellyfin.org/) | LiveTV |
+| <img src="https://raw.githubusercontent.com/karakeep-app/karakeep/refs/heads/main/apps/web/app/icon.png" width="50"/> | [Karakeep](https://karakeep.app/) | Bookmark App |
+| <img src="https://raw.githubusercontent.com/usememos/memos/refs/heads/main/web/public/logo.webp" width="50"/> | [Memos](https://usememos.com/)| Note-taking | 
 | <img src="https://www.stremio.com/website/stremio-logo-small.png" width="50"/> | [Stremio](https://www.stremio.com/) | Media streaming |
 
 
@@ -154,6 +172,8 @@ data:
 
   - **Note:** If you change the value of metadata.name, you must also update the `existingSecret` field in the [values file](infrastructure/controllers/sealed-secrets/values.yaml) to match. Otherwise, the controller won’t be able to find and use the correct key pair.
 
+### 5. Apply the Secret Manifest
+
 Create the namespace for sealed-secrets:
 
 ```bash
@@ -167,7 +187,7 @@ kubectl apply -f infrastructure/controllers/sealed-secrets/sealed-secrets-key.ya
 ```
 
 
-### 5. Deploy ArgoCD Main Components and CRDs
+### 6. Deploy ArgoCD Main Components and CRDs
 
 Apply ArgoCD manifests via `kustomize` with Helm enabled:
 
@@ -188,7 +208,7 @@ kubectl wait --for=condition=Available deployment/argocd-server -n argocd --time
 ```
 
 
-### 6. Bootstrap the GitOps Loop
+### 7. Bootstrap the GitOps Loop
 
 Now that ArgoCD is running and its CRDs are ready, apply the root application to start the self-managing GitOps workflow:
 
@@ -196,7 +216,7 @@ Now that ArgoCD is running and its CRDs are ready, apply the root application to
 kubectl apply -f infrastructure/controllers/argocd/root.yaml
 ```
 
-### 7. Optional: Access ArgoCD Web GUI
+### 8. Optional: Access ArgoCD Web GUI
 
 After ArgoCD is up and running, you can access its **Web GUI** for a visual overview of your cluster's current status.  
 The Web GUI provides insight into the synchronization state of applications, health status of resources, and allows you to perform certain operations directly from the interface.

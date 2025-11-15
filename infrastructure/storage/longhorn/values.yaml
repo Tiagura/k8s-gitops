@@ -62,7 +62,7 @@ persistence:
   # Use Longhorn's default StorageClass
   defaultClass: true
 
-  # Number of replicas per volume. Minimum of X nodes is required for X replicas.
+  # Number of replicas per volume.
   defaultClassReplicaCount: 2
 
   # Default filesystem type used inside the volume.

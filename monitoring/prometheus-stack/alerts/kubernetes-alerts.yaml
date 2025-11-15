@@ -2,7 +2,6 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: kubernetes-cluster-health
-  namespace: prometheus-stack
   labels:
     app.kubernetes.io/name: kube-prometheus-stack
     app.kubernetes.io/instance: kube-prometheus-stack

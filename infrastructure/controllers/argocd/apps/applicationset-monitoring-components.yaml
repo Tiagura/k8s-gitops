@@ -2,7 +2,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: monitoring
-  namespace: argocd
 spec:
   generators:
     - git:
@@ -14,7 +13,7 @@ spec:
     metadata:
       name: '{{path.basename}}'
       annotations:
-        argocd.argoproj.io/sync-wave: "1"
+        argocd.argoproj.io/sync-wave: "3"
         argocd.argoproj.io/compare-options: ServerSideDiff=true
       labels:
         app.kubernetes.io/part-of: monitoring

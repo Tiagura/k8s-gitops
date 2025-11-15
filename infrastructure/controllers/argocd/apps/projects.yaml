@@ -2,7 +2,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: infrastructure
-  namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "0"
   finalizers:
@@ -22,7 +21,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: user-apps
-  namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "0"
   finalizers:
@@ -42,7 +40,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: monitoring
-  namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "0"
   finalizers:

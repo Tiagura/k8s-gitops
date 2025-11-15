@@ -7,6 +7,5 @@ labels:
     includeSelectors: true
 
 resources:
-  - deployment.yaml
-  - pvc.yaml
-  - service.yaml
+  - statefulset.yaml
+  - headless-service.yaml
