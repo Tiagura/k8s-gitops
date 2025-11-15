@@ -3,6 +3,10 @@ kind: Deployment
 metadata:
   name: jellyfin
 spec:
+  # If you want to scale out jellyfin there are the options:
+  # 1. Use a different database backend than SQLite (currently not supported, may be in future versions)
+  # 2. Use a statefulset, but this way each replica will have its own separate database and media library i.e. each replica is a server on its own.
+  # 3. Scale vertically by increasing resources limits.
   replicas: 1   # since jellyfin uses SQLite, we need to ensure a single replica for stability
   selector:
     matchLabels:
@@ -32,7 +36,7 @@ spec:
               memory: "256Mi"
             limits:
               cpu: "2000m"
-              memory: "1.5Gi"
+              memory: "3Gi"
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
