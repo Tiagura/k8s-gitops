@@ -3,7 +3,6 @@ apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
   name: critical-snapshot
-  namespace: longhorn
 spec:
   cron: "0 */3 * * *" # Every 3 hours
   task: "snapshot"
@@ -19,7 +18,6 @@ apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
   name: important-snapshot
-  namespace: longhorn
 spec:
   cron: "0 */6 * * *" # Every 6 hours
   task: "snapshot"
@@ -35,7 +33,6 @@ apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
   name: standard-snapshot
-  namespace: longhorn
 spec:
   cron: "0 6 * * *" # Daily at 06:00
   task: "snapshot"

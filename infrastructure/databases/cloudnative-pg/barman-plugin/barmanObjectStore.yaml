@@ -3,7 +3,6 @@ apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
   name: barman-object-store
-  namespace: cloudnative-pg
 spec:
   configuration:
     destinationPath: "s3://cnpg-backup-bucket@weur/"

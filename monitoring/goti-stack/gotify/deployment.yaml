@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gotify
-  namespace: goti-stack
   labels:
     app: gotify
 spec:

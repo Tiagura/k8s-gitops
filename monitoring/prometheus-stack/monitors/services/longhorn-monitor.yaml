@@ -3,7 +3,6 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: longhorn-svc-metrics
-  namespace: prometheus-stack
   labels:
     app.kubernetes.io/name: longhorn
     release: kube-prometheus-stack
