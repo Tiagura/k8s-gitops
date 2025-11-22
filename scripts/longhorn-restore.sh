@@ -9,6 +9,7 @@ set -uo pipefail
 STORAGE_CLASS="${STORAGE_CLASS:-longhorn}"
 LONGHORN_NS="${LONGHORN_NS:-longhorn}"
 LONGHORN_REPLICA_COUNT="${LONGHORN_REPLICA_COUNT:-2}"
+LONGHORN_FRONTEND="${LONGHORN_FRONTEND:-blockdev}"
 
 # pretty output helpers
 info()  { echo -e "ℹ️  $*"; }
@@ -86,30 +87,23 @@ list_backups() {
   kubectl get backupvolumes.longhorn.io -n "$LONGHORN_NS" -o json |
   jq -r '
     .items[] |
-    {
-      backupVolume: .metadata.name,
-      volumeName: (.spec.volumeName // .status.volumeName // null),
-      lastBackupName: .status.lastBackupName,
-      lastBackupAt: .status.lastBackupAt,
-      size: .status.size,
-      storageClass: .status.storageClassName,
-      accessMode: (.status.labels["longhorn.io/volume-access-mode"] // "unknown"),
-      dataTier: (.status.labels["data-tier"] // .status.labels["Data - Tier"] // "unknown"),
-      kubernetesStatusRaw: (.status.labels["KubernetesStatus"] // "{}")
-    }
-    | .kubernetesStatus = (try (.kubernetesStatusRaw | fromjson) catch {})
-    | "BackupVolume: \(.backupVolume)
-  VolumeName:    \(.volumeName)
-  PVC Name:      \(.kubernetesStatus.pvcName // \"-\")
-  PVC Namespace: \(.kubernetesStatus.namespace // \"-\")
-  PV Name:       \(.kubernetesStatus.pvName // \"-\")
-  StorageClass:  \(.storageClass)
-  Size (bytes):  \(.size)
-  AccessMode:    \(.accessMode)
-  DataTier:      \(.dataTier)
-  LastBackup:    \(.lastBackupName)
-  LastBackupAt:  \(.lastBackupAt)
----------------------------------------------------------"
+    .metadata.name as $bv |
+    (.spec.volumeName // .status.volumeName // "-") as $vol |
+    (.status.labels.KubernetesStatus // "{}" | fromjson) as $kstatus |
+    (
+      "BackupVolume: \($bv)",
+      "VolumeName: \($vol)",
+      "PVC Name: \($kstatus.pvcName // "-")",
+      "PVC Namespace: \($kstatus.namespace // "-")",
+      "PV Name: \($kstatus.pvName // "-")",
+      "StorageClass: \(.status.storageClassName // "-")",
+      "Size (bytes): \(.status.size // "-")",
+      "AccessMode: " + (.status.labels["longhorn.io/volume-access-mode"] // "-"),
+      "DataTier: " + (.status.labels["data-tier"] // .status.labels["Data - Tier"] // "-"),
+      "LastBackup: " + (.status.lastBackupName // "-"),
+      "LastBackupAt: " + (.status.lastBackupAt // "-"),
+      "---------------------------------------------------------"
+    )
   '
 }
 
@@ -158,6 +152,7 @@ metadata:
   name: ${volume_name}
 spec:
   fromBackup: ${backup_url}
+  frontend: ${LONGHORN_FRONTEND}
   size: "${size_bytes}"
   numberOfReplicas: ${LONGHORN_REPLICA_COUNT}
 ---
@@ -181,10 +176,19 @@ EOF
 # -------------------------
 ensure_namespace() {
   local ns="$1"
-  if [[ -z "$ns" || "$ns" == "-" ]]; then return 0; fi
+  local dry_run="${2:-false}"
+
+  if [[ -z "$ns" || "$ns" == "-" ]]; then
+    return 0
+  fi
+
   if ! kubectl get namespace "$ns" >/dev/null 2>&1; then
-    info "Namespace $ns does not exist, creating..."
-    kubectl create namespace "$ns"
+    if [[ "$dry_run" == "true" ]]; then
+      info "[DRY-RUN] Would create namespace: $ns"
+    else
+      info "Namespace $ns does not exist, creating..."
+      kubectl create namespace "$ns"
+    fi
   fi
 }
 
@@ -249,13 +253,19 @@ restore_backupvolume() {
     return 0
   fi
 
-  # Apply Volume
-  echo "$manifest" | awk '/^---$/ {exit} {print}' | kubectl apply -f - >/dev/null \
-    || { error "failed to apply Longhorn Volume manifest for $volume_name"; return 1; }
+  # Apply manifests (Volume + PVC) in one go
+  if ! echo "$manifest" | kubectl apply -f - >/dev/null; then
+      error "failed to apply manifests for $pvc"
+      return 1
+  fi
 
-  # Apply PVC
-  echo "$manifest" | awk 'NR>1{p=0} /^---$/ {p=1; next} p==1{print}' | kubectl apply -f - >/dev/null \
-    || { error "failed to apply PVC manifest for $pvc"; return 1; }
+  # # Apply Volume
+  # echo "$manifest" | awk '/^---$/ {exit} {print}' | kubectl apply -f - >/dev/null \
+  #   || { error "failed to apply Longhorn Volume manifest for $volume_name"; return 1; }
+
+  # # Apply PVC
+  # echo "$manifest" | awk 'NR>1{p=0} /^---$/ {p=1; next} p==1{print}' | kubectl apply -f - >/dev/null \
+  #   || { error "failed to apply PVC manifest for $pvc"; return 1; }
 
   info "Restore requested for $pvc (namespace: ${ns:-default}). Monitor Longhorn UI for progress."
 }
