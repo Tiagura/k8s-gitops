@@ -45,3 +45,14 @@ spec:
             description: |
               Longhorn backup {{ $labels.backup }} for volume {{ $labels.volume }} is in an Unknown state (5).
               Current value: {{ $value }} (0=New, 1=Pending, 2=InProgress, 3=Completed, 4=Error, 5=Unknown)
+        
+        - alert: LonghornBackupPendingTooLong
+          expr: longhorn_backup_state == 1
+          for: 6h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Longhorn backup pending for too long"
+            description: |
+              Longhorn backup {{ $labels.backup }} for volume {{ $labels.volume }} has been in Pending state for over 2 hours.
+              Current value: {{ $value }} (0=New, 1=Pending, 2=InProgress, 3=Completed, 4=Error, 5=Unknown)

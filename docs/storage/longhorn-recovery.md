@@ -14,6 +14,7 @@
     - [Backup Operations](#backup-operations)
   - [Disaster Recovery](#disaster-recovery)
     - [Single Volume Recovery](#single-volume-recovery)
+      - [Alternative: Using the Longhorn Restore Script](#alternative-using-the-longhorn-restore-script)
     - [Full Cluster Recovery (RIP)](#full-cluster-recovery-rip)
   - [Monitoring \& Alerts](#monitoring--alerts)
     - [Snapshot and Backup System Monitoring](#snapshot-and-backup-system-monitoring)
@@ -200,26 +201,20 @@ EOF
      2. Ensure "Create PVC" option is checked
      3. Ensure "Use Previous PVC" option is checked
    - Via CLI (Untested):
-     1. Create the PV pointing to the restored Longhorn volume. Base it on the app's PersistentVolumeClaim file.
+     1. Create the Volume using the backup.
         ```yaml
         kubectl apply -f - <<EOF
-        apiVersion: v1
-        kind: PersistentVolume
+        apiVersion: longhorn.io/v1beta2
+        kind: Volume
         metadata:
-          name: <pv-name>
+          name: <name>  # Should be the same name as in the backup
         spec:
-          capacity:
-            storage: <>       # Storage must be =< than the restored volume size
-          accessModes:
-            - <>              # Depends on your app
-          storageClassName: longhorn
-          csi:
-            driver: driver.longhorn.io
-            fsType: ext4      # Defined in the values file persistence.defaultFsType
-            volumeHandle: <volume-name>
+          fromBackup: <url_to_backup>
+          size: "<size>"
+          numberOfReplicas: <int 1<=x<=10 >
         EOF
         ```
-     2. Create the PVC for the restored Longhorn volume. Base it on the app's PersistentVolumeClaim file.
+     2. Create the app PVC for the restored Longhorn volume. Base it on the app's PersistentVolumeClaim file.
         ```yaml
         kubectl apply -f - <<EOF
         apiVersion: v1
@@ -234,9 +229,10 @@ EOF
             requests:
               storage: <>   # Storage must be =< than the restored volume size;
           storageClassName: longhorn
-          volumeName: <pv-name>
+          #volumeName: <pv-name>   # Optional: Use only to make 100% sure the PVC to bind to a specific PV. (Probably) Not required when restoring a single volume (i.e., following these steps for one volume at a time)
         EOF
         ```
+      > **Note**: To fetch all the data needed, such as backup URL, volume size, and current PVC/PV details use: `kubectl get backups.longhorn.io -n longhorn <backup_name> -o json`
 8.  Wait for PV/PVC to be available:
     ```bash
     # Verify PVC is bound to the restored volume
@@ -249,6 +245,14 @@ EOF
     kubectl scale <resource>/<resource-name> --replicas=<n> -n <namespace>
     ``` 
     > **Note**: If ArgoCD is running undo the git changes made in step 1.
+
+#### Alternative: Using the Longhorn Restore Script
+
+As an alternative to manually performing steps 5–7, use the [provided restore script](../../scripts/longhorn-restore.sh):
+```bash
+bash scripts/longhorn-restore.sh restore-one <pvc_name | backup_volume_name>
+``` 
+Make sure to use the `--dry-run` flag first to preview the actions without making changes
 
 ### Full Cluster Recovery (RIP)
 
@@ -279,7 +283,6 @@ Metrics usefull to monitor for snapshots and backups:
 - `longhorn_backup_state` - Backup job states
 - `longhorn_snapshot_actual_size_bytes` - Snapshot sizes
 - `longhorn_volume_actual_size_bytes` - Volume utilization
-- `longhorn_backup_progress` - Backup progress
 
 ### Alert Rules
 
@@ -287,8 +290,10 @@ The configured alerts (defined in the [`storage-backup-alerts.yaml`](../../monit
 
 | **Alert Name**                    | **Trigger Condition**                                      | **Severity** | **Description**                                                                                                                                      |
 | --------------------------------- | ---------------------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **LonghornBackupFailed**          | `longhorn_backup_state == 3 or longhorn_backup_state == 4` | Critical     | Fires when a backup enters an *Error* (3) or *Unknown* (4) state, indicating that the backup operation failed or could not be verified.              |
-| **LonghornBackupStuckInProgress** | `longhorn_backup_state == 1` for more than **3 hours**      | Warning      | Triggers when a backup remains *InProgress* for an unusually long period, which may indicate issues with the backup process or storage connectivity. |
+| **LonghornBackupFailed**          | `longhorn_backup_state == 4` | Critical     | Fires when a backup enters an *Error* (4) state, indicating that the backup operation failed or could not be verified. |
+| **LonghornBackupPendingTooLong** | `longhorn_backup_state == 1` for more than **16hours**      | Warning      | Triggers when a backup remains in *Pending* (1) state for an unusually long period, which may indicate issues with the backup storage target. |
+| **LonghornBackupStuckInProgress** | `longhorn_backup_state == 2` for more than **3 hours**      | Warning      | Triggers when a backup remains *InProgress* for an unusually long period, which may indicate issues with the backup process or storage connectivity. |
+| **LonghornBackupUnknownState** | `longhorn_backup_state == 5` for more than **1 hour**      | Warning      | Triggers when a backup remains in *Unknown* (5) state for an unusually long period, which may indicate issues with the backup process or storage connectivity. |
 
 
 ## Resources
