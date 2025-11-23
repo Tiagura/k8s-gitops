@@ -19,27 +19,6 @@ error() { echo -e "❌ $*" >&2; }
 # -------------------------
 # Convert bytes to size string
 # -------------------------
-# bytes_to_size() {
-#   local bytes=${1:-0}
-#   if [[ -z "$bytes" || "$bytes" == "null" ]]; then
-#     echo "1Gi"
-#     return
-#   fi
-
-#   local kib=$((1024))
-#   local mib=$((kib * 1024))
-#   local gib=$((mib * 1024))
-
-#   if (( bytes < gib )); then
-#     local size_mi=$(( (bytes + mib - 1) / mib ))
-#     echo "${size_mi}Mi"
-#   else
-#     local size_gi
-#     size_gi=$(awk -v b="$bytes" -v g="$gib" 'BEGIN {s=b/g; printf "%0.2f", s}')
-#     size_gi=$(echo "$size_gi" | sed 's/\.00$//;s/0$//')
-#     echo "${size_gi}Gi"
-#   fi
-# }
 bytes_to_size() {
   local bytes=${1:-0}
   if [[ -z "$bytes" || "$bytes" == "null" ]]; then
@@ -51,14 +30,11 @@ bytes_to_size() {
   local gib=$((1024*1024*1024))
 
   if (( bytes < gib )); then
-    # <1Gi → Mi, round up
     echo $(( (bytes + mib - 1)/mib ))Mi
   else
-    # ≥1Gi → Gi, keep up to 2 decimals (1.1, 1.25, 1.75, etc.)
     awk -v b="$bytes" -v g="$gib" 'BEGIN {s=b/g; printf "%gGi\n", s}'
   fi
 }
-
 
 # -------------------------
 # Global flags
@@ -96,8 +72,8 @@ list_backups() {
       "PVC Name: \($kstatus.pvcName // "-")",
       "PVC Namespace: \($kstatus.namespace // "-")",
       "PV Name: \($kstatus.pvName // "-")",
-      "StorageClass: \(.status.storageClassName // "-")",
-      "Size (bytes): \(.status.size // "-")",
+      "StorageClass: " + (.status.storageClassName // "-"),
+      "Size (bytes): " + (.status.size // "-"),
       "AccessMode: " + (.status.labels["longhorn.io/volume-access-mode"] // "-"),
       "DataTier: " + (.status.labels["data-tier"] // .status.labels["Data - Tier"] // "-"),
       "LastBackup: " + (.status.lastBackupName // "-"),
@@ -114,7 +90,7 @@ extract_backup_fields() {
   local vol="$1"
   [[ -z "$vol" ]] && return 1
 
-  local raw ks pvc ns pv size last_backup_name volume_name data_tier backup_url
+  local raw ks pvc ns pv size last_backup_name volume_name data_tier backup_url access_mode
 
   raw=$(kubectl get backupvolumes.longhorn.io -n "$LONGHORN_NS" "$vol" -o json) || { warn "cannot read backupVolume $vol"; return 1; }
 
@@ -127,6 +103,7 @@ extract_backup_fields() {
   last_backup_name=$(echo "$raw" | jq -r '.status.lastBackupName // empty')
   volume_name=$(echo "$raw" | jq -r '.spec.volumeName // .status.volumeName // empty')
   data_tier=$(echo "$raw" | jq -r '.status.labels["data-tier"] // .status.labels["Data - Tier"] // empty')
+  access_mode=$(echo "$raw" | jq -r '.status.labels["longhorn.io/volume-access-mode"] // "rwo"')
 
   if [[ -n "$last_backup_name" ]]; then
     backup_url=$(kubectl get backups.longhorn.io -n "$LONGHORN_NS" "$last_backup_name" -o jsonpath='{.status.url}' 2>/dev/null || echo "")
@@ -134,28 +111,41 @@ extract_backup_fields() {
     backup_url=""
   fi
 
-  printf '%s|%s|%s|%s|%s|%s|%s|%s' "$pvc" "$ns" "$size" "$last_backup_name" "$backup_url" "$data_tier" "$pv" "$volume_name"
+  printf '%s|%s|%s|%s|%s|%s|%s|%s|%s' "$pvc" "$ns" "$size" "$last_backup_name" "$backup_url" "$data_tier" "$pv" "$volume_name" "$access_mode"
 }
 
 # -------------------------
 # Build manifests
 # -------------------------
 build_manifests() {
-  local pvc_name="$1"; local ns="$2"; local size_bytes="$3"; local backup_url="$4"; local volume_name="$5"
+  local pvc_name="$1"
+  local ns="$2"
+  local size_bytes="$3"
+  local backup_url="$4"
+  local volume_name="$5"
+  local access_mode="$6"
+
   local size
   size=$(bytes_to_size "$size_bytes")
 
+  local access_mode_translated
+  access_mode_translated=$(translate_access_mode "$access_mode")
+
+
   cat <<EOF
+# Longhorn Volume
 apiVersion: longhorn.io/v1beta2
 kind: Volume
 metadata:
   name: ${volume_name}
+  namespace: ${LONGHORN_NS}
 spec:
   fromBackup: ${backup_url}
   frontend: ${LONGHORN_FRONTEND}
   size: "${size_bytes}"
   numberOfReplicas: ${LONGHORN_REPLICA_COUNT}
 ---
+# PVC
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -163,8 +153,9 @@ metadata:
   namespace: ${ns}
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ${access_mode_translated}
   storageClassName: ${STORAGE_CLASS}
+  volumeName: ${volume_name}
   resources:
     requests:
       storage: ${size}
@@ -178,9 +169,7 @@ ensure_namespace() {
   local ns="$1"
   local dry_run="${2:-false}"
 
-  if [[ -z "$ns" || "$ns" == "-" ]]; then
-    return 0
-  fi
+  [[ -z "$ns" || "$ns" == "-" ]] && return 0
 
   if ! kubectl get namespace "$ns" >/dev/null 2>&1; then
     if [[ "$dry_run" == "true" ]]; then
@@ -190,6 +179,19 @@ ensure_namespace() {
       kubectl create namespace "$ns"
     fi
   fi
+}
+
+# -------------------------
+# Translate access mode from Longhorn label to Kubernetes
+# -------------------------
+translate_access_mode() {
+  local mode="$1"
+  case "${mode,,}" in
+    rwx) echo "ReadWriteMany" ;;
+    rwo|rw) echo "ReadWriteOnce" ;;
+    ro|rom) echo "ReadOnlyMany" ;;
+    *) echo "ReadWriteOnce" ;;  # fallback
+  esac
 }
 
 # -------------------------
@@ -221,12 +223,9 @@ restore_backupvolume() {
 
   info "Processing backupVolume: $bv"
 
-  IFS='|' read -r pvc ns size_bytes last_backup backup_url data_tier pv volume_name <<< "$(extract_backup_fields "$bv")" || { warn "failed to extract fields"; return 1; }
+  IFS='|' read -r pvc ns size_bytes last_backup backup_url data_tier pv volume_name access_mode <<< "$(extract_backup_fields "$bv")" || { warn "failed to extract fields"; return 1; }
 
-  if [[ -z "$pvc" || -z "$backup_url" || -z "$volume_name" ]]; then
-    warn "Skipping $bv: missing pvc name, volume name, or backup URL"
-    return 0
-  fi
+  [[ -z "$pvc" || -z "$backup_url" || -z "$volume_name" ]] && { warn "Skipping $bv: missing pvc name, volume name, or backup URL"; return 0; }
 
   info " → pvc: $pvc"
   info " → namespace: ${ns:-default}"
@@ -234,16 +233,17 @@ restore_backupvolume() {
   info " → backup URL: $backup_url"
   info " → size: $size_bytes bytes"
   info " → data-tier: ${data_tier:--}"
+  info " → access mode: $access_mode"
 
   # Create namespace if missing
-  ensure_namespace "${ns:-default}"
+  ensure_namespace "${ns:-default}" "$dry_run"
 
   # Debounce check
   should_proceed_restore "$volume_name" "${ns:-default}" "$force"
   [[ $? -eq 0 ]] && return 0
 
   # Build YAML
-  manifest=$(build_manifests "$pvc" "${ns:-default}" "$size_bytes" "$backup_url" "$volume_name")
+  manifest=$(build_manifests "$pvc" "${ns:-default}" "$size_bytes" "$backup_url" "$volume_name" "$access_mode")
 
   if [[ "$dry_run" == "true" ]]; then
     echo
@@ -253,19 +253,14 @@ restore_backupvolume() {
     return 0
   fi
 
-  # Apply manifests (Volume + PVC) in one go
-  if ! echo "$manifest" | kubectl apply -f - >/dev/null; then
-      error "failed to apply manifests for $pvc"
-      return 1
-  fi
+  # Apply manifests separately to avoid immutable spec errors
+  # Apply Longhorn Volume
+  echo "$manifest" | awk '/^# Longhorn Volume$/,/^---$/' | kubectl apply -f - >/dev/null \
+    || { error "failed to apply Longhorn Volume manifest for $volume_name"; return 1; }
 
-  # # Apply Volume
-  # echo "$manifest" | awk '/^---$/ {exit} {print}' | kubectl apply -f - >/dev/null \
-  #   || { error "failed to apply Longhorn Volume manifest for $volume_name"; return 1; }
-
-  # # Apply PVC
-  # echo "$manifest" | awk 'NR>1{p=0} /^---$/ {p=1; next} p==1{print}' | kubectl apply -f - >/dev/null \
-  #   || { error "failed to apply PVC manifest for $pvc"; return 1; }
+  # Apply PVC
+  echo "$manifest" | awk '/^# PVC$/,/^$/ {if ($0 !~ /^---$/) print}' | kubectl apply -f - >/dev/null \
+    || { error "failed to apply PVC manifest for $pvc"; return 1; }
 
   info "Restore requested for $pvc (namespace: ${ns:-default}). Monitor Longhorn UI for progress."
 }
@@ -278,7 +273,7 @@ cmd_restore_one() {
   local dry_run="$GLOBAL_DRY_RUN"; local force="$GLOBAL_FORCE"
   for f in "$@"; do case "$f" in --dry-run) dry_run="true" ;; --force) force="true" ;; esac; done
 
-  if [[ -z "$target" ]]; then error "restore-one requires a target"; return 1; fi
+  [[ -z "$target" ]] && { error "restore-one requires a target"; return 1; }
 
   if kubectl get backupvolumes.longhorn.io -n "$LONGHORN_NS" "$target" >/dev/null 2>&1; then
     restore_backupvolume "$target" "$dry_run" "$force"
