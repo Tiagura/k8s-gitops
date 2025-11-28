@@ -18,3 +18,9 @@ sealed-secrets-controller.yaml
 
 # Ignore other files
 *.m3u
+
+# Ignore backup files
+*.bak
+
+# Ignore folders
+.sealed-secrets-rotation
