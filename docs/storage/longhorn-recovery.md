@@ -293,7 +293,7 @@ Once these initial setup steps are complete, you can move on to installing the n
       ```
   5. Install Longhorn:
       ```bash
-      kustomize build --enable-helm infrastructure/controllers/sealed-secrets/ | kubectl apply -f -
+      kustomize build --enable-helm infrastructure/storage/longhorn/ | kubectl apply -f -
       ```
       Wait for Longhorn to be ready
 

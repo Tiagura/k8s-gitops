@@ -22,3 +22,21 @@ helmCharts:
     namespace: cloudnative-pg
     valuesFile: values.yaml
     includeCRDs: true
+
+# Override only PodMonitor sync wave
+# PatchJson6902Transformer is run after AnnotationsTransformer. 
+# Meanwhile PatchStrategicMergeTransformer and PatchTransformer are before.
+# So we have to use PatchJson6902Transformer to override only PodMonitor annotation.
+# Otherwise, the commonAnnotations will override the patch we want to keep.
+# Careful since patchJson6902 is deprecated.
+# Issue: https://github.com/kubernetes-sigs/kustomize/issues/3046
+patchesJson6902:
+  - target:
+      group: monitoring.coreos.com
+      version: v1
+      kind: PodMonitor
+      name: cloudnative-pg
+    patch: |
+      - op: replace
+        path: /metadata/annotations/argocd.argoproj.io~1sync-wave
+        value: "1"
