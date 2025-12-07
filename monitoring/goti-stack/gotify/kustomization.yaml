@@ -4,7 +4,7 @@ kind: Kustomization
 labels:
   - pairs:
       app.kubernetes.io/component: gotify
-    includeSelectors: true
+    
 
 resources:
   - pvc.yaml

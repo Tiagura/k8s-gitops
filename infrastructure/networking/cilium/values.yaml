@@ -1,4 +1,3 @@
-# cilium install --version 1.17.5   --set ipam.operator.clusterPoolIPv4PodCIDRList=10.32.0.0/16 --set ipam.mode=kubernetes   --set kubeProxyReplacement=true   --set gatewayAPI.enabled=true   --set k8sServiceHost=entry.home.arpa   --set k8sServicePort=6443 --set install-iptables-rules=true
 # Identify the cluster and set the service host and port
 cluster:
   name: kubernetes
@@ -11,10 +10,12 @@ k8sServicePort: 6443
 # Gateway API support
 gatewayAPI:
   enabled: true
+  externalTrafficPolicy: Local
   # Needed for ALPN support in Gateway API
   # and also services/app who wish to use http/2
   enableAppProtocol: true
   enableAlpn: true
+
 # KubeProxy replacement
 kubeProxyReplacement: true
 
@@ -54,67 +55,35 @@ ipam:
 # Ingress controller configuration
 ingressController:
   enabled: false
-  default: true
-  loadbalancerMode: shared
-  service:
-    annotations:
-      io.cilium/lb-ipam-ips: 192.168.1.34   # First usable IP in the pool
 
 # Operator configuration
 operator:
-  rollOutPods: true
   replicas: 2
-  resources:
-    limits:
-      cpu: 500m
-      memory: 256Mi
-    requests:
-      cpu: 50m
-      memory: 128Mi
+  prometheus:
+    enabled: true
 
-# Cilium agent configuration
-rollOutCiliumPods: true
-resources:
-  limits:
-    cpu: 1000m
-    memory: 512Mi
-  requests:
-    cpu: 200m
-    memory: 256Mi
-
-# Rate limiting for Kubernetes client
+# API Rate limiting for Kubernetes client
+# Formula: QPS = #services * (1 / leaseRenewDeadline)
 k8sClientRateLimit:
   qps: 20
-  burst: 100
+  burst: 40
 
-# L2 announcements and external IPs
+# L2 announcements
 l2announcements:
   enabled: true
-externalIPs:
-  enabled: true
 
-# Load balancing algorithm
+# Load balancing confs
 loadBalancer:
   algorithm: maglev
-
-envoy:
-  securityContext:
-    capabilities:
-      keepCapNetBindService: true
-      envoy:
-        - NET_ADMIN
-        - PERFMON
-        - BPF
+  acceleration: best-effort
 
 # Enable Hubble for observability
 hubble:
   enabled: true
   relay:
     enabled: true
-    rollOutPods: true
   ui:
     enabled: true
-    rollOutPods: true
   metrics:
     enableOpenMetrics: true
     enabled:
@@ -133,10 +102,6 @@ debug:
 # Enable Prometheus integration
 prometheus:
   enabled: true
-
-operator:
-  prometheus:
-    enabled: true
 
 # mTLS configuration
 authentication:

@@ -2,9 +2,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: cloudnative-pg-operator-rbac
-  labels:
-    app.kubernetes.io/name: cloudnative-pg
-    app.kubernetes.io/managed-by: argocd
 rules:
 # Allow the operator to manage core resources needed for database clusters
 - apiGroups:
@@ -37,9 +34,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: cloudnative-pg-operator-rbac
-  labels:
-    app.kubernetes.io/name: cloudnative-pg
-    app.kubernetes.io/managed-by: argocd
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

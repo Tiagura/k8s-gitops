@@ -14,7 +14,8 @@ LONGHORN_REPLICA_COUNT="${LONGHORN_REPLICA_COUNT:-2}"
 LONGHORN_FRONTEND="${LONGHORN_FRONTEND:-blockdev}"
 LONGHORN_RECLAIM_POLICY="${LONGHORN_RECLAIM_POLICY:-Delete}"
 FS_TYPE="${FS_TYPE:-ext4}"
-RESTORE_POLL_INTERVAL="${RESTORE_POLL_INTERVAL:-5}"  # seconds
+RESTORE_POLL_INTERVAL="${RESTORE_POLL_INTERVAL:-5}"
+LONGHORN_STALE_REPLICA_TIMEOUT="${LONGHORN_STALE_REPLICA_TIMEOUT:-30}"
 
 DRY_RUN=${DRY_RUN:-false}
 
@@ -143,13 +144,9 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: ${volume_name}
-  annotations:
-    pv.kubernetes.io/bound-by-controller: "yes"
-    longhorn.io/volume-scheduling-error: ""
 spec:
   capacity:
     storage: ${size}
-  volumeMode: Filesystem
   storageClassName: ${STORAGE_CLASS}
   accessModes:
     - ${access_mode_translated}
@@ -160,9 +157,7 @@ spec:
     fsType: ${FS_TYPE}
     volumeAttributes:
       numberOfReplicas: "${LONGHORN_REPLICA_COUNT}"
-      staleReplicaTimeout: "20"
-      diskSelector: ""
-      nodeSelector: ""
+      staleReplicaTimeout: "${LONGHORN_STALE_REPLICA_TIMEOUT}"
 ---
 # PVC
 apiVersion: v1

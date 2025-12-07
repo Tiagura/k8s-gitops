@@ -4,8 +4,10 @@ namespace: stremio
 labels:
   - pairs:
       app.kubernetes.io/name: stremio
+      app.kubernetes.io/component: media
+      app.kubernetes.io/part-of: user-apps
       app.kubernetes.io/managed-by: argocd
-    includeSelectors: true
+    
 
 resources:
   - namespace.yaml

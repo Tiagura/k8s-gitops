@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: user-apps
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/Tiagura/k8s-gitops.git
+        revision: main
+        directories:
+          - path: user-apps/*/*
+  template:
+    metadata:
+      name: '{{path.basename}}'
+      labels:
+        app.kubernetes.io/part-of: user-apps
+        app.kubernetes.io/managed-by: argocd
+    spec:
+      project: user-apps
+      revisionHistoryLimit: 3
+      source:
+        repoURL: https://github.com/Tiagura/k8s-gitops.git
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{path.basename}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+          - ApplyOutOfSyncOnly=true
+          - RespectIgnoreDifferences=true
+        retry:
+          limit: 3
+          backoff:
+            duration: 10s
+            factor: 2
+            maxDuration: 5m
+      ignoreDifferences:
+        - group: gateway.networking.k8s.io
+          kind: HTTPRoute
+          jsonPointers:
+            - /spec/rules/0/backendRefs/0/weight
+            - /spec/rules/0/backendRefs/0/kind
+            - /spec/rules/0/backendRefs/0/group
+        - group: "apps"
+          kind: "StatefulSet"
+          jqPathExpressions:
+            - ".spec.volumeClaimTemplates[].apiVersion"
+            - ".spec.volumeClaimTemplates[].kind"
+        - group: postgresql.cnpg.io
+          kind: Cluster
+          jsonPointers:
+            - /status
+            - /metadata/generation
+      info:
+        - name: Description
+          value: 'User application: {{path.basename}}'

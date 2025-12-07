@@ -1,14 +1,48 @@
+global:
+  ingress: 
+    enabled: false
+
 configs:
   cm:
     create: true
-    application.resourceTrackingMethod: "annotation+label"
-  cmp:
-    create: true
-    plugins:
-      kustomize-build-with-helm:
-        generate:
-          command: [ "sh", "-c" ]
-          args: [ "kustomize build --enable-helm" ]
+    url: https://argocd.tamhomelab.com
+    # Enable Helm support in Kustomize
+    kustomize.buildOptions: "--enable-helm"
+
+    # Ignore Gateway API HTTPRoute parentRefs normalization
+    resource.customizations.ignoreDifferences.gateway.networking.k8s.io_HTTPRoute: |
+      jqPathExpressions:
+      - '.spec.parentRefs[]? | select(.group == null or .kind == null)'
+      jsonPointers:
+      - /spec/parentRefs
+    
+    # Needed for App of Apps pattern sycn waves to work correctly
+    # Without this, the root app is created and marked healthy before the childs apps are healthy
+    # Making argoCD think the sync is complete when it is not and going to the next sync wave
+    resource.customizations.health.argoproj.io_Application: |
+      hs = {}
+      hs.status = "Progressing"
+      hs.message = ""
+      if obj.status ~= nil then
+        if obj.status.health ~= nil then
+          hs.status = obj.status.health.status
+          if obj.status.health.message ~= nil then
+            hs.message = obj.status.health.message
+          end
+        end
+      end
+      return hs
+
+  # ConfigMap for custom CMP plugin to enable Kustomize with Helm support
+  # Not need: using built-in --enable-helm option
+  # Kept for reference
+  # cmp:
+  #   create: true
+  #   plugins:
+  #     kustomize-build-with-helm:
+  #       generate:
+  #         command: [ "sh", "-c" ]
+  #         args: [ "kustomize build --enable-helm" ]
   params:
     server.insecure: true
 
@@ -66,12 +100,14 @@ repoServer:
     enabled: true
   containerSecurityContext:
     readOnlyRootFilesystem: true
-  volumes:
-    - name: cmp-kustomize-build-with-helm
-      configMap:
-        name: argocd-cmp-cm
-    - name: cmp-tmp
-      emptyDir: {}
+  # Not need: using built-in --enable-helm option
+  # Kept for reference
+  # volumes:
+  #   - name: cmp-kustomize-build-with-helm
+  #     configMap:
+  #       name: argocd-cmp-cm
+  #   - name: cmp-tmp
+  #     emptyDir: {}
   resources:
     requests:
       cpu: 100m
@@ -79,28 +115,30 @@ repoServer:
     limits:
       cpu: 4000m
       memory: 1024Mi
-  extraContainers:
-    - name: kustomize-build-with-helm
-      command:
-        - argocd-cmp-server
-      image: '{{ default .Values.global.image.repository .Values.repoServer.image.repository }}:{{ default (include "argo-cd.defaultTag" .) .Values.repoServer.image.tag }}'
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 999
-        allowPrivilegeEscalation: false
-        readOnlyRootFilesystem: true
-        seccompProfile:
-          type: RuntimeDefault
-        capabilities:
-          drop: [ "ALL" ]
-      volumeMounts:
-        - name: plugins
-          mountPath: /home/argocd/cmp-server/plugins
-        - name: cmp-kustomize-build-with-helm
-          mountPath: /home/argocd/cmp-server/config/plugin.yaml
-          subPath: kustomize-build-with-helm.yaml
-        - mountPath: /tmp
-          name: cmp-tmp
+  # Not need: using built-in --enable-helm option
+  # Kept for reference
+  # extraContainers:
+  #   - name: kustomize-build-with-helm
+  #     command:
+  #       - argocd-cmp-server
+  #     image: '{{ default .Values.global.image.repository .Values.repoServer.image.repository }}:{{ default (include "argo-cd.defaultTag" .) .Values.repoServer.image.tag }}'
+  #     securityContext:
+  #       runAsNonRoot: true
+  #       runAsUser: 999
+  #       allowPrivilegeEscalation: false
+  #       readOnlyRootFilesystem: true
+  #       seccompProfile:
+  #         type: RuntimeDefault
+  #       capabilities:
+  #         drop: [ "ALL" ]
+  #     volumeMounts:
+  #       - name: plugins
+  #         mountPath: /home/argocd/cmp-server/plugins
+  #       - name: cmp-kustomize-build-with-helm
+  #         mountPath: /home/argocd/cmp-server/config/plugin.yaml
+  #         subPath: kustomize-build-with-helm.yaml
+  #       - mountPath: /tmp
+  #         name: cmp-tmp
 
 applicationSet:
   metrics:

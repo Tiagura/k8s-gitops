@@ -3,8 +3,13 @@ kind: CiliumL2AnnouncementPolicy
 metadata:
   name: main-l2-policy
   namespace: kube-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   interfaces:
     - 'e*'
   loadBalancerIPs: true
-  externalIPs: true
+
+  # Announce for all LoadBalancer services
+  serviceSelector:
+    matchLabels: {}

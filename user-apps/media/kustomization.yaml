@@ -5,7 +5,7 @@ labels:
   - pairs:
       app.kubernetes.io/name: app-management
       app.kubernetes.io/instance: argocd
-    includeSelectors: true
+    
 
 resources:
   - project.yaml

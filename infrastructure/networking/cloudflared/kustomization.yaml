@@ -5,8 +5,10 @@ namespace: cloudflared
 labels:
   - pairs:
       app.kubernetes.io/name: cloudflared
+      app.kubernetes.io/component: external-access
+      app.kubernetes.io/part-of: infrastructure
       app.kubernetes.io/managed-by: argocd
-    includeSelectors: true
+    
 
 configMapGenerator:
   - name: config

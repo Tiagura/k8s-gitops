@@ -4,8 +4,10 @@ namespace: homepage
 labels:
   - pairs:
       app.kubernetes.io/name: homepage
+      app.kubernetes.io/component: dashboard
+      app.kubernetes.io/part-of: user-apps
       app.kubernetes.io/managed-by: argocd
-    includeSelectors: true
+    
 
 resources:
   - deployment.yaml

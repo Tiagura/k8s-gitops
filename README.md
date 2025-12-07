@@ -108,7 +108,6 @@ Before deploying this setup, make sure you have the following:
    - [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl)
    - [`kustomize`](https://kubectl.docs.kubernetes.io/installation/kustomize/) (Normally installed when `kubectl` is installed)
    - [`kubeseal`](https://github.com/bitnami-labs/sealed-secrets?tab=readme-ov-file#kubeseal)
-   - [`cilium CLI`](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/#install-the-cilium-cli)
 
 ## Bootstrapping the Cluster
 
@@ -120,8 +119,13 @@ Follow these steps to bootstrap your Kubernetes cluster with all the necessary c
 Make sure you have the `cilium` CLI installed locally.
 
 ```bash
-cilium install --values infrastructure/networking/cilium/values.yaml
+kubectl kustomize infrastructure/networking/cilium --enable-helm | kubectl apply -f -
+
+# If cilium CLI installed
 cilium status --wait
+
+# Else
+kubectl get pods -n kube-system -l k8s-app=cilium
 ```
 
 

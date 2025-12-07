@@ -5,8 +5,10 @@ namespace: goti-stack
 labels:
   - pairs:
       app.kubernetes.io/name: goti-stack
+      app.kubernetes.io/component: push-notifications
+      app.kubernetes.io/part-of: monitoring
       app.kubernetes.io/managed-by: argocd
-    includeSelectors: true
+    
 
 resources:
   - namespace.yaml

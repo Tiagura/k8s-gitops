@@ -12,3 +12,12 @@ spec:
           requestRedirect:
             scheme: https
             statusCode: 301
+      # Matches is not necessary, the controller would populate this
+      # However this causes a diff in argocd, so I am adding it here
+      # One can use argocd ignoreDifferences to ignore this field
+      # However the gateway app is inside the infrastructure appset, and so
+      # adding ignoreDifferences here would affect other resources too
+      matches:
+        - path:
+            type: PathPrefix
+            value: /

@@ -4,8 +4,10 @@ namespace: external-dns
 labels:
   - pairs:
       app.kubernetes.io/name: external-dns
+      app.kubernetes.io/component: dns
+      app.kubernetes.io/part-of: infrastructure
       app.kubernetes.io/managed-by: argocd
-    includeSelectors: true
+    
 
 resources:
   - namespace.yaml

@@ -5,8 +5,10 @@ namespace: cloudnative-pg
 labels:
   - pairs:
       app.kubernetes.io/name: cloudnative-pg
+      app.kubernetes.io/component: cloudnative-pg-operator
+      app.kubernetes.io/part-of: infrastructure
       app.kubernetes.io/managed-by: argocd
-    includeSelectors: true
+    
 
 resources:
   - rbac.yaml

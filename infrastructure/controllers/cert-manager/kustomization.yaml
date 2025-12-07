@@ -2,8 +2,13 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: cert-manager
 
-commonAnnotations:
-  argocd.argoproj.io/sync-wave: "2"
+labels:
+  - pairs:
+      app.kubernetes.io/name: cert-manager
+      app.kubernetes.io/component: cert-manager-controller
+      app.kubernetes.io/part-of: infrastructure
+      app.kubernetes.io/managed-by: argocd
+    
 
 resources:
   - namespace.yaml

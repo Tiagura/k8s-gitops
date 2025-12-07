@@ -5,8 +5,10 @@ namespace: cloudnative-pg
 labels:
   - pairs:
       app.kubernetes.io/name: cloudnative-pg-barman-plugin
+      app.kubernetes.io/component: barman-plugin
       app.kubernetes.io/managed-by: argocd
-    includeSelectors: true  
+      app.kubernetes.io/part-of: infrastructure
+      
 
 resources:
   - https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v0.9.0/manifest.yaml

@@ -54,7 +54,7 @@ Unlike regular workloads that rely on Longhorn’s own snapshot and backup autom
 Some Key Configurations:
 - Non-default class – Explicitly used only by CloudNativePG, not general workloads.
 - `numberOfReplicas` = `1` : Prevents redundant replication since CloudNativePG already replicates data at the database level.
-- `dataLocality` = `strict-local` : Ensures the volume is placed on the same node as the PostgreSQL pod for lower latency.
+- `dataLocality` = `strict-local` : Ensures the volume is placed on the same node as the pod using the PostgreSQL database.
 - `recurringJobSelector` = `'[]'` – Disables Longhorn’s automatic snapshots/backups. CloudNativePG manages its own backup and restore processes.
 
 ## Snapshots and Backups
@@ -91,8 +91,9 @@ The configured alerts (defined in the [`storage-alerts.yaml`](../../monitoring/p
 
 ## Resources 
 
-- [Longhorn Best Practices](https://longhorn.io/docs/1.10.0/best-practices/)
-- [Block Storage Considerations ](https://cloudnative-pg.io/documentation/1.27/storage/#block-storage-considerations-cephlonghorn)
-- [Cloudnative-pg + Longhorn Community](https://medium.com/@camphul/cloudnative-pg-in-the-homelab-with-longhorn-b08c40b85384)
-- [Longhorn Metrics for Monitoring](https://longhorn.io/docs/1.10.0/monitoring/metrics/)
-- [Setting up Prometheus and Grafana to monitor Longhorn](https://longhorn.io/docs/1.10.0/monitoring/prometheus-and-grafana-setup/)
+- [Longhorn Best Practices](https://longhorn.io/docs/latest/best-practices/)
+- [Longhorn Data Locality](https://longhorn.io/docs/latest/high-availability/data-locality/)
+- [CNPG Block Storage Considerations](https://cloudnative-pg.io/documentation/1.27/storage/#block-storage-considerations-cephlonghorn)
+- [CNPG + Longhorn Community](https://medium.com/@camphul/cloudnative-pg-in-the-homelab-with-longhorn-b08c40b85384)
+- [Longhorn Metrics for Monitoring](https://longhorn.io/docs/latest/monitoring/metrics/)
+- [Setting up Prometheus and Grafana to monitor Longhorn](https://longhorn.io/docs/latest/monitoring/prometheus-and-grafana-setup/)

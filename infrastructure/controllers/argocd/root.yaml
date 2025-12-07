@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: root
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -10,7 +12,7 @@ spec:
   source:
     repoURL: https://github.com/Tiagura/k8s-gitops.git
     path: infrastructure/controllers/argocd/apps
-    targetRevision: HEAD
+    targetRevision: main
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
@@ -18,3 +20,18 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
+  ignoreDifferences:
+  - group: argoproj.io
+    kind: Application
+    jsonPointers:
+    - /status
+    - /operation
+  - group: argoproj.io
+    kind: ApplicationSet
+    jsonPointers:
+    - /status

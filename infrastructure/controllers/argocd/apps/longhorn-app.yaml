@@ -1,0 +1,52 @@
+# Storage: Longhorn App of ArgoCD
+# Wave 1, storage layer
+# Depends on: Cilium, Sealed Secrets
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+  labels:
+    app.kubernetes.io/part-of: infrastructure
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
+spec:
+  project: infrastructure
+  source:
+    repoURL: https://github.com/Tiagura/k8s-gitops.git
+    targetRevision: main
+    path: infrastructure/storage/longhorn
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - respectIgnoreDifferences=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 1m
+        factor: 2
+        maxDuration: 5m
+  ignoreDifferences:
+    - group: ""
+      kind: ConfigMap
+      namespace: longhorn
+      jsonPointers:
+        - /data
+    - group: ""
+      kind: Secret
+      namespace: longhorn
+      jsonPointers:
+        - /data
+  info:
+    - name: Description
+      value: 'Longhorn for distributed block storage in the cluster'

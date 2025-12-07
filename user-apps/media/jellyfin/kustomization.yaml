@@ -4,8 +4,10 @@ namespace: jellyfin
 labels:
   - pairs:
       app.kubernetes.io/name: jellyfin
+      app.kubernetes.io/component: iptv
+      app.kubernetes.io/part-of: user-apps
       app.kubernetes.io/managed-by: argocd
-    includeSelectors: true
+    
 
 resources:
   - namespace.yaml

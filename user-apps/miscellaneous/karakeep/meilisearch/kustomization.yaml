@@ -4,7 +4,7 @@ namespace: karakeep
 labels:
   - pairs:
       app.kubernetes.io/component: meilisearch
-    includeSelectors: true
+    
 
 resources:
   - statefulset.yaml

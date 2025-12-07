@@ -3,7 +3,18 @@ kind: Kustomization
 namespace: argocd
 
 resources:
-  - applicationset-apps-components.yaml
-  - applicationset-infrastructure-components.yaml
-  - applicationset-monitoring-components.yaml
   - projects.yaml
+  # Wave 0: Essential components
+  - cilium-app.yaml
+  - sealed-secrets-app.yaml
+  # Wave 1: Storage components
+  - longhorn-app.yaml
+  # Wave 2: ArgoCD, gateway, and cert-manager
+  - argocd-app.yaml
+  - gateway-app.yaml
+  - cert-manager-app.yaml
+  # Wave 3: Rest of infrastructure components and monitoring
+  - infrastructure-applicationset.yaml
+  - monitoring-applicationset.yaml
+  # Wave 4: User applications components
+  - user-apps-applicationset.yaml

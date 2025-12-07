@@ -4,7 +4,7 @@ namespace: karakeep
 labels:
   - pairs:
       app.kubernetes.io/component: karakeep-web
-    includeSelectors: true
+    
 
 resources:
   - deployment.yaml
