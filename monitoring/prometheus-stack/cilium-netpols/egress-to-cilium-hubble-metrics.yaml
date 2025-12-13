@@ -1,0 +1,41 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-cilium-hubble-metrics
+spec:
+  description: >
+    Allow egress to scrape Cilium agent pods, Hubble metrics, and optional Envoy metrics
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-cilium-hubble-metrics: "true"
+
+  egress:
+    # Cilium agent pods (pod-based scrape)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: cilium
+      toPorts:
+        - ports:
+            - port: "9962"
+              protocol: TCP
+
+    # Hubble metrics service (service-based scrape)
+    - toServices:
+        - k8sService:
+            namespace: kube-system
+            serviceName: hubble-metrics
+      toPorts:
+        - ports:
+            - port: "9965"
+              protocol: TCP
+
+    # Optional: Cilium Envoy metrics
+    - toServices:
+        - k8sService:
+            namespace: kube-system
+            serviceName: cilium-envoy
+      toPorts:
+        - ports:
+            - port: "9964"
+              protocol: TCP

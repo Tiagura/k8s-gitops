@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vaultwarden
+  labels:
+    app: vaultwarden
+spec:
+  serviceName: vaultwarden
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vaultwarden
+  template:
+    metadata:
+      labels:
+        app: vaultwarden
+        netpol.cilium.io/egress-deny: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: vaultwarden
+          image: ghcr.io/dani-garcia/vaultwarden:1.35.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+          env:
+            - name: DOMAIN
+              value: "https://vault.tamhomelab.com"
+            # Initial bootstrap to create an account has 2 options:
+            # 1. Set ADMIN_TOKEN env to a random token and use invites to create accounts. See: https://github.com/kagiko/vaultwarden-wiki/blob/master/Enabling-admin-page.md
+            # 2. Set SIGNUPS_ALLOWED to true to allow open signups, create the first account and then set it back to false. And use kubectl rollout restart ... command to apply the change. See: https://github.com/kagiko/vaultwarden-wiki/blob/master/Disable-registration-of-new-users.md
+            - name: "SIGNUPS_ALLOWED"
+              value: "false"
+            - name: "SHOW_PASSWORD_HINT"
+              value: "false"
+          volumeMounts:
+            - name: vaultwarden-data
+              mountPath: /data
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+  volumeClaimTemplates:
+    - metadata:
+        name: vaultwarden-data
+        labels:
+          recurring-job.longhorn.io/source: enabled
+          recurring-job-group.longhorn.io/critical: enabled
+          recurring-job-group.longhorn.io/default: disabled
+      spec:
+        accessModes: 
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 128Mi
+        storageClassName: longhorn

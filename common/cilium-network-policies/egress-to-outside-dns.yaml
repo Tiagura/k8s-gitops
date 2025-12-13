@@ -1,0 +1,17 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-outside-dns
+spec:
+  description: >
+    Allow egress traffic to outside DNS servers.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-outside-dns: "true"
+  
+  egress:
+    - toCIDR:
+      - 1.1.1.1/32  # Cloudflare DNS
+      - 1.1.1.2/32  # Cloudflare DNS (malware filter)
+      - 8.8.8.8/32  # Google DNS
+      - 9.9.9.9/32  # Quad9 DNS

@@ -1,0 +1,21 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-prometheus
+spec:
+  description: Allow egress from pods to Prometheus service for metrics.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-prometheus: "true"
+
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/instance: kube-prometheus-stack-prometheus
+            app.kubernetes.io/managed-by: prometheus-operator
+            app.kubernetes.io/name: prometheus
+            k8s:io.kubernetes.pod.namespace: prometheus-stack
+      toPorts:
+        - ports:
+            - port: "9090"
+              protocol: TCP

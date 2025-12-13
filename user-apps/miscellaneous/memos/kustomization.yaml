@@ -11,8 +11,11 @@ labels:
 
 resources:
   - namespace.yaml
+  - memos-secrets-sealed.yaml
   - deployment.yaml
   - service.yaml
-  - http-route.yaml
-  - pvc.yaml
   - configmap.yaml
+  - http-route.yaml
+  - http-route-external.yaml
+  - cilium-netpol.yaml
+  - ../../../common/cilium-network-policies/

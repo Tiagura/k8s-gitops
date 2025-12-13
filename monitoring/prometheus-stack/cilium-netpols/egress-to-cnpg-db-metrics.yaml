@@ -1,0 +1,30 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-cnpg-db-metrics
+spec:
+  description: Allow egress to CNPG databases metrics
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-cnpg-db-metrics: "true"
+
+  egress:
+    # Allow egress to Firefly III database metrics
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: cloudnative-pg
+            cnpg.io/cluster: fireflyiii-database
+      toPorts:
+        - ports:
+            - port: "9187"
+              protocol: TCP
+    
+    # Allow egress to Memos database metrics
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: cloudnative-pg
+            cnpg.io/cluster: memos-database
+      toPorts:
+        - ports:
+            - port: "9187"
+              protocol: TCP

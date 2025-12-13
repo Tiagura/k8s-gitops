@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: user-apps-databases
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/Tiagura/k8s-gitops.git
+        revision: main
+        directories:
+          - path: infrastructure/databases/cloudnative-pg-apps-databases/*
+  template:
+    metadata:
+      name: user-app-db-{{path.basename}}
+      labels:
+        app.kubernetes.io/part-of: databases
+        app.kubernetes.io/managed-by: argocd
+    spec:
+      project: user-apps
+      revisionHistoryLimit: 3
+      source:
+        repoURL: https://github.com/Tiagura/k8s-gitops.git
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: cloudnative-pg
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+          - ApplyOutOfSyncOnly=true
+          - RespectIgnoreDifferences=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 1m
+            factor: 2
+            maxDuration: 5m
+      ignoreDifferences:
+        - group: postgresql.cnpg.io
+          kind: Cluster
+          jqPathExpressions:
+            - ".spec.plugins[].enabled"
+        - group: postgresql.cnpg.io
+          kind: Cluster
+          jqPathExpressions:
+            - ".spec.externalClusters[].plugin.enabled"
+            - ".spec.externalClusters[].plugin.isWALArchiver"
+      info:
+        - name: Description
+          value: "Database component {{path.basename}} managed by CloudNativePG"

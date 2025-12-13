@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-remote-node
+spec:
+  description: >
+    Allow egress traffic from selected pods to remote node host.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-remote-node: "true"
+
+  egress:
+    - toEntities:
+        - remote-node

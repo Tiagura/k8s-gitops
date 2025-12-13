@@ -1,0 +1,32 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: nodecast-tv
+  namespace: nodecast-tv
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Media
+    gethomepage.dev/name: NodeCast TV
+    gethomepage.dev/icon: https://raw.githubusercontent.com/technomancer702/nodecast-tv/b119b37b87d6a252b2b1c0c645589a102c877e92/public/favicon.svg
+    gethomepage.dev/href: https://tv.tamhomelab.com
+    gethomepage.dev/description: Live TV
+    gethomepage.dev/pod-selector: ""
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: gateway-internal
+      namespace: gateway
+  hostnames:
+    - "tv.tamhomelab.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: "/"
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: nodecast-tv
+          namespace: nodecast-tv
+          port: 3000

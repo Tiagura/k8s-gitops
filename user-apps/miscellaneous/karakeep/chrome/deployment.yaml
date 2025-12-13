@@ -3,16 +3,23 @@ kind: Deployment
 metadata:
   name: chrome
   labels:
-    app: chrome
+    app: karakeep
+    tier: chrome
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: chrome
+      app: karakeep
+      tier: chrome
   template:
     metadata:
       labels:
-        app: chrome
+        app: karakeep
+        tier: chrome
+        netpol.cilium.io/egress-to-intra: "true"
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/egress-to-public-ips: "true"
+        netpol.cilium.io/ingress-from-intra: "true"
     spec:
       securityContext:
         runAsNonRoot: true

@@ -1,0 +1,44 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: memos-database
+  labels:
+    app: memos
+  annotations:
+    # https://github.com/cloudnative-pg/cloudnative-pg/issues/8935
+    cnpg.io/skipEmptyWalArchiveCheck: enabled
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.1
+  plugins:
+  - name: barman-cloud.cloudnative-pg.io
+    isWALArchiver: true
+    parameters:
+      barmanObjectName: barman-object-store
+  postgresql:
+    parameters:
+      shared_buffers: "256MB"
+      wal_compression: "on"
+      max_wal_size: "512MB"
+    pg_hba:
+      - host memos memos 10.32.0.0/16 scram-sha-256   # Allow connections from the cluster network (i.e. Pod CIDR)
+  bootstrap:
+    recovery:
+      source: memos-backup
+      database: memos
+      owner: memos
+      secret:
+        name: memos-db-creds
+  externalClusters:
+    - name: memos-backup
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: barman-object-store
+          serverName: memos-database
+  storage:
+    size: 5Gi
+    storageClass: cnpg-longhorn-storage
+  walStorage:
+    size: 1Gi
+    storageClass: cnpg-longhorn-storage

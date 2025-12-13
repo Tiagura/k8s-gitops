@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fireflyiii-importer
+  labels:
+    app: fireflyiii
+    tier: importer
+spec:
+  selector:
+    matchLabels:
+      app: fireflyiii
+      tier: importer
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: fireflyiii
+        tier: importer
+        # Added for Cilium network policies
+        netpol.cilium.io/egress-to-intra: "true"
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
+    spec:
+      containers:
+      - image: fireflyiii/data-importer:version-1.9.0
+        name: fireflyiii-importer
+        env:
+        - name: FIREFLY_III_URL
+          value: "http://fireflyiii:8080"
+        - name: VANITY_URL
+          value: "https://budget.tamhomelab.com"
+        - name: TRUSTED_PROXIES
+          value: "**"
+        ports:
+        - containerPort: 8080
+          name: fireflyiii

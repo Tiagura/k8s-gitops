@@ -1,0 +1,20 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-cnpg-operator-metrics
+spec:
+  description: Allow egress only to CloudNativePG operator pod metrics (PodMonitor)
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-cnpg-operator-metrics: "true"
+
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: cloudnative-pg
+            app.kubernetes.io/instance: cloudnative-pg-operator
+            app.kubernetes.io/name: cloudnative-pg
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

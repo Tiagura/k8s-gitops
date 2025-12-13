@@ -3,6 +3,8 @@ namespaceOverride: "prometheus-stack"
 # CRD Configuration - Essential for proper functioning
 crds:
   enabled: true
+#  upgradeJob:
+#    enabled: true
 # Default rules for monitoring the cluster
 defaultRules:
   rules:
@@ -25,6 +27,11 @@ windowsMonitoring:
 # Alertmanager Configuration
 alertmanager:
   enabled: true
+  additionalLabels:
+    # Common Cilium Network Policies labels
+    netpol.cilium.io/egress-to-public-ips: "true"
+    netpol.cilium.io/ingress-from-ingress: "true"
+    netpol.cilium.io/ingress-from-prometheus: "true"
 
   # Alertmanager configuration
   config:
@@ -129,6 +136,15 @@ alertmanager:
 # Grafana Configuration
 grafana:
   enabled: true
+  podLabels:
+    # Common Cilium Network Policies labels
+    netpol.cilium.io/egress-to-kube-apiserver: "true"
+    netpol.cilium.io/egress-to-kube-dns: "true"
+    netpol.cilium.io/egress-to-prometheus: "true"
+    netpol.cilium.io/egress-to-public-ips: "true"
+    netpol.cilium.io/ingress-from-ingress: "true"
+    netpol.cilium.io/ingress-from-prometheus: "true"
+    netpol.cilium.io/ingress-from-remote-node: "true"
   serviceAccount:
     create: true
     name: "grafana-sa"
@@ -207,6 +223,10 @@ nodeExporter:
 # Prometheus Operator Configuration
 prometheusOperator:
   enabled: true
+  labels:
+    # Common Cilium Network Policies labels
+    netpol.cilium.io/egress-to-kube-apiserver: "true"
+    netpol.cilium.io/ingress-from-prometheus: "true"
   serviceAccount:
     create: true
     name: "prometheus-operator-sa"
@@ -255,6 +275,22 @@ prometheus:
   serviceAccount:
     create: true
     name: "prometheus-sa"
+  additionalLabels:
+    # Common Cilium Network Policies labels
+    netpol.cilium.io/egress-to-host: "true"
+    netpol.cilium.io/egress-to-intra: "true"
+    netpol.cilium.io/egress-to-kube-apiserver: "true"
+    netpol.cilium.io/egress-to-kube-dns: "true"
+    netpol.cilium.io/egress-to-remote-node: "true"
+    netpol.cilium.io/ingress-from-ingress: "true"
+    # Specific Cilium Network Policies labels
+    netpol.cilium.io/egress-to-argocd-metrics: "true"
+    netpol.cilium.io/egress-to-cilium-hubble-metrics: "true"
+    netpol.cilium.io/egress-to-cnpg-db-metrics: "true"
+    netpol.cilium.io/egress-to-cnpg-operator-metrics: "true"
+    netpol.cilium.io/egress-to-longhorn-metrics: "true"
+    netpol.cilium.io/egress-to-reloader-metrics: "true"
+    netpol.cilium.io/egress-to-tailscale-node-metrics: "true"
   prometheusSpec:
     # Data retention
     retention: 7d
@@ -332,6 +368,17 @@ prometheus:
     podMonitorSelectorNilUsesHelmValues: false
     ruleSelectorNilUsesHelmValues: false
 
+# Kube State Metrics Configuration
+kubeStateMetrics:
+  enabled: true
+
+kube-state-metrics:
+  podLabels:
+    # Common Cilium Network Policies labels
+    netpol.cilium.io/egress-to-kube-apiserver: "true"
+    netpol.cilium.io/ingress-from-prometheus: "true"
+  # Rest leave as default
+
 # Disable kubeProxy metrics as Cilium is used
 kubeProxy:
   enabled: false
@@ -349,4 +396,4 @@ kubeScheduler:
 kubeEtcd:
   enabled: false
 coreDns:
-  enabled: false
+  enabled: true

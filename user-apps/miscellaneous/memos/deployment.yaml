@@ -1,10 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
+  name: memos
   labels:
     app: memos
-  name: memos
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   selector:
@@ -12,9 +13,10 @@ spec:
       app: memos
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: memos
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
     spec:
       securityContext:
         runAsNonRoot: true
@@ -42,25 +44,29 @@ spec:
         envFrom:
         - configMapRef:
             name: memos-configuration
+        env:
+        # Database configuration for PostgreSQL
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: memos-secrets
+              key: db_username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: memos-secrets
+              key: db_password
+        - name: MEMOS_DRIVER
+          value: postgres
+        - name: MEMOS_DSN
+          value: postgresql://$(DB_USERNAME):$(DB_PASSWORD)@memos-database-rw.cloudnative-pg.svc.cluster.local:5432/memos?sslmode=disable
         resources:
           requests:
-            memory: 16Mi
-          limits:
             memory: 32Mi
-        volumeMounts:
-        - mountPath: /var/opt/memos
-          name: memos-data
-        - mountPath: /var/log/memos/audit.log
-          name: memos-log
-          subPath: audit.log
+          limits:
+            memory: 64Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
             drop:
             - ALL
-      volumes:
-      - name: memos-data
-        persistentVolumeClaim:
-          claimName: memos-pvc
-      - name: memos-log
-        emptyDir: {}

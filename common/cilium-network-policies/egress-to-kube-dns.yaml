@@ -1,0 +1,21 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-kube-dns
+spec:
+  description: >
+    Allow egress DNS traffic (port 53) from selected pods.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-kube-dns: "true"
+
+  egress:
+    # Allow to kube-dns for DNS resolution
+    - toEndpoints:
+      - matchLabels:
+          "k8s:io.kubernetes.pod.namespace": kube-system
+          "k8s:k8s-app": kube-dns
+      toPorts:
+        - ports:
+           - port: "53"
+             protocol: ANY

@@ -4,6 +4,8 @@ metadata:
   name: gotigram
   labels:
     app: gotigram
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   selector:
@@ -13,6 +15,9 @@ spec:
     metadata:
       labels:
         app: gotigram
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/egress-to-public-ips: "true"
+        netpol.cilium.io/egress-to-intra: "true"
     spec:
       securityContext:
         fsGroup: 1000
@@ -133,4 +138,5 @@ spec:
         - name: token-volume
           emptyDir: {}
         - name: gotigram-logs
-          emptyDir: {}
+          emptyDir: 
+            sizeLimit: 16Mi

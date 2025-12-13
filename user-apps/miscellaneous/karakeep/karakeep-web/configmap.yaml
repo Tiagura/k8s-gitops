@@ -7,8 +7,8 @@ data:
   # Add any non-secret configuration values here
   KARAKEEP_VERSION: release
   # Endpoint URLs
-  NEXTAUTH_URL: "https://karakeep.tamhomelab.com"
-  MEILI_ADDR: "http://meilisearch.karakeep.svc.cluster.local:7700"  
+  NEXTAUTH_URL: "https://bookmarks.tamhomelab.com"
+  MEILI_ADDR: "http://meilisearch-0.meilisearch-headless.karakeep.svc.cluster.local:7700"  
   BROWSER_WEB_URL: "http://chrome.karakeep.svc.cluster.local:9222"
   # Data directory
   DATA_DIR: /data   # DON'T EVER CHANGE 

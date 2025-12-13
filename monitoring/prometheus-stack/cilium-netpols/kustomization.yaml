@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - egress-to-argocd-metrics.yaml
+  - egress-to-cilium-hubble-metrics.yaml
+  - egress-to-cnpg-db-metrics.yaml
+  - egress-to-cnpg-operator-metrics.yaml
+  - egress-to-longhorn-metrics.yaml
+  - egress-to-prometheus.yaml
+  - egress-to-reloader-metrics.yaml
+  - egress-to-tailscale-node-metrics.yaml

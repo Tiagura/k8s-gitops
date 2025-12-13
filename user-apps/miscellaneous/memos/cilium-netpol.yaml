@@ -1,0 +1,21 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: memos-netpol
+spec:
+  description: >
+    Allow Memos pods to egress to the CloudNativePG database services (rw, ro, r).
+  endpointSelector:
+    matchLabels:
+      app: memos
+
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: cloudnative-pg
+            cnpg.io/cluster: memos-database
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+      
