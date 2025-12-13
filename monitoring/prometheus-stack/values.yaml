@@ -3,6 +3,8 @@ namespaceOverride: "prometheus-stack"
 # CRD Configuration - Essential for proper functioning
 crds:
   enabled: true
+  upgradeJob:
+    enabled: true
 # Default rules for monitoring the cluster
 defaultRules:
   rules:
