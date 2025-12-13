@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: changedetection
+spec:
+  replicas: 1
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+  selector:
+    matchLabels:
+      app: changedetection
+  template:
+    metadata:
+      labels:
+        app: changedetection
+    spec:
+      containers:
+        - name: changedetection
+          image: dgtlmoon/changedetection.io:0.51.2
+          ports:
+            - containerPort: 5000
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: changedetection-datastore
+              mountPath: /datastore
+      volumes:
+        - name: changedetection-datastore
+          persistentVolumeClaim:
+            claimName: changedetection-pvc
