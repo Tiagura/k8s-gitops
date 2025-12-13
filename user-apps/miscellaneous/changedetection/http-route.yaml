@@ -8,7 +8,7 @@ metadata:
     gethomepage.dev/name: ChangeDetection
     gethomepage.dev/icon: https://raw.githubusercontent.com/dgtlmoon/changedetection.io/master/changedetectionio/static/images/generic-icon.svg
     gethomepage.dev/href: https://watcher.tamhomelab.com
-    gethomepage.dev/description: Monitor Web Pages
+    gethomepage.dev/description: Website Monitor
     gethomepage.dev/pod-selector: ""
 spec:
   parentRefs:
