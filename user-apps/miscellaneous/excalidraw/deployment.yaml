@@ -2,19 +2,25 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: excalidraw
+  labels:
+    app: excalidraw
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: excalidraw
+      netpol.cilium.io/egress-deny: "true"
+      netpol.cilium.io/ingress-from-ingress: "true"
   template:
     metadata:
       labels:
         app: excalidraw
+        netpol.cilium.io/egress-deny: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
     spec:
       containers:
         - name: excalidraw
-          image: excalidraw/excalidraw:sha-4bfc5bb
+          image: excalidraw/excalidraw:latest@sha256:95d528cb4f8d18e0fbdc42ae3d09b5c4a899bfbd6bb89eeaf94b904330d79714
           ports:
             - containerPort: 80
           securityContext:

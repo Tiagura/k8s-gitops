@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: homepage
+  labels:
+    app: homepage
 spec:
   replicas: 1
   strategy:
@@ -9,10 +11,16 @@ spec:
   selector:
     matchLabels:
       app: homepage
+      netpol.cilium.io/egress-to-kube-apiserver: "true"
+      netpol.cilium.io/egress-to-kube-dns: "true"
+      netpol.cilium.io/ingress-from-ingress: "true"
   template:
     metadata:
       labels:
         app: homepage
+        netpol.cilium.io/egress-to-kube-apiserver: "true"
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
     spec:
       securityContext:
         runAsUser: 1000

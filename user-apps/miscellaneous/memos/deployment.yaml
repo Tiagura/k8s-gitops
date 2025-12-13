@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     app: memos
   name: memos
@@ -12,9 +11,10 @@ spec:
       app: memos
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: memos
+        netpol.cilium.io/egress-deny: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
     spec:
       securityContext:
         runAsNonRoot: true

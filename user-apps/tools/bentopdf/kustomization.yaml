@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: bentopdf
+labels:
+  - pairs:
+      app.kubernetes.io/name: bentopdf
+      app.kubernetes.io/component: pdf-tools
+      app.kubernetes.io/part-of: user-apps
+      app.kubernetes.io/managed-by: argocd
+    
+resources:
+  - namespace.yaml
+  - deployment.yaml
+  - service.yaml
+  - http-route.yaml
+  - http-route-external.yaml
+  - ../../../common/cilium-network-policies/

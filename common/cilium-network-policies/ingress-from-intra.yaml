@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ingress-from-intra
+spec:
+  description: >
+    Allow all intra-namespace ingress traffic to selected pods within the same namespace.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/ingress-from-intra: "true"
+
+  ingress:
+    - fromEndpoints:
+        - {}
