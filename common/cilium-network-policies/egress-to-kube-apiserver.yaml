@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-kube-apiserver
+spec:
+  description: >
+    Allow egress traffic to the Kubernetes API server from selected pods.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-kube-apiserver: "true"
+  
+  egress:
+    - toEntities:
+        - kube-apiserver

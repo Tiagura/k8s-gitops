@@ -13,6 +13,9 @@ spec:
     metadata:
       labels:
         app: meilisearch
+        netpol.cilium.io/egress-to-intra: "true"
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/ingress-from-intra: "true"
     spec:
       securityContext:
         runAsNonRoot: true
@@ -21,7 +24,7 @@ spec:
         fsGroup: 1001
       containers:
         - name: meilisearch
-          image: getmeili/meilisearch:v1.29.0
+          image: getmeili/meilisearch:v1.30.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 7700
