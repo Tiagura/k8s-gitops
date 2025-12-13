@@ -33,16 +33,6 @@ configs:
       end
       return hs
 
-  # ConfigMap for custom CMP plugin to enable Kustomize with Helm support
-  # Not need: using built-in --enable-helm option
-  # Kept for reference
-  # cmp:
-  #   create: true
-  #   plugins:
-  #     kustomize-build-with-helm:
-  #       generate:
-  #         command: [ "sh", "-c" ]
-  #         args: [ "kustomize build --enable-helm" ]
   params:
     server.insecure: true
 
@@ -61,7 +51,16 @@ controller:
     limits:
       cpu: 2000m
       memory: 2Gi
+  podLabels:
+    # Cilium network policy labels
+    netpol.cilium.io/egress-to-intra: "true"
+    netpol.cilium.io/egress-to-kube-apiserver: "true"
+    netpol.cilium.io/egress-to-kube-dns: "true"
+    # netpol.cilium.io/ingress-from-host: "true"
+    netpol.cilium.io/ingress-from-prometheus: "true"
 
+
+# https://argo-cd.readthedocs.io/en/stable/developer-guide/architecture/components/#dex
 dex:
   metrics:
     enabled: true
@@ -72,6 +71,12 @@ dex:
     limits:
       cpu: 1000m
       memory: 256Mi
+  podLabels:
+    # Cilium network policy labels
+    # don't use any external OIDC providers, so deny all ingress
+    # maybe change this if added external OIDC provider in the future
+    netpol.cilium.io/egress-to-kube-apiserver: "true"
+    netpol.cilium.io/ingress-deny: "true"
 
 redis:
   metrics:
@@ -83,6 +88,10 @@ redis:
     limits:
       cpu: 2000m
       memory: 128Mi
+  podLabels:
+    # Cilium network policy labels
+    netpol.cilium.io/egress-deny: "true"
+    netpol.cilium.io/ingress-from-intra: "true"
 
 server:
   metrics:
@@ -94,20 +103,20 @@ server:
     limits:
       cpu: 4000m
       memory: 256Mi
+  podLabels:
+    netpol.cilium.io/egress-to-intra: "true"
+    netpol.cilium.io/egress-to-kube-apiserver: "true"
+    netpol.cilium.io/egress-to-kube-dns: "true"
+    # netpol.cilium.io/ingress-from-host: "true"
+    netpol.cilium.io/ingress-from-ingress: "true"
+    netpol.cilium.io/ingress-from-prometheus: "true"
+    netpol.cilium.io/ingress-from-remote-node: "true"
 
 repoServer:
   metrics:
     enabled: true
   containerSecurityContext:
     readOnlyRootFilesystem: true
-  # Not need: using built-in --enable-helm option
-  # Kept for reference
-  # volumes:
-  #   - name: cmp-kustomize-build-with-helm
-  #     configMap:
-  #       name: argocd-cmp-cm
-  #   - name: cmp-tmp
-  #     emptyDir: {}
   resources:
     requests:
       cpu: 100m
@@ -115,30 +124,13 @@ repoServer:
     limits:
       cpu: 4000m
       memory: 1024Mi
-  # Not need: using built-in --enable-helm option
-  # Kept for reference
-  # extraContainers:
-  #   - name: kustomize-build-with-helm
-  #     command:
-  #       - argocd-cmp-server
-  #     image: '{{ default .Values.global.image.repository .Values.repoServer.image.repository }}:{{ default (include "argo-cd.defaultTag" .) .Values.repoServer.image.tag }}'
-  #     securityContext:
-  #       runAsNonRoot: true
-  #       runAsUser: 999
-  #       allowPrivilegeEscalation: false
-  #       readOnlyRootFilesystem: true
-  #       seccompProfile:
-  #         type: RuntimeDefault
-  #       capabilities:
-  #         drop: [ "ALL" ]
-  #     volumeMounts:
-  #       - name: plugins
-  #         mountPath: /home/argocd/cmp-server/plugins
-  #       - name: cmp-kustomize-build-with-helm
-  #         mountPath: /home/argocd/cmp-server/config/plugin.yaml
-  #         subPath: kustomize-build-with-helm.yaml
-  #       - mountPath: /tmp
-  #         name: cmp-tmp
+  podLabels:
+    # Cilium network policy labels
+    netpol.cilium.io/egress-to-intra: "true"
+    netpol.cilium.io/egress-to-kube-dns: "true"
+    netpol.cilium.io/egress-to-public-ips: "true"
+    netpol.cilium.io/ingress-from-intra: "true"
+    netpol.cilium.io/ingress-from-prometheus: "true"
 
 applicationSet:
   metrics:
@@ -150,15 +142,9 @@ applicationSet:
     limits:
       cpu: 1000m
       memory: 512Mi
-
-notifications:
-  metrics:
-    enabled: true
-  enabled: false
-  resources:
-    requests:
-      cpu: 100m
-      memory: 64Mi
-    limits:
-      cpu: 1000m
-      memory: 128Mi
+  podLabels:
+    # Cilium network policy labels
+    netpol.cilium.io/egress-to-intra: "true"
+    netpol.cilium.io/egress-to-kube-apiserver: "true"
+    netpol.cilium.io/egress-to-kube-dns: "true"
+    netpol.cilium.io/ingress-from-prometheus: "true"

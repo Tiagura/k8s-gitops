@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ingress-from-kube-apiserver
+spec:
+  description: >
+    Allow ingress traffic from the Kubernetes API server to selected pods.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/ingress-from-kube-apiserver: "true"
+  
+  ingress:
+    - fromEntities:
+        - kube-apiserver

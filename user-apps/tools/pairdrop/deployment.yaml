@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pairdrop
+  labels:
+    app: pairdrop
+spec:
+  selector:
+    matchLabels:
+      app: pairdrop
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: pairdrop
+        netpol.cilium.io/egress-deny: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
+    spec:
+      containers:
+      - name: pairdrop
+        image: linuxserver/pairdrop:1.11.2
+        env:
+        - name: TZ
+          value: Europe/Lisbon
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        # Rate limiting settings
+        - name: RATE_LIMIT
+          value: "false"
+        # WebSocket keep-alive
+        - name: WS_FALLBACK
+          value: "false"
+        ports:
+        - name: http
+          containerPort: 3000
+        resources:
+          requests:
+            memory: 64Mi
+          limits:
+            memory: 128Mi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
