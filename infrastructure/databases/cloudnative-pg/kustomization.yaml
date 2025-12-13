@@ -6,3 +6,5 @@ resources:
   - namespace.yaml
   - barman-plugin/
   - cloudnative-pg-operator/
+  - ../db-cilium-netpols/
+  - ../../../common/cilium-network-policies/

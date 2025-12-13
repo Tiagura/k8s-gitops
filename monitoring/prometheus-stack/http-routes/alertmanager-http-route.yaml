@@ -9,7 +9,7 @@ metadata:
     gethomepage.dev/icon: https://raw.githubusercontent.com/stakater/ForecastleIcons/refs/heads/master/alert-manager.png
     gethomepage.dev/href: https://alertmanager.tamhomelab.com
     gethomepage.dev/description: "Alerting Management & Handling"
-    gethomepage.dev/pod-selector: ""
+    gethomepage.dev/pod-selector: "app.kubernetes.io/name=alertmanager"
 spec:
   parentRefs:
     - group: gateway.networking.k8s.io

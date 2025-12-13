@@ -1,0 +1,31 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: vaultwarden
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Miscellaneous
+    gethomepage.dev/name: Vaultwarden
+    gethomepage.dev/icon: https://raw.githubusercontent.com/dani-garcia/vaultwarden/refs/heads/main/src/static/images/vaultwarden-icon.png
+    gethomepage.dev/href: https://vault.tamhomelab.com
+    gethomepage.dev/description: Password Manager
+    gethomepage.dev/pod-selector: ""
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: gateway-internal
+      namespace: gateway
+  hostnames:
+    - "vault.tamhomelab.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: vaultwarden
+          port: 80
+          weight: 1

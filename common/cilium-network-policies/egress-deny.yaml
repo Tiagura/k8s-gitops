@@ -1,0 +1,13 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-deny
+spec:
+  description: >
+    Deny all egress traffic from selected pods.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-deny: "true"
+
+  egress:
+    - {}

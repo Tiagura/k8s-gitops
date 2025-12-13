@@ -1,0 +1,16 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ingress-from-prometheus
+spec:
+  description: >
+    Allow ingress traffic from Prometheus pods.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/ingress-from-prometheus: "true"
+
+  ingress:
+    - fromEndpoints:
+      - matchLabels:
+          app.kubernetes.io/name: prometheus
+          k8s:io.kubernetes.pod.namespace: prometheus-stack

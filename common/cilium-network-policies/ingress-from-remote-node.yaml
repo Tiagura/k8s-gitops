@@ -1,0 +1,15 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ingress-from-remote-node
+spec:
+  description: >
+    Allow ingress traffic from selected pods to remote node host.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/ingress-from-remote-node: "true"
+      
+
+  ingress:
+    - fromEntities:
+        - remote-node

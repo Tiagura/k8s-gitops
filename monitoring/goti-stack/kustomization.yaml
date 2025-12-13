@@ -9,9 +9,9 @@ labels:
       app.kubernetes.io/part-of: monitoring
       app.kubernetes.io/managed-by: argocd
     
-
 resources:
   - namespace.yaml
   - goti-stack-config-secrets-sealed.yaml
   - gotify/
   - gotigram/
+  - ../../common/cilium-network-policies/

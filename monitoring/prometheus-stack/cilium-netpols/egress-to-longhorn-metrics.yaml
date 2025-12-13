@@ -1,0 +1,20 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-longhorn-metrics
+spec:
+  description: >
+    Allow egress to Longhorn namespace for monitoring Longhorn components.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-longhorn-metrics: "true"
+
+  egress:
+    - toServices:
+        - k8sService:
+            namespace: longhorn
+            serviceName: longhorn-backend
+      toPorts:
+        - ports:
+            - port: "9500"
+              protocol: TCP

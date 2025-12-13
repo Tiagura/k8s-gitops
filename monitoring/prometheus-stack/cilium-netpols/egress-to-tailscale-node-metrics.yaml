@@ -1,0 +1,17 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-tailscale-node-metrics
+spec:
+  description: Allow egress to Tailscale node for node metrics scraping.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-tailscale-node-metrics: "true"
+
+  egress:
+    - toFQDNs:
+        - matchName: "tailscale-exit-node"
+      toPorts:
+        - ports:
+            - port: "5252"
+              protocol: TCP
