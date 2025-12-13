@@ -4,12 +4,12 @@ metadata:
   name: grafana
   annotations:
     gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Monitoring
+    gethomepage.dev/group: Observability
     gethomepage.dev/name: Grafana
     gethomepage.dev/icon: https://raw.githubusercontent.com/grafana/grafana/d199c33d7e0bc815ac456c3350e1bd45261ea0fd/public/img/grafana_icon.svg
     gethomepage.dev/href: https://grafana.tamhomelab.com
     gethomepage.dev/description: "Data Visualization & Monitoring"
-    gethomepage.dev/pod-selector: ""
+    gethomepage.dev/pod-selector: "app.kubernetes.io/name=grafana"
 spec:
   parentRefs:
     - group: gateway.networking.k8s.io

@@ -5,7 +5,7 @@ metadata:
   name: barman-object-store
 spec:
   configuration:
-    destinationPath: "s3://cnpg-backup-bucket@weur/"
+    destinationPath: "s3://cnpg-backup-bucket/" # don't use @<location> syntax for S3-compatible storage in barman plugin
     endpointURL: "https://99147fe4acf1aced16d7c6633e368caa.r2.cloudflarestorage.com"
     s3Credentials:
       accessKeyId:
@@ -16,3 +16,12 @@ spec:
         key: ACCESS_SECRET_KEY
     wal:
       compression: gzip
+      maxParallel: 1  # https://github.com/cloudnative-pg/plugin-barman-cloud/issues/516
+  instanceSidecarConfiguration:
+    env:
+      # https://github.com/cloudnative-pg/plugin-barman-cloud/issues/513
+      - name: AWS_REQUEST_CHECKSUM_CALCULATION
+        value: when_required
+      - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+        value: when_required
+  retentionPolicy: "30d"

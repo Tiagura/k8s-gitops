@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: fireflyiii-db-backup
+spec:
+  cluster:
+    name: fireflyiii-database
+  immediate: true                 # Trigger an immediate backup upon creation
+  schedule: '0 0 2 */3 * *'       # Every 3 days at 2:00 AM, GO cron format
+  backupOwnerReference: self
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io

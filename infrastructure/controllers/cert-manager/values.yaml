@@ -17,6 +17,22 @@ extraArgs:
   - "--max-concurrent-challenges=60"
   - "--enable-certificate-owner-ref=true"
 
+podLabels:
+  # Cilium Network Policies labels
+  netpol.cilium.io/egress-to-cloudflare: "true"
+  netpol.cilium.io/egress-to-kube-apiserver: "true"
+  netpol.cilium.io/egress-to-kube-dns: "true"
+  netpol.cilium.io/ingress-deny: "true"
+  # netpol.cilium.io/ingress-from-remote-node: "true"
+
+# Disable built-in monitoring
+prometheus:
+  enabled: false
+  servicemonitor:
+    enabled: false
+  podmonitor:
+    enabled: false
+
 securityContext:
   runAsNonRoot: true
   runAsUser: 65534

@@ -1,0 +1,23 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: gotify-netpol
+spec:
+  description: >
+    Allow gotify pods to:
+      Ingress from:
+        - changedetection
+  
+  endpointSelector:
+    matchLabels:
+      app: gotify
+
+  ingress:
+    - fromEndpoints:
+      - matchLabels:
+          app: changedetection
+          k8s:io.kubernetes.pod.namespace: changedetection
+      toPorts:
+      - ports:
+        - port: "80"
+          protocol: TCP

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sockpuppet
+  labels:
+    app: sockpuppet
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sockpuppet
+  template:
+    metadata:
+      labels:
+        app: sockpuppet
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/egress-to-public-ips: "true"
+        netpol.cilium.io/ingress-from-intra: "true"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: sockpuppet
+          image: dgtlmoon/sockpuppetbrowser:0.0.3
+          ports:
+            - containerPort: 3000
+          env:
+            - name: SCREEN_WIDTH
+              value: "1920"
+            - name: SCREEN_HEIGHT
+              value: "1024"
+            - name: SCREEN_DEPTH
+              value: "16"
+            - name: MAX_CONCURRENT_CHROME_PROCESSES
+              value: "5"  # 10
+            - name: FETCH_WORKERS   # https://github.com/dgtlmoon/changedetection.io/discussions/2821
+              value: "5"        
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              add:
+                - SYS_ADMIN

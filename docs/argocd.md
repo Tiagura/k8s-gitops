@@ -13,6 +13,9 @@ This document describes the **App-of-Apps architecture** used here, which enable
     - [How to Declare a Sync-Wave](#how-to-declare-a-sync-wave)
   - [Health Check Customization for App-of-Apps Pattern](#health-check-customization-for-app-of-apps-pattern)
   - [Initial Bootstrapp and Self-Management Loop](#initial-bootstrapp-and-self-management-loop)
+  - [Monitoring \& Alerts](#monitoring--alerts)
+    - [Monitor](#monitor)
+    - [Alerts](#alerts)
   - [Resources](#resources)
 
 ## App of Apps Pattern
@@ -36,11 +39,13 @@ To address this, Argo CD **sync-waves** are used to enforce an explicit deployme
 
 | Wave  | Layer               | Components                                                       |  Description |
 | ----- | ------------------- | -----------------------------------------------------------------|--------------|
-| **0** | Core Foundations          | [`cilium`](../infrastructure/networking/cilium/), [`sealed-secrets`](../infrastructure/controllers/sealed-secrets/) | Provides baseline networking and secret management required before any higher-level infrastructure can function. |
+| **0** | Core Foundations    | [`cilium`](../infrastructure/networking/cilium/), [`sealed-secrets`](../infrastructure/controllers/sealed-secrets/) | Provides baseline networking and secret management required before any higher-level infrastructure can function. |
 | **1** | Storage Services          | [`longhorn`](../infrastructure/storage/longhorn/)               | Delivers the persistent storage layer needed by controllers and applications that rely on PVCs. |
-| **2** | GitOps and Ingress        | [`argocd`](../infrastructure/controllers/argocd/), [`cert-manager`](../infrastructure/controllers/cert-manager/), [`gateway`](../infrastructure/networking/gateway-api/) | GitOps orchestration, certificate automation, and cluster ingress/routing components. |
-| **3** | System & Monitoring | Rest of infrastructure (manifests in [`infrastructure/*`](../infrastructure/)) and Monitoring stack (manifests in [`monitoring/*`](../monitoring/)) | Core system services and observability components.                                   |
-| **4** | User Apps           | User Applications (manifests under [`user-apps/*`](../user-apps/)) | All user-facing applications that rely on the underlying infrastructure being available.|
+| **2** | GitOps and Ingress  | [`argocd`](../infrastructure/controllers/argocd/), [`cert-manager`](../infrastructure/controllers/cert-manager/), [`gateway`](../infrastructure/networking/gateway-api/) | GitOps orchestration, certificate automation, and cluster ingress/routing components. |
+| **3** | Monitoring          | Monitoring stack (manifests in [`monitoring/*`](../monitoring/)) | Observability components.                                   |
+| **4** | General Infra       | Rest of infrastructure (manifests in [`infrastructure/*`](../infrastructure/)) | Core system services. |
+| **5** | User Apps Databases | User Applications Databases (manifests in [`cloudnative-pg-apps-databases/*`](../infrastructure/databases/cloudnative-pg-apps-databases)) | Databases used for storing user app data. |
+| **6** | User Apps           | User Applications (manifests in [`user-apps/*`](../user-apps/)) | All user-facing applications that rely on the underlying infrastructure being available.|
 
 ### How to Declare a Sync-Wave
 In ArgoCD, sync-waves are declared using the annotation:
@@ -61,7 +66,7 @@ When using the App-of-Apps pattern, **custom health checks** are required to mak
 
 By default, Argo CD marks a parent Application as Healthy as soon as the child Application resource is created, even if the child is still syncing or degraded. This breaks sync-wave ordering. For example, Longhorn (Wave 1) could start deploying before Sealed-Secrets (Wave 0) is ready, causing failures.
 
-To fix this, a custom Lua health check is injected in [ArgoCD's `values.yaml`](../infrastructure/controllers/argocd/values.yaml) file:
+To fix this, a custom Lua health check is injected in [ArgoCD's `values.yaml`](../infrastructure/controllers/argocd/values.yaml#L35) file:
 ```lua
 resource.customizations.health.argoproj.io_Application: |
   hs = {}
@@ -93,11 +98,29 @@ Effects of this customization:
 5. The process continues until all waves are healthy.
 6. Any changes pushed to Git are automatically detected by Argo CD, triggering reconciliation so the cluster continuously aligns with the desired state defined in the repository.
 
+## Monitoring & Alerts
+
+### Monitor
+
+ArgoCD exposes metrics compatible with Prometheus, which can be scraped to monitor the health and performance of the server and its applications. In this setup, a dedicated `ServiceMonitor` is defined to integrate with the Prometheus Operator. The `ServiceMonitor`s are defined in [`argocd-monitor.yaml`](../monitoring/prometheus-stack/monitors/services/argocd-monitor.yaml).
+
+### Alerts
+
+The configured alerts (defined in the [`argocd-alerts.yaml`](../monitoring/prometheus-stack/alerts/argocd-alerts.yaml)) continuously monitor the health of ArgoCD and its managed applications, helping ensure timely detection of issues in the GitOps workflow.
+
+| **Alert Name**                 | **Severity** | **Description**                                                                                                           |
+| ------------------------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| **ArgoCDApplicationNotSynced** | Warning      | Triggers when an ArgoCD application has been out of sync for more than 10 minutes, indicating it is not reconciled.       |
+| **ArgoCDApplicationUnhealthy** | Critical     | Fires when an ArgoCD application is in an unhealthy state for more than 5 minutes, signaling potential deployment issues. |
+
+
 ## Resources
-- [ArgoCD Cluster Bootstrapping](https://argo-cd.readthedocs.io/en/latest/operator-manual/cluster-bootstrapping/)
-- [ArgoCD Kustomize](https://argo-cd.readthedocs.io/en/latest/user-guide/kustomize/)
-- [ArgoCD Helm](https://argo-cd.readthedocs.io/en/latest/user-guide/helm/)
+- [ArgoCD Cluster Bootstrapping](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/)
+- [ArgoCD Kustomize](https://argo-cd.readthedocs.io/en/stable/user-guide/kustomize/)
+- [ArgoCD Resource Health](https://argo-cd.readthedocs.io/en/stable/operator-manual/health/#overview)
+- [ArgoCD Helm](https://argo-cd.readthedocs.io/en/stable/user-guide/helm/)
 - [ArgoCD Sync Phases and Waves](https://argo-cd.readthedocs.io/en/stable/user-guide/sync-waves/#sync-phases-and-waves)
-- [ArgoCD Secret Management](https://argo-cd.readthedocs.io/en/latest/operator-manual/secret-management/)
-- [ArgoCD FAQ](https://argo-cd.readthedocs.io/en/latest/faq/)
+- [ArgoCD Secret Management](https://argo-cd.readthedocs.io/en/stable/operator-manual/secret-management/)
+- [ArgoCD Prometheus Operator](https://argo-cd.readthedocs.io/en/stable/operator-manual/metrics/#prometheus-operator)
+- [ArgoCD FAQ](https://argo-cd.readthedocs.io/en/stable/faq/)
 - [Argo CD Application Dependencies Codefresh](https://codefresh.io/blog/argo-cd-application-dependencies/)

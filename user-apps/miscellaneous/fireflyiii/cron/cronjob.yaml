@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: fireflyiii-cronjob
+  labels:
+    app: fireflyiii
+    tier: cronjob
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 2
+  successfulJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 120
+      backoffLimit: 5
+      template:
+        metadata:
+          labels:
+            app: fireflyiii
+            tier: cron
+        spec:
+          containers:
+            - name: cron
+              image: busybox
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+              args:
+                - wget -qO- "http://fireflyiii:8080/api/v1/cron/${STATIC_CRON_TOKEN}"
+              env:
+                # The STATIC_CRON_TOKEN must be *exactly* 32 characters long
+                - name: STATIC_CRON_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: fireflyiii-secrets
+                      key: static_cron_token
+          restartPolicy: Never
