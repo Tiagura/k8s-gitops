@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-world
+spec:
+  description: >
+    Allow egress traffic from selected pods to outside the cluster (world).
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-world: "true"
+
+  egress:
+    - toEntities:
+        - world

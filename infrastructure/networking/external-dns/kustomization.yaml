@@ -14,3 +14,4 @@ resources:
   - rbac.yaml
   - cloudflare-api-token-secret-sealed.yaml
   - deployment.yaml
+  - ../../../common/cilium-network-policies/

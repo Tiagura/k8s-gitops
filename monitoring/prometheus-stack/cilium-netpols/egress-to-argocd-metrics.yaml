@@ -1,0 +1,61 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-argocd-metrics
+spec:
+  description: >
+    Allow egress to ArgoCD namespace for monitoring ArgoCD components.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-argocd-metrics: "true"
+
+  egress:
+    # Application Controller metrics
+    - toServices:
+        - k8sService:
+            namespace: argocd
+            serviceName: argocd-application-controller-metrics
+      toPorts:
+        - ports:
+            - port: "8082"
+              protocol: TCP
+
+    # ApplicationSet Controller metrics
+    - toServices:
+        - k8sService:
+            namespace: argocd
+            serviceName: argocd-applicationset-controller-metrics
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+
+    # Repo Server metrics
+    - toServices:
+        - k8sService:
+            namespace: argocd
+            serviceName: argocd-repo-server-metrics
+      toPorts:
+        - ports:
+            - port: "8084"
+              protocol: TCP
+
+    # Server metrics
+    - toServices:
+        - k8sService:
+            namespace: argocd
+            serviceName: argocd-server-metrics
+      toPorts:
+        - ports:
+            - port: "8083"
+              protocol: TCP
+
+    # Redis metrics
+    - toServices:
+        - k8sService:
+            namespace: argocd
+            serviceName: argocd-redis-metrics
+      toPorts:
+        - ports:
+            - port: "9121"
+              protocol: TCP

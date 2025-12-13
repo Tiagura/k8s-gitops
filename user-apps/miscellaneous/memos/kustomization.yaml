@@ -13,6 +13,8 @@ resources:
   - namespace.yaml
   - deployment.yaml
   - service.yaml
-  - http-route.yaml
   - pvc.yaml
   - configmap.yaml
+  - http-route.yaml
+  - http-route-external.yaml
+  - ../../../common/cilium-network-policies/

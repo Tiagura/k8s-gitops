@@ -9,7 +9,7 @@ metadata:
     gethomepage.dev/icon: https://www.stremio.com/website/stremio-logo-small.png
     gethomepage.dev/href: https://stremio.tamhomelab.com
     gethomepage.dev/description: Watch Films and Series
-    gethomepage.dev/pod-selector: ""
+    gethomepage.dev/pod-selector: "app=stremio"
 spec:
   parentRefs:
     - group: gateway.networking.k8s.io

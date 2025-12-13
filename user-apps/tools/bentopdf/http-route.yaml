@@ -1,0 +1,31 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: bentopdf
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Tools
+    gethomepage.dev/name: Bento PDF
+    gethomepage.dev/icon: https://raw.githubusercontent.com/alam00000/bentopdf/main/public/images/favicon.svg
+    gethomepage.dev/href: https://pdf.tamhomelab.com
+    gethomepage.dev/description: PDF Tools
+    gethomepage.dev/pod-selector: ""
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: gateway-internal
+      namespace: gateway
+  hostnames:
+    - "pdf.tamhomelab.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: bentopdf
+          port: 8080
+          weight: 1

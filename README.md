@@ -7,7 +7,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 - [GitOps-Driven Kubernetes Cluster with ArgoCD](#gitops-driven-kubernetes-cluster-with-argocd)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
-  - [Cluster Components](#cluster-components)
+  - [Cluster Components and Apps](#cluster-components-and-apps)
     - [Infrastructure](#infrastructure)
     - [Monitoring](#monitoring)
     - [Applications](#applications)
@@ -37,7 +37,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 
 - **GitOps Pattern:** Uses ApplicationSets to create separate ArgoCD Applications for infrastructure and workloads, keeping deployments modular, clear, and easy to manage.
 - **App of Apps Pattern:** Enables management of multiple applications through a single ArgoCD application, automatically detecting and deploying changes from the Git repository to the Kubernetes cluster.
-- **Self-Management:** ArgoCD manages its own installation and configuration, while continuously reconciling all other infrastructure components and applications declared in this repository—ensuring the entire cluster remains consistent with the Git source of truth.
+- **Self-Management:** ArgoCD manages its own installation and configuration, while continuously reconciling all other infrastructure components and applications declared in this repository, ensuring the entire cluster remains consistent with the Git source of truth.
 - **External & Internal Access to Services**  
   - Internal: All services are accessible inside the home network.  
   - External: Selected services are available from the internet through **Cloudflare Tunnel**.
@@ -47,7 +47,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
   - Database: Backups of database data to ensure recoverability and integrity.
 
 
-## Cluster Components
+## Cluster Components and Apps
 
 ### Infrastructure
 
@@ -78,12 +78,18 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 
 | Logo | Name | Purpose |
 |------|------|---------|
+| <img src="https://raw.githubusercontent.com/alam00000/bentopdf/main/public/images/favicon.svg" width="50"/> | [Bento PDF](https://bentopdf.com/) | PDF Toolkit |
+| <img src="https://raw.githubusercontent.com/dgtlmoon/changedetection.io/master/changedetectionio/static/images/generic-icon.svg" width="50"/> | [ChangeDetection](https://changedetection.io/) | Website Monitor |
 | <img src="https://svgicons.com/api/ogimage/?id=221729&n=file-type-excalidraw" width="50"/> | [Excalidraw](https://excalidraw.com/) | Whiteboard |
+| <img src="https://raw.githubusercontent.com/firefly-iii/firefly-iii/develop/.github/assets/img/logo-small.png" width="50"/> | [Firefly III](https://www.firefly-iii.org/) | Personal Finance Manager |
 | <img src="https://raw.githubusercontent.com/gethomepage/homepage/refs/heads/dev/public/android-chrome-192x192.png" width="50"/> | [Homepage](https://gethomepage.dev/) | Dashboard  |
+| <img src="https://raw.githubusercontent.com/CorentinTh/it-tools/refs/heads/main/public/android-chrome-192x192.png" width="50"/> | [IT Tools](https://github.com/CorentinTh/it-tools/tree/main) | Developer Tools |
 | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Jellyfin_-_icon-transparent.svg/1024px-Jellyfin_-_icon-transparent.svg.png?20240822231831" width="50"/> | [Jellyfin](https://jellyfin.org/) | LiveTV |
 | <img src="https://raw.githubusercontent.com/karakeep-app/karakeep/refs/heads/main/apps/web/app/icon.png" width="50"/> | [Karakeep](https://karakeep.app/) | Bookmark App |
-| <img src="https://raw.githubusercontent.com/usememos/memos/refs/heads/main/web/public/logo.webp" width="50"/> | [Memos](https://usememos.com/)| Note-taking | 
-| <img src="https://www.stremio.com/website/stremio-logo-small.png" width="50"/> | [Stremio](https://www.stremio.com/) | Media streaming |
+| <img src="https://raw.githubusercontent.com/usememos/memos/refs/heads/main/web/public/logo.webp" width="50"/> | [Memos](https://usememos.com/)| Note Taking | 
+| <img src="https://github.com/schlagmichdoch/PairDrop/raw/master/public/images/android-chrome-512x512.png" width="50"/> | [PairDrop](https://github.com/schlagmichdoch/pairdrop) | Local File Sharing |
+| <img src="https://www.stremio.com/website/stremio-logo-small.png" width="50"/> | [Stremio](https://www.stremio.com/) | Media Streaming |
+| <img src="https://raw.githubusercontent.com/dani-garcia/vaultwarden/refs/heads/main/src/static/images/vaultwarden-icon.png" width="50"/> | [Vaultwarden](https://github.com/dani-garcia/vaultwarden) | Password Manager |
 
 
 ## Prerequisites
@@ -132,7 +138,7 @@ kubectl get pods -n kube-system -l k8s-app=cilium
 ### 2. Install Sealed Secrets CRDs
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.33.1/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
+kubectl apply -f https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.34.0/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
 ```
 
 
