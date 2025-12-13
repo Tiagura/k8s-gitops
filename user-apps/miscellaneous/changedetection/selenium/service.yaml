@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium
+spec:
+  selector:
+    app: selenium
+  ports:
+    - protocol: TCP
+      port: 4444
+      targetPort: 4444

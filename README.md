@@ -78,6 +78,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 
 | Logo | Name | Purpose |
 |------|------|---------|
+| <img src="https://raw.githubusercontent.com/dgtlmoon/changedetection.io/master/changedetectionio/static/images/generic-icon.svg" width="50"/> | [ChangeDetection](https://changedetection.io/) | Website Monitor |
 | <img src="https://svgicons.com/api/ogimage/?id=221729&n=file-type-excalidraw" width="50"/> | [Excalidraw](https://excalidraw.com/) | Whiteboard |
 | <img src="https://raw.githubusercontent.com/gethomepage/homepage/refs/heads/dev/public/android-chrome-192x192.png" width="50"/> | [Homepage](https://gethomepage.dev/) | Dashboard  |
 | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Jellyfin_-_icon-transparent.svg/1024px-Jellyfin_-_icon-transparent.svg.png?20240822231831" width="50"/> | [Jellyfin](https://jellyfin.org/) | LiveTV |

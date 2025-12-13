@@ -1,21 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: user-apps
+  name: user-apps-databases
   annotations:
-    argocd.argoproj.io/sync-wave: "6"
+    argocd.argoproj.io/sync-wave: "5"
 spec:
   generators:
     - git:
         repoURL: https://github.com/Tiagura/k8s-gitops.git
         revision: main
         directories:
-          - path: user-apps/*/*
+          - path: infrastructure/databases/cloudnative-pg-apps-databases/*
   template:
     metadata:
-      name: '{{path.basename}}'
+      name: user-app-db-{{path.basename}}
       labels:
-        app.kubernetes.io/part-of: user-apps
+        app.kubernetes.io/part-of: databases
         app.kubernetes.io/managed-by: argocd
     spec:
       project: user-apps
@@ -26,40 +26,27 @@ spec:
         path: '{{path}}'
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{path.basename}}'
+        namespace: cloudnative-pg
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
-          allowEmpty: false
         syncOptions:
           - CreateNamespace=true
           - ServerSideApply=true
           - ApplyOutOfSyncOnly=true
           - RespectIgnoreDifferences=true
         retry:
-          limit: 3
+          limit: 5
           backoff:
-            duration: 10s
+            duration: 1m
             factor: 2
             maxDuration: 5m
       ignoreDifferences:
-        - group: gateway.networking.k8s.io
-          kind: HTTPRoute
-          jsonPointers:
-            - /spec/rules/0/backendRefs/0/weight
-            - /spec/rules/0/backendRefs/0/kind
-            - /spec/rules/0/backendRefs/0/group
-        - group: "apps"
-          kind: "StatefulSet"
-          jqPathExpressions:
-            - ".spec.volumeClaimTemplates[].apiVersion"
-            - ".spec.volumeClaimTemplates[].kind"
         - group: postgresql.cnpg.io
           kind: Cluster
-          jsonPointers:
-            - /status
-            - /metadata/generation
+          jqPathExpressions:
+            - ".spec.plugins[].enabled"
       info:
         - name: Description
-          value: 'User application: {{path.basename}}'
+          value: "Database component {{path.basename}} managed by CloudNativePG"
