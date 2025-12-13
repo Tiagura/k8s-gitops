@@ -1,16 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: changedetection
+  name: web-driver
+  labels:
+    app: web-driver
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: changedetection
+      app: web-driver
   template:
     metadata:
       labels:
-        app: changedetection
+        app: web-driver
     spec:
       securityContext:
         runAsNonRoot: true
@@ -18,10 +20,15 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
       containers:
-        - name: changedetection
-          image: dgtlmoon/changedetection.io:0.51.4
+        - name: web-driver
+          image: selenium/standalone-chrome-debug:3.141.59
           ports:
-            - containerPort: 5000
+            - containerPort: 4444
+          resources:
+            requests:
+              memory: 128Mi
+            limits:
+              memory: 2Gi
           securityContext:
             allowPrivilegeEscalation: false
             privileged: false
@@ -29,9 +36,10 @@ spec:
               drop:
                 - ALL
           volumeMounts:
-            - name: changedetection-datastore
-              mountPath: /datastore
+            - name: dshm
+              mountPath: /dev/shm
       volumes:
-        - name: changedetection-datastore
-          persistentVolumeClaim:
-            claimName: changedetection-pvc
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Gi

@@ -10,7 +10,5 @@ labels:
 
 resources:
   - namespace.yaml
-  - service.yaml
-  - deployment.yaml
-  - http-route.yaml
-  - pvc.yaml
+  - changedetection/
+  - webdriver/
