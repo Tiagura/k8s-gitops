@@ -13,8 +13,11 @@ resources:
   - argocd-app.yaml
   - gateway-app.yaml
   - cert-manager-app.yaml
-  # Wave 3: Rest of infrastructure components and monitoring
-  - infrastructure-applicationset.yaml
+  # Wave 3: Monitoring Stack
   - monitoring-applicationset.yaml
-  # Wave 4: User applications components
+  # Wave 4: Rest of infrastructure components
+  - infrastructure-applicationset.yaml
+  # Wave 5: User applications databases
+  - user-apps-databases-applicationset.yaml
+  # Wave 6: User applications components
   - user-apps-applicationset.yaml

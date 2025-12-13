@@ -1,0 +1,33 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: fireflyiii-database
+  labels:
+    app: fireflyiii
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.1
+  plugins:
+  - name: barman-cloud.cloudnative-pg.io
+    isWALArchiver: true
+    parameters:
+      barmanObjectName: barman-object-store
+  postgresql:
+    parameters:
+      shared_buffers: "256MB"
+      wal_compression: "on"
+      max_wal_size: "512MB"
+    pg_hba:
+      - host fireflyiii fireflyiii 10.32.0.0/16 scram-sha-256   # Allow connections from the cluster network (i.e. Pod CIDR)
+  bootstrap:
+    initdb:
+      database: fireflyiii
+      owner: fireflyiii
+      secret:
+        name: fireflyiii-db-creds
+  storage:
+    size: 5Gi
+    storageClass: cnpg-longhorn-storage
+  walStorage:
+    size: 1Gi
+    storageClass: cnpg-longhorn-storage

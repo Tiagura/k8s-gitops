@@ -1,12 +1,28 @@
 {
-  "extends": ["config:base"],
+  "mode": "full",
+  "recreateClosed": true,
+  "dependencyDashboard": true,
+  "schedule": ["* 0-4 * * 1"],
+
+  "prCreation": "not-pending",
+  "rebaseWhen": "behind-base-branch",
+
+  "extends": [
+    "mergeConfidence:all-badges",
+    "config:recommended"
+  ],
+
   "helm-values": {
     "enabled": true
   },
-  "regexManagers": [
+
+  "customManagers": [
     {
+      "customType": "regex",
       "description": "Update Helm chart versions in kustomization.yaml",
-      "fileMatch": ["kustomization\\.yaml$"],
+      "managerFilePatterns": [
+        "/kustomization\\.yaml$/"
+      ],
       "matchStrings": [
         "name:\\s+(?<depName>[^\\s]+)\\s+repo:\\s+(?<registryUrl>[^\\s]+)\\s+version:\\s+(?<currentValue>[^\\s]+)"
       ],
@@ -14,17 +30,51 @@
       "registryUrlTemplate": "{{registryUrl}}"
     },
     {
-      "description": "Update Docker images in deployment.yaml",
-      "fileMatch": ["deployment\\.yaml$"],
+      "customType": "regex",
+      "description": "Update Docker images in various YAML files",
+      "managerFilePatterns": [
+        "/deployment\\.yaml$/",
+        "/job\\.yaml$/",
+        "/cronjob\\.yaml$/",
+        "/cluster-.*\\.yaml$/"
+      ],
       "matchStrings": [
-        "image:\\s+(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)"
+        "image:\\s+(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)",
+        "imageName:\\s+(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)"
       ],
       "datasourceTemplate": "docker",
       "versioningTemplate": "docker"
     },
     {
+      "description": "Update FireflyIII core Docker image via GitHub releases",
+      "fileMatch": [
+        "user-apps/miscellaneous/fireflyiii/core/deployment\\.yaml"
+      ],
+      "matchStrings": [
+        "image:\\s+(?<depName>fireflyiii/core):version-(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "firefly-iii/firefly-iii",
+      "versioningTemplate": "semver"
+    },
+    {
+      "description": "Update FireflyIII data-importer Docker image via GitHub releases",
+      "fileMatch": [
+        "user-apps/miscellaneous/fireflyiii/importer/deployment\\.yaml"
+      ],
+      "matchStrings": [
+        "image:\\s+(?<depName>fireflyiii/data-importer):version-(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "firefly-iii/data-importer",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
       "description": "Update Sealed Secrets CRD URL in README.md",
-      "fileMatch": ["README\\.md"],
+      "managerFilePatterns": [
+        "/README\\.md/"
+      ],
       "matchStrings": [
         "https://raw\\.githubusercontent\\.com/bitnami-labs/sealed-secrets/v(?<currentValue>[^/]+)/helm/sealed-secrets/crds/bitnami\\.com_sealedsecrets\\.yaml"
       ],
@@ -32,8 +82,11 @@
       "datasourceTemplate": "github-releases"
     },
     {
+      "customType": "regex",
       "description": "Update Gateway API release URL in README.md",
-      "fileMatch": ["README\\.md"],
+      "managerFilePatterns": [
+        "/README\\.md/"
+      ],
       "matchStrings": [
         "https://github\\.com/kubernetes-sigs/gateway-api/releases/download/v(?<currentValue>[^/]+)/standard-install\\.yaml",
         "https://github\\.com/kubernetes-sigs/gateway-api/releases/download/v(?<currentValue>[^/]+)/experimental-install\\.yaml"
@@ -42,9 +95,10 @@
       "datasourceTemplate": "github-releases"
     }
   ],
+
   "packageRules": [
     {
-      "matchFiles": ["^infrastructure/"],
+      "matchFileNames": ["^infrastructure/"],
       "automerge": false
     },
     {
@@ -56,9 +110,8 @@
       "automerge": true
     },
     {
-      "matchManagers": ["regex"],
+      "matchManagers": ["custom.regex"],
       "automerge": true
     }
-  ],
-  "dependencyDashboard": false
+  ]
 }

@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ingress-from-host
+spec:
+  description: >
+    Allow ingress traffic from host entity to selected pods.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/ingress-from-host: "true"
+  
+  ingress:
+    - fromEntities:
+      - host
