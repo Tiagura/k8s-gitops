@@ -1,0 +1,89 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cloudflared-netpol
+spec:
+  description: >
+    Allow cloudflared pods to:
+      Ingress from:
+        - homepage
+      Egress to:
+        - access to the externally exposed apps:
+            misc:
+              - excalidraw
+              - memos
+            media:
+              - nodecast-tv
+              - stremio
+            tools:
+              - bentopdf
+              - it-tools
+
+  endpointSelector:
+    matchLabels:
+      app: cloudflared
+
+  ingress:
+    - fromEndpoints:
+      - matchLabels:
+          app: homepage
+          k8s:io.kubernetes.pod.namespace: homepage
+      toPorts:
+      - ports:
+        - port: "2000"
+          protocol: TCP
+
+  egress:
+    - toEndpoints:
+      - matchLabels:
+          app: excalidraw
+          k8s:io.kubernetes.pod.namespace: excalidraw
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+  
+    - toEndpoints:
+      - matchLabels:
+          app: memos
+          k8s:io.kubernetes.pod.namespace: memos
+      toPorts:
+        - ports:
+            - port: "5230"
+              protocol: TCP
+
+    - toEndpoints:
+      - matchLabels:
+          app: nodecast-tv
+          k8s:io.kubernetes.pod.namespace: nodecast-tv
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP
+
+    - toEndpoints:
+      - matchLabels:
+          app: stremio
+          k8s:io.kubernetes.pod.namespace: stremio
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+
+    - toEndpoints:
+      - matchLabels:
+          app: bentopdf
+          k8s:io.kubernetes.pod.namespace: bentopdf
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+    
+    - toEndpoints:
+      - matchLabels:
+          app: it-tools
+          k8s:io.kubernetes.pod.namespace: it-tools
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP

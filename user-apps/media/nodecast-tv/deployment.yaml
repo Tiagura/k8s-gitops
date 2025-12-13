@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodecast-tv
+  labels:
+    app: nodecast-tv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodecast-tv
+  template:
+    metadata:
+      labels:
+        app: nodecast-tv
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/egress-to-public-ips: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+      containers:
+      - image: ghcr.io/technomancer702/nodecast-tv:1.3.0
+        name: nodecast-tv
+        env:
+          - name: NODE_ENV
+            value: "production"
+          - name: PORT
+            value: "3000"
+          # This is here to stop crashes on sycning large list with many channels and/or large EPG data
+          # Make sure it is always a little less than the pod memory limit
+          - name: NODE_OPTIONS
+            value: "--max-old-space-size=900" # in MB
+        resources:
+          requests:
+            memory: 128Mi
+          limits:
+            memory: 1Gi
+        ports:
+          - containerPort: 3000
+        volumeMounts:
+          - name: data-volume
+            mountPath: /app/data
+          - name: cache-volume
+            mountPath: /app/data/cache
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: nodecast-tv-data-pvc
+        - name: cache-volume
+          emptyDir:
+            sizeLimit: 5Gi

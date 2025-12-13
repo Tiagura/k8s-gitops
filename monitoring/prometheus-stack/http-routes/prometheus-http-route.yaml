@@ -9,7 +9,7 @@ metadata:
     gethomepage.dev/icon: https://raw.githubusercontent.com/prometheus/prometheus/906f6a33b60cec2596018ac8cc97ac41b16b06b7/documentation/images/prometheus-logo.svg
     gethomepage.dev/href: https://prometheus.tamhomelab.com
     gethomepage.dev/description: "Metrics Scraper"
-    gethomepage.dev/pod-selector: ""
+    gethomepage.dev/pod-selector: "app.kubernetes.io/name=prometheus"
 spec:
   parentRefs:
     - group: gateway.networking.k8s.io

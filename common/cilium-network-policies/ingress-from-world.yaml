@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ingress-from-world
+spec:
+  description: >
+    Allow ingress traffic from world (i.e. outside the cluster) to selected pods.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/ingress-from-world: "true"
+  
+  ingress:
+    - fromEntities:
+      - world

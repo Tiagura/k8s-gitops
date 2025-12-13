@@ -1,0 +1,31 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: pairdrop
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Tools
+    gethomepage.dev/name: PairDrop
+    gethomepage.dev/icon: https://github.com/schlagmichdoch/PairDrop/raw/master/public/images/android-chrome-512x512.png
+    gethomepage.dev/href: https://p2pfiles.tamhomelab.com
+    gethomepage.dev/description: P2P File Sharing
+    gethomepage.dev/pod-selector: ""
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: gateway-internal
+      namespace: gateway
+  hostnames:
+    - "p2pfiles.tamhomelab.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: pairdrop
+          port: 3000
+          weight: 1

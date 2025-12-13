@@ -3,7 +3,6 @@ kind: ClusterIssuer
 metadata:
   name: cloudflare-cluster-issuer
   annotations:
-    #argocd.argoproj.io/sync-wave: "5" # Deploy well after cert-manager CRDs and controller are ready
     argocd.argoproj.io/sync-options: Validate=true
 spec:
   acme:
