@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: changedetection
-          image: dgtlmoon/changedetection.io:0.51.2
+          image: dgtlmoon/changedetection.io:0.51.4
           ports:
             - containerPort: 5000
           securityContext:
