@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: it-tools
+  labels:
+    app: it-tools
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: it-tools
+  template:
+    metadata:
+      labels:
+        app: it-tools
+        netpol.cilium.io/egress-deny: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: it-tools
+          image: corentinth/it-tools:2024.10.22-7ca5933
+          # Mounted volumes so Nginx can write cache, run files, and logs with non-root user
+          volumeMounts:
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
+            - name: nginx-logs
+              mountPath: /var/log/nginx
+          resources:
+            limits:
+              memory: "32Mi"
+            requests:
+              memory: "8Mi"
+          ports:
+            - containerPort: 80
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: nginx-cache
+          emptyDir:
+            sizeLimit: 16Mi
+        - name: nginx-run
+          emptyDir:
+            sizeLimit: 8Mi
+        - name: nginx-logs
+          emptyDir:
+            sizeLimit: 8Mi

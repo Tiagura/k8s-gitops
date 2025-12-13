@@ -1,0 +1,18 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ingress-from-cnpg-operator
+spec:
+  description: >
+    Allow ingress traffic from CloudNativePG Operator pods.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/ingress-from-cnpg-operator: "true"
+
+  ingress:
+    - fromEndpoints:
+      - matchLabels:
+          app.kubernetes.io/instance: cloudnative-pg-operator
+          app.kubernetes.io/name: cloudnative-pg
+          # Not needed if both are in the same namespace, but added for clarity, plus can be useful if namespaces change
+          k8s:io.kubernetes.pod.namespace: cloudnative-pg

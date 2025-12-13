@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  labels:
+    app.kubernetes.io/component: reloader-controller
+    app.kubernetes.io/name: reloader
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+  name: reloader
+spec:
+  jobLabel: reloader
+  namespaceSelector:
+    matchNames:
+    - reloader
+  podMetricsEndpoints:
+  - honorLabels: true
+    path: /metrics
+    port: http
+  selector:
+    matchLabels:
+      app: reloader
+      release: reloader

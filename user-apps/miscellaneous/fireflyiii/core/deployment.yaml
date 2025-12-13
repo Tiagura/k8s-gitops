@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fireflyiii
+  labels:
+    app: fireflyiii
+    tier: core
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: fireflyiii
+      tier: core
+  template:
+    metadata:
+      labels:
+        app: fireflyiii
+        tier: core
+        # Added for Cilium network policies
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
+        netpol.cilium.io/ingress-from-intra: "true"
+    spec:
+      containers:
+      - image: fireflyiii/core:version-6.4.13
+        name: fireflyiii
+        env:
+          - name: APP_ENV
+            value: "local"
+          - name: APP_KEY           # The APP_KEY must be *exactly* 32 characters long, avoid using #, it may break things.
+            valueFrom:
+              secretKeyRef:
+                name: fireflyiii-secrets
+                key: app_key
+          - name: APP_URL
+            value: "https://budget.tamhomelab.com"
+          - name: TRUSTED_PROXIES
+            value: "**"
+          - name: SITE_OWNER
+            valueFrom:
+              secretKeyRef:
+                name: fireflyiii-secrets
+                key: site_owner
+          - name: DB_HOST
+            value: fireflyiii-database-rw.cloudnative-pg.svc.cluster.local
+          - name: DB_CONNECTION
+            value: pgsql
+          - name: DB_PORT
+            value: "5432"
+          - name: DB_DATABASE
+            value: "fireflyiii"
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: fireflyiii-secrets
+                key: db_username
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: fireflyiii-secrets
+                key: db_password
+          - name: STATIC_CRON_TOKEN       # Same token as used in the cronjob
+            valueFrom:
+              secretKeyRef:
+                name: fireflyiii-secrets
+                key: static_cron_token
+        envFrom:
+          - configMapRef:
+              name: fireflyiii-other-configs    # Based on https://raw.githubusercontent.com/firefly-iii/firefly-iii/main/.env.example
+        ports:
+        - containerPort: 8080
+          name: fireflyiii
+        volumeMounts:
+        - mountPath: "/var/www/html/storage/upload"
+          name: fireflyiii-upload
+      volumes:
+        - name: fireflyiii-upload
+          persistentVolumeClaim:
+            claimName: fireflyiii-upload

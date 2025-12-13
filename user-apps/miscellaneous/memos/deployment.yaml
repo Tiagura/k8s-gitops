@@ -1,10 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
+  name: memos
   labels:
     app: memos
-  name: memos
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   selector:
@@ -12,9 +13,10 @@ spec:
       app: memos
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: memos
+        netpol.cilium.io/egress-deny: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
     spec:
       securityContext:
         runAsNonRoot: true
@@ -63,4 +65,4 @@ spec:
         persistentVolumeClaim:
           claimName: memos-pvc
       - name: memos-log
-        emptyDir: {}
+        emptyDir: {}  # Log rotation handled inside the container with MEMOS_AUDIT_LOG_ROTATION_SIZE setting

@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: reloader
+
+labels:
+  - pairs:
+      app.kubernetes.io/name: reloader
+      app.kubernetes.io/component: reloader-controller
+      app.kubernetes.io/part-of: infrastructure
+      app.kubernetes.io/managed-by: argocd
+
+resources:
+  - namespace.yaml
+  - ../../../common/cilium-network-policies/
+
+helmCharts:
+  - name: reloader
+    repo: https://stakater.github.io/stakater-charts
+    version: 2.2.7
+    releaseName: reloader
+    namespace: reloader
+    valuesFile: values.yaml

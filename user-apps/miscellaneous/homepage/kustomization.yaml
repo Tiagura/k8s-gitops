@@ -8,14 +8,15 @@ labels:
       app.kubernetes.io/part-of: user-apps
       app.kubernetes.io/managed-by: argocd
     
-
 resources:
+  - namespace.yaml
   - deployment.yaml
   - homepage-vars-secret-sealed.yaml
   - http-route.yaml
-  - namespace.yaml
   - rbac.yaml
   - service.yaml
+  - cilium-netpol.yaml
+  - ../../../common/cilium-network-policies/
 
 configMapGenerator:
   - name: homepage-config

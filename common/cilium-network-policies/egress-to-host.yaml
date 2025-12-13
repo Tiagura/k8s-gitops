@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-host
+spec:
+  description: >
+    Allow egress traffic from selected pods to local node host.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-host: "true"
+
+  egress:
+    - toEntities:
+        - host

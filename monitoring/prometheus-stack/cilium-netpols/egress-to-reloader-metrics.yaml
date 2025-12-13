@@ -1,0 +1,21 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-reloader-metrics
+spec:
+  description: >
+    Allow egress to Reloader namespace for monitoring Reloader.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-reloader-metrics: "true"
+
+  egress:
+    # Allow egress to Reloader metrics
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: reloader
+            app: reloader
+      toPorts:
+        - ports:
+            - port: "9090"
+              protocol: TCP

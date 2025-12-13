@@ -4,7 +4,8 @@ metadata:
   name: karakeep-web
 spec:
   selector:
-    app: karakeep-web
+    app: karakeep
+    tier: web
   ports:
     - name: karakeep-svc
       port: 3000

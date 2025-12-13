@@ -3,7 +3,7 @@ kind: ApplicationSet
 metadata:
   name: infrastructure
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   generators:
     - git:
@@ -11,8 +11,8 @@ spec:
         revision: main
         directories:
           - path: infrastructure/controllers/metrics-server
+          - path: infrastructure/controllers/reloader
           - path: infrastructure/databases/cloudnative-pg
-          - path: infrastructure/databases/cloudnative-pg-apps-databases/*/*
           - path: infrastructure/networking/cloudflared
           - path: infrastructure/networking/external-dns
           - path: infrastructure/storage/local-storage

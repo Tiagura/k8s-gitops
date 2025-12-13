@@ -2,6 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: external-dns
+  labels:
+    app: external-dns
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   strategy:
     type: Recreate
@@ -12,6 +16,10 @@ spec:
     metadata:
       labels:
         app: external-dns
+        netpol.cilium.io/egress-to-cloudflare: "true"
+        netpol.cilium.io/egress-to-kube-apiserver: "true"
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/ingress-deny: "true"
     spec:
       serviceAccountName: external-dns
       containers:
@@ -39,7 +47,7 @@ spec:
             - --txt-owner-id=my-cluster
 
             # policy flag to control lifecycle behaviour of DNS records
-            - --policy=upsert-only
+            - --policy=sync
           env:
             - name: CF_API_TOKEN
               valueFrom:

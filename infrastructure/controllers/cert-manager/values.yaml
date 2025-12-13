@@ -17,6 +17,27 @@ extraArgs:
   - "--max-concurrent-challenges=60"
   - "--enable-certificate-owner-ref=true"
 
+podLabels:
+  # Cilium Network Policies labels
+  netpol.cilium.io/egress-to-cloudflare: "true"
+  netpol.cilium.io/egress-to-kube-apiserver: "true"
+  netpol.cilium.io/egress-to-kube-dns: "true"
+  netpol.cilium.io/egress-to-outside-dns: "true"
+  netpol.cilium.io/ingress-deny: "true"
+  # netpol.cilium.io/ingress-from-remote-node: "true"
+
+deploymentAnnotations:
+  # Enable Stakater Reloader for automatic reloads on ConfigMap/Secret changes
+  reloader.stakater.com/auto: "true"
+
+# Disable built-in monitoring
+prometheus:
+  enabled: false
+  servicemonitor:
+    enabled: false
+  podmonitor:
+    enabled: false
+
 securityContext:
   runAsNonRoot: true
   runAsUser: 65534
@@ -31,6 +52,10 @@ resources:
     cpu: 20m
     memory: 128Mi
 webhook:
+  podLabels:
+    # Cilium Network Policies labels
+    netpol.cilium.io/egress-to-kube-apiserver: "true"
+    netpol.cilium.io/ingress-from-remote-node: "true"
   securityContext:
     runAsNonRoot: true
     runAsUser: 65534
@@ -44,6 +69,10 @@ webhook:
       cpu: 10m
       memory: 64Mi
 cainjector:
+  podLabels:
+    # Cilium Network Policies labels
+    netpol.cilium.io/egress-to-kube-apiserver: "true"
+    netpol.cilium.io/ingress-deny: "true"
   securityContext:
     runAsNonRoot: true
     runAsUser: 65534
