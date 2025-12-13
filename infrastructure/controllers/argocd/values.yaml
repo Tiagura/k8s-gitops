@@ -19,19 +19,39 @@ configs:
     # Needed for App of Apps pattern sycn waves to work correctly
     # Without this, the root app is created and marked healthy before the childs apps are healthy
     # Making argoCD think the sync is complete when it is not and going to the next sync wave
+    # resource.customizations.health.argoproj.io_Application: |
+    #   hs = {}
+    #   hs.status = "Progressing"
+    #   hs.message = ""
+    #   if obj.status ~= nil then
+    #     if obj.status.health ~= nil then
+    #       hs.status = obj.status.health.status
+    #       if obj.status.health.message ~= nil then
+    #         hs.message = obj.status.health.message
+    #       end
+    #     end
+    #   end
+    #   return hs
     resource.customizations.health.argoproj.io_Application: |
       hs = {}
       hs.status = "Progressing"
       hs.message = ""
-      if obj.status ~= nil then
-        if obj.status.health ~= nil then
-          hs.status = obj.status.health.status
-          if obj.status.health.message ~= nil then
-            hs.message = obj.status.health.message
-          end
+
+      if obj.status ~= nil and obj.status.health ~= nil then
+        local childStatus = obj.status.health.status
+
+        if childStatus == "Degraded" then
+          -- Treat Degraded as Progressing to block sync waves
+          hs.status = "Progressing"
+          hs.message = "Child application is Degraded but still initializing"
+        else
+          hs.status = childStatus
+          hs.message = obj.status.health.message or ""
         end
       end
+
       return hs
+
 
   # ConfigMap for custom CMP plugin to enable Kustomize with Helm support
   # Not need: using built-in --enable-helm option

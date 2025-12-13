@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: changedetection
+  labels:
+    app: changedetection
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: changedetection
+  template:
+    metadata:
+      labels:
+        app: changedetection
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: wait-for-webdriver
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              TRIES=0
+              MAX=30
+              #until nc -z selenium.changedetection.svc.cluster.local 4444; do
+              until nc -z sockpuppet.changedetection.svc.cluster.local 3000; do
+                sleep 2
+                TRIES=$((TRIES+1))
+                if [ $TRIES -ge $MAX ]; then
+                  echo "WebDriver not ready after $MAX tries"
+                  exit 1
+                fi
+                echo "Waiting for WebDriver to be ready..."
+              done
+              echo "WebDriver is ready!"
+      containers:
+        - name: changedetection
+          image: dgtlmoon/changedetection.io:0.51.4
+          ports:
+            - containerPort: 5000
+          env:
+            # Selenium WebDriver deprecated; using Playwright
+            # - name: WEBDRIVER_URL
+            #   value: "http://selenium.changedetection.svc.cluster.local:4444/wd/hub"
+            - name: PLAYWRIGHT_DRIVER_URL
+              value: "ws://sockpuppet.changedetection.svc.cluster.local:3000"
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: changedetection-datastore
+              mountPath: /datastore
+      volumes:
+        - name: changedetection-datastore
+          persistentVolumeClaim:
+            claimName: changedetection-pvc

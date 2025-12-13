@@ -14,10 +14,16 @@
       "registryUrlTemplate": "{{registryUrl}}"
     },
     {
-      "description": "Update Docker images in deployment.yaml",
-      "fileMatch": ["deployment\\.yaml$"],
+      "description": "Update Docker images in various YAML files",
+      "fileMatch": [
+        "deployment\\.yaml$",
+        "job\\.yaml$",
+        "cronjob\\.yaml$",
+        "cluster-.*\\.yaml$"
+      ],
       "matchStrings": [
-        "image:\\s+(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)"
+        "image:\\s+(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)",
+        "imageName:\\s+(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)"
       ],
       "datasourceTemplate": "docker",
       "versioningTemplate": "docker"

@@ -11,11 +11,12 @@ labels:
 resources:
   - ip-pool.yaml
   - l2-policy.yaml
+  - http-route.yaml
 
 helmCharts:
   - name: cilium
     repo: https://helm.cilium.io/
-    version: 1.18.4
+    version: 1.18.5
     releaseName: cilium
     namespace: kube-system
     valuesFile: values.yaml

@@ -15,18 +15,6 @@ resources:
   - barmanObjectStore.yaml
   - barman-s3-credentials-secret-sealed.yaml
 
-# replacements:
-#   - source:
-#       kind: Secret
-#       name: barman-s3-credentials
-#       fieldPath: data.AWS_ENDPOINTS
-#     targets:
-#       - select:
-#           kind: ObjectStore
-#           name: barman-object-store
-#         fieldPaths:
-#           - spec.configuration.endpointURL
-
 patches:
   # Only patch the RoleBinding subject namespace, nothing else needed
   - target:
