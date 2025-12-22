@@ -29,7 +29,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: jellyfin
-          image: jellyfin/jellyfin:10.11.4
+          image: jellyfin/jellyfin:10.11.5
           resources:
             requests:
               cpu: "10m"
