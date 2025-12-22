@@ -80,6 +80,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 |------|------|---------|
 | <img src="https://raw.githubusercontent.com/dgtlmoon/changedetection.io/master/changedetectionio/static/images/generic-icon.svg" width="50"/> | [ChangeDetection](https://changedetection.io/) | Website Monitor |
 | <img src="https://svgicons.com/api/ogimage/?id=221729&n=file-type-excalidraw" width="50"/> | [Excalidraw](https://excalidraw.com/) | Whiteboard |
+| <img src="https://raw.githubusercontent.com/firefly-iii/firefly-iii/develop/.github/assets/img/logo-small.png" width="50"/> | [Firefly III](https://www.firefly-iii.org/) | Personal Finance Manager |
 | <img src="https://raw.githubusercontent.com/gethomepage/homepage/refs/heads/dev/public/android-chrome-192x192.png" width="50"/> | [Homepage](https://gethomepage.dev/) | Dashboard  |
 | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Jellyfin_-_icon-transparent.svg/1024px-Jellyfin_-_icon-transparent.svg.png?20240822231831" width="50"/> | [Jellyfin](https://jellyfin.org/) | LiveTV |
 | <img src="https://raw.githubusercontent.com/karakeep-app/karakeep/refs/heads/main/apps/web/app/icon.png" width="50"/> | [Karakeep](https://karakeep.app/) | Bookmark App |
