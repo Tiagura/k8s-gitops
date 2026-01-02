@@ -103,7 +103,10 @@
       "automerge": true
     },
     {
-      "matchPaths": ["^user-apps/miscellaneous/karakeep/.*"],
+      "matchPaths": [
+        "^user-apps/miscellaneous/karakeep$",
+        "^user-apps/miscellaneous/karakeep/.*"
+      ],
       "groupName": "Karakeep",
       "automerge": true
     },
