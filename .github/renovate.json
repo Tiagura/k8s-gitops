@@ -103,8 +103,13 @@
       "automerge": true
     },
     {
-      "matchPaths": ["^user-apps/.*"],
-      "groupName": "user-apps dependencies",
+      "matchPaths": ["^user-apps/miscellaneous/karakeep/.*"],
+      "groupName": "Karakeep",
+      "automerge": true
+    },
+    {
+      "matchPaths": ["^user-apps/miscellaneous/changedetection/.*"],
+      "groupName": "Changedetection",
       "automerge": true
     },
     {
