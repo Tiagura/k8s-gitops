@@ -1,7 +1,6 @@
 {
   "mode": "full",
-  "schedule": ["0 5 * * 1"],
-  "recreateClosed": true,
+  "recreateWhen": "always",
 
   "extends": [
     "mergeConfidence:all-badges",
