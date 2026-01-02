@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: gotify
+        netpol.cilium.io/ingress-from-ingress: "true"
+        netpol.cilium.io/ingress-from-intra: "true"
     spec:
       securityContext:
         fsGroup: 1000

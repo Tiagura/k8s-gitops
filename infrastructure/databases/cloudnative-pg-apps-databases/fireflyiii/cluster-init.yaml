@@ -31,5 +31,3 @@ spec:
   walStorage:
     size: 1Gi
     storageClass: cnpg-longhorn-storage
-  monitoring:
-    enablePodMonitor: true

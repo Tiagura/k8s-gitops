@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  labels:
+    app.kubernetes.io/name: fireflyiii
+    cnpg.io/cluster: fireflyiii-database
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+  name: fireflyiii-database
+spec:
+  namespaceSelector:
+    matchNames:
+      - cloudnative-pg
+  podMetricsEndpoints:
+  - port: metrics
+  selector:
+    matchLabels:
+      cnpg.io/cluster: fireflyiii-database
+      cnpg.io/podRole: instance

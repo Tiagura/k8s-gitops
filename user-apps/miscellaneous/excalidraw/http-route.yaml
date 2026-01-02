@@ -7,7 +7,7 @@ metadata:
     gethomepage.dev/group: Miscellaneous
     gethomepage.dev/name: Excalidraw
     gethomepage.dev/icon: https://raw.githubusercontent.com/excalidraw/excalidraw/refs/heads/master/public/favicon.ico
-    gethomepage.dev/href: https://excalidraw.tamhomelab.com
+    gethomepage.dev/href: https://draw.tamhomelab.com
     gethomepage.dev/description: Whiteboard
     gethomepage.dev/pod-selector: ""
 spec:
@@ -17,7 +17,7 @@ spec:
       name: gateway-internal
       namespace: gateway
   hostnames:
-    - "excalidraw.tamhomelab.com"
+    - "draw.tamhomelab.com"
   rules:
     - matches:
         - path:

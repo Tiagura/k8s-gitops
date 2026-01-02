@@ -1,12 +1,23 @@
 {
-  "extends": ["config:base"],
+  "mode": "full",
+  "recreateWhen": "always",
+
+  "extends": [
+    "mergeConfidence:all-badges",
+    "config:recommended"
+  ],
+
   "helm-values": {
     "enabled": true
   },
-  "regexManagers": [
+
+  "customManagers": [
     {
+      "customType": "regex",
       "description": "Update Helm chart versions in kustomization.yaml",
-      "fileMatch": ["kustomization\\.yaml$"],
+      "managerFilePatterns": [
+        "/kustomization\\.yaml$/"
+      ],
       "matchStrings": [
         "name:\\s+(?<depName>[^\\s]+)\\s+repo:\\s+(?<registryUrl>[^\\s]+)\\s+version:\\s+(?<currentValue>[^\\s]+)"
       ],
@@ -14,12 +25,13 @@
       "registryUrlTemplate": "{{registryUrl}}"
     },
     {
+      "customType": "regex",
       "description": "Update Docker images in various YAML files",
-      "fileMatch": [
-        "deployment\\.yaml$",
-        "job\\.yaml$",
-        "cronjob\\.yaml$",
-        "cluster-.*\\.yaml$"
+      "managerFilePatterns": [
+        "/deployment\\.yaml$/",
+        "/job\\.yaml$/",
+        "/cronjob\\.yaml$/",
+        "/cluster-.*\\.yaml$/"
       ],
       "matchStrings": [
         "image:\\s+(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)",
@@ -29,8 +41,11 @@
       "versioningTemplate": "docker"
     },
     {
+      "customType": "regex",
       "description": "Update Sealed Secrets CRD URL in README.md",
-      "fileMatch": ["README\\.md"],
+      "managerFilePatterns": [
+        "/README\\.md/"
+      ],
       "matchStrings": [
         "https://raw\\.githubusercontent\\.com/bitnami-labs/sealed-secrets/v(?<currentValue>[^/]+)/helm/sealed-secrets/crds/bitnami\\.com_sealedsecrets\\.yaml"
       ],
@@ -38,8 +53,11 @@
       "datasourceTemplate": "github-releases"
     },
     {
+      "customType": "regex",
       "description": "Update Gateway API release URL in README.md",
-      "fileMatch": ["README\\.md"],
+      "managerFilePatterns": [
+        "/README\\.md/"
+      ],
       "matchStrings": [
         "https://github\\.com/kubernetes-sigs/gateway-api/releases/download/v(?<currentValue>[^/]+)/standard-install\\.yaml",
         "https://github\\.com/kubernetes-sigs/gateway-api/releases/download/v(?<currentValue>[^/]+)/experimental-install\\.yaml"
@@ -48,9 +66,10 @@
       "datasourceTemplate": "github-releases"
     }
   ],
+
   "packageRules": [
     {
-      "matchFiles": ["^infrastructure/"],
+      "matchFileNames": ["^infrastructure/"],
       "automerge": false
     },
     {
@@ -62,9 +81,10 @@
       "automerge": true
     },
     {
-      "matchManagers": ["regex"],
+      "matchManagers": ["custom.regex"],
       "automerge": true
     }
   ],
+
   "dependencyDashboard": false
 }

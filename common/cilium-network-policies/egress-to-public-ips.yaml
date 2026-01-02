@@ -1,0 +1,22 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-public-ips
+spec:
+  description: >
+    Allow egress traffic to public IPs from selected pods.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-public-ips: "true"
+  
+  egress:
+    # Public internet ONLY (no cluster, no home LAN)
+    # Entity "world" is more permissive and allows private IP ranges too
+    # meaning egress to home network devices would be allowed
+    - toCIDRSet:
+      - cidr: 0.0.0.0/0
+        except:
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+    

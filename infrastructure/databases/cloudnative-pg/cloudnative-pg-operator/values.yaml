@@ -13,6 +13,14 @@ config:
     JOB_TTL_SECONDS_AFTER_FINISHED: "3600" # Clean up completed jobs after 1 hour
     FAILED_JOB_TTL_SECONDS_AFTER_FINISHED: "7200" # Clean up failed jobs after 2 hours
 
+podLabels:
+  # Added for Cilium Network Policies
+  netpol.cilium.io/egress-to-intra: "true"
+  netpol.cilium.io/egress-to-kube-apiserver: "true"
+  netpol.cilium.io/egress-to-kube-dns: "true"
+  netpol.cilium.io/ingress-from-prometheus: "true"
+  netpol.cilium.io/ingress-from-remote-node: "true"
+
 serviceAccount:
   create: true
   name: "cloudnative-pg-operator-sa"
@@ -27,9 +35,11 @@ resources:
     memory: 128Mi
 
 monitoring:
-  # Needs Prometheus Operator to be installed in the cluster, and it is in monitoring/prometheus-stack
-  podMonitorEnabled: true
+  # Needs Prometheus Operator to be installed in the cluster
+  # Pod Monitor created manually to deploy in the correct namespace
+  podMonitorEnabled: false
   
+  # To enable Grafana Dashboard creation
   grafanaDashboard:
     create: true
     # Namespace where Prometheus Stack is installed
@@ -43,7 +53,3 @@ monitoring:
 
     labels:
       grafana_dashboard: "1"
-    
-    annotations:
-      # Create dashboard when the prometheus stack is deployed
-      argocd.argoproj.io/sync-wave: "2"
