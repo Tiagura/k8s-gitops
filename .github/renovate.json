@@ -98,6 +98,16 @@
 
   "packageRules": [
     {
+      "matchDepNames": ["firefly-iii/firefly-iii", "firefly-iii/data-importer"],
+      "groupName": "FireflyIII",
+      "automerge": true
+    },
+    {
+      "matchPaths": ["^user-apps/"],
+      "groupName": "user-apps dependencies",
+      "automerge": true
+    },
+    {
       "matchFileNames": ["^infrastructure/"],
       "automerge": false
     },
