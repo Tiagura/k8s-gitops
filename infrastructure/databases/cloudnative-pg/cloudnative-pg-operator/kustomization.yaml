@@ -4,11 +4,8 @@ namespace: cloudnative-pg
 
 labels:
   - pairs:
-      app.kubernetes.io/name: cloudnative-pg
       app.kubernetes.io/component: cloudnative-pg-operator
       app.kubernetes.io/part-of: infrastructure
-      app.kubernetes.io/managed-by: argocd
-    
 
 resources:
   - rbac.yaml
@@ -21,17 +18,3 @@ helmCharts:
     namespace: cloudnative-pg
     valuesFile: values.yaml
     includeCRDs: true
-
-# Find solution to override only PodMonitor sync wave
-# Issue: https://github.com/kubernetes-sigs/kustomize/issues/3046
-# patchesJson6902:
-#   - target:
-#       group: monitoring.coreos.com
-#       version: v1
-#       kind: PodMonitor
-#       name: .*
-#       namespace: cloudnative-pg
-#     patch: |
-#       - op: replace
-#         path: /metadata/annotations/argocd.argoproj.io~1sync-wave
-#         value: "3"

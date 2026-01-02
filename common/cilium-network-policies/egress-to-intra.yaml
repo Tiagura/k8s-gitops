@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-intra
+spec:
+  description: >
+    Allow all intra-namespace egress traffic from selected pods within the same namespace.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-intra: "true"
+
+  egress:
+    - toEndpoints:
+        - {}

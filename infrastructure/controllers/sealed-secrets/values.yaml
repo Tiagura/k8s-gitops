@@ -7,6 +7,11 @@ existingSecret: sealed-secrets-key
 key:
   generate: false
 
+podLabels:
+  # Cilium Network Policies labels
+  netpol.cilium.io/egress-to-kube-apiserver: "true"
+  netpol.cilium.io/ingress-deny: "true"
+
 serviceAccount:
   create: true
   name: sealed-secrets-sa

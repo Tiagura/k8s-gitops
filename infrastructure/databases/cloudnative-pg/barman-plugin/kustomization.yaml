@@ -15,18 +15,6 @@ resources:
   - barmanObjectStore.yaml
   - barman-s3-credentials-secret-sealed.yaml
 
-# replacements:
-#   - source:
-#       kind: Secret
-#       name: barman-s3-credentials
-#       fieldPath: data.AWS_ENDPOINTS
-#     targets:
-#       - select:
-#           kind: ObjectStore
-#           name: barman-object-store
-#         fieldPaths:
-#           - spec.configuration.endpointURL
-
 patches:
   # Only patch the RoleBinding subject namespace, nothing else needed
   - target:
@@ -35,3 +23,15 @@ patches:
       - op: replace
         path: /subjects/0/namespace
         value: cloudnative-pg
+  # Add labels to pods created by the barman-cloud plugin
+  # These labels are needed for Cilium Network Policies
+  - target:
+      kind: Deployment
+      name: barman-cloud
+    patch: |-
+      - op: add
+        path: /spec/template/metadata/labels/netpol.cilium.io~1egress-to-kube-apiserver
+        value: "true"
+      - op: add
+        path: /spec/template/metadata/labels/netpol.cilium.io~1ingress-from-cnpg-operator
+        value: "true"

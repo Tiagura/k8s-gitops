@@ -47,6 +47,11 @@ spec:
           kind: Cluster
           jqPathExpressions:
             - ".spec.plugins[].enabled"
+        - group: postgresql.cnpg.io
+          kind: Cluster
+          jqPathExpressions:
+            - ".spec.externalClusters[].plugin.enabled"
+            - ".spec.externalClusters[].plugin.isWALArchiver"
       info:
         - name: Description
           value: "Database component {{path.basename}} managed by CloudNativePG"

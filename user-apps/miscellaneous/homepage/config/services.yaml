@@ -24,10 +24,11 @@
 # - Management:
 
 - Infrastructure:
-    - GMKTEC NucBox M5 PLUS:
+    - Plusle:
         icon: https://img.icons8.com/fluency/2x/proxmox.png
         href: https://plusle.{{HOMEPAGE_VAR_BASE_DOMAIN}}
         ping: plusle
+        description: GMKTEC NucBox M5 PLUS
         widget:
           type: proxmox
           url: https://plusle:8006

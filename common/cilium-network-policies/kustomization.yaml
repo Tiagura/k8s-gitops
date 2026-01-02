@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - egress-deny.yaml
+  - egress-to-cloudflare.yaml
+  - egress-to-gotify.yaml
+  - egress-to-host.yaml
+  - egress-to-intra.yaml
+  - egress-to-kube-apiserver.yaml
+  - egress-to-kube-dns.yaml
+  - egress-to-public-ips.yaml
+  - egress-to-remote-node.yaml
+  - egress-to-world.yaml
+  - ingress-deny.yaml
+  - ingress-from-host.yaml
+  - ingress-from-ingress.yaml
+  - ingress-from-intra.yaml
+  - ingress-from-kube-apiserver.yaml
+  - ingress-from-prometheus.yaml
+  - ingress-from-remote-node.yaml
+  - ingress-from-world.yaml

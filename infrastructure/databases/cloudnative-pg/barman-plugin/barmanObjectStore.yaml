@@ -16,8 +16,10 @@ spec:
         key: ACCESS_SECRET_KEY
     wal:
       compression: gzip
+      maxParallel: 1  # https://github.com/cloudnative-pg/plugin-barman-cloud/issues/516
   instanceSidecarConfiguration:
     env:
+      # https://github.com/cloudnative-pg/plugin-barman-cloud/issues/513
       - name: AWS_REQUEST_CHECKSUM_CALCULATION
         value: when_required
       - name: AWS_RESPONSE_CHECKSUM_VALIDATION

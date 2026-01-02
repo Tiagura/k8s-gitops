@@ -5,11 +5,12 @@ namespace: argocd
 resources:
   - namespace.yaml
   - http-route.yaml
+  - ../../../common/cilium-network-policies/
 
 helmCharts:
   - name: argo-cd
     repo: https://argoproj.github.io/argo-helm
-    version: 9.1.7
+    version: 9.2.3
     releaseName: "argocd"
     namespace: argocd
     valuesFile: values.yaml

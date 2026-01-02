@@ -1,0 +1,31 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: hubble
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Observability
+    gethomepage.dev/name: Hubble
+    gethomepage.dev/icon: https://raw.githubusercontent.com/cilium/hubble-ui/refs/heads/master/src/assets/images/hubble-logo.png
+    gethomepage.dev/href: https://hubble.tamhomelab.com
+    gethomepage.dev/description: Network Observability
+    gethomepage.dev/pod-selector: "app.kubernetes.io/name=hubble-ui"
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: gateway-internal
+      namespace: gateway
+  hostnames:
+    - "hubble.tamhomelab.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: hubble-ui
+          port: 80
+          weight: 1

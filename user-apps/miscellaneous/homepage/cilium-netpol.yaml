@@ -1,0 +1,25 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: homepage-netpol
+spec:
+  description: >
+    Allow homepage pods to:
+      Egress to:
+        - Home LAN IPs
+        - Cloudflared metrics service
+
+  endpointSelector:
+    matchLabels:
+      app: homepage
+
+  egress:
+    - toServices:
+      - k8sService:
+          serviceName: cloudflared-metrics
+          namespace: cloudflared
+
+    - toCIDR:
+      - 192.168.1.2/32
+      - 192.168.1.5/32
+      

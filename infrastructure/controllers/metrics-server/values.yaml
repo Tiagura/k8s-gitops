@@ -7,6 +7,14 @@ serviceAccount:
 rbac:
   create: true
 
+podLabels:
+  # Cilium Network Policies labels
+  netpol.cilium.io/egress-to-host: "true"
+  netpol.cilium.io/egress-to-kube-apiserver: "true"
+  netpol.cilium.io/egress-to-remote-node: "true"
+  netpol.cilium.io/ingress-from-host: "true"
+  netpol.cilium.io/ingress-from-remote-node: "true"
+
 defaultArgs:
   - --cert-dir=/tmp
   - --kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP

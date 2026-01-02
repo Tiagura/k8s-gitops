@@ -13,6 +13,9 @@ spec:
     metadata:
       labels:
         app: gotigram
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/egress-to-public-ips: "true"
+        netpol.cilium.io/egress-to-intra: "true"
     spec:
       securityContext:
         fsGroup: 1000
