@@ -13,6 +13,9 @@ spec:
     metadata:
       labels:
         app: sockpuppet
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/egress-to-public-ips: "true"
+        netpol.cilium.io/ingress-from-intra: "true"
     spec:
       securityContext:
         runAsNonRoot: true
@@ -21,7 +24,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: sockpuppet
-          image: dgtlmoon/sockpuppetbrowser:latest
+          image: dgtlmoon/sockpuppetbrowser:0.0.3
           ports:
             - containerPort: 3000
           env:
