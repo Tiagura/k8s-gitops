@@ -103,7 +103,7 @@
       "automerge": true
     },
     {
-      "matchPaths": ["^user-apps/"],
+      "matchPaths": ["^user-apps/.*"],
       "groupName": "user-apps dependencies",
       "automerge": true
     },
