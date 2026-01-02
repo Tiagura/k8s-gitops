@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: cloudnative-pg
 
 resources:
-  - cluster-init.yaml
+  # - cluster-init.yaml               # Only for initial cluster creation, after first backup use cluster-from-backup.yaml
+  - cluster-from-backup.yaml
   - fireflyiii-db-secret-sealed.yaml
   - scheduled-backup.yaml

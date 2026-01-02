@@ -11,6 +11,7 @@ labels:
 resources:
   - namespace.yaml
   - fireflyiii-secrets-sealed.yaml
-  - frontend/
-  - importer/
+  - core/
   - cron/
+  - importer/
+  - ../../../common/cilium-network-policies/

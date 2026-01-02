@@ -1,0 +1,13 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ingress-deny
+spec:
+  description: >
+    Deny all ingress traffic to selected pods.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/ingress-deny: "true"
+
+  ingress:
+    - {}

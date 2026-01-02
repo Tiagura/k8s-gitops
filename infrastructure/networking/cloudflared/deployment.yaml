@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: cloudflared
+        netpol.cilium.io/egress-to-cloudflare: "true"
+        netpol.cilium.io/egress-to-kube-dns: "true"
     spec:
       securityContext:
         runAsNonRoot: true

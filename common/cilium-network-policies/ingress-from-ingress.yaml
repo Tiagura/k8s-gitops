@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ingress-from-ingress
+spec:
+  description: >
+    Allow ingress traffic to selected pods.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/ingress-from-ingress: "true"
+
+  ingress:
+    - fromEntities:
+        - ingress

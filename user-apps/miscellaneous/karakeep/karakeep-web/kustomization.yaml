@@ -5,7 +5,6 @@ labels:
   - pairs:
       app.kubernetes.io/component: karakeep-web
     
-
 resources:
   - deployment.yaml
   - service.yaml

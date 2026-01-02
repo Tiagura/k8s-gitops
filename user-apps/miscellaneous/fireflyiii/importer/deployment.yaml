@@ -17,6 +17,10 @@ spec:
       labels:
         app: fireflyiii
         tier: importer
+        # Added for Cilium network policies
+        netpol.cilium.io/egress-to-intra: "true"
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
     spec:
       containers:
       - image: fireflyiii/data-importer:version-1.9.0

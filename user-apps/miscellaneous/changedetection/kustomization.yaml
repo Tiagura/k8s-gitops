@@ -11,5 +11,5 @@ labels:
 resources:
   - namespace.yaml
   - changedetection/
-  # - selenium/
   - playwright/
+  - ../../../common/cilium-network-policies/
