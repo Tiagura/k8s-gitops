@@ -103,15 +103,14 @@
       "automerge": true
     },
     {
-      "matchPaths": [
-        "^user-apps/miscellaneous/karakeep$",
-        "^user-apps/miscellaneous/karakeep/.*"
-      ],
+      "matchFileNames": ["deployment.yaml"],
+      "matchPaths": ["user-apps/miscellaneous/karakeep/"],
       "groupName": "Karakeep",
       "automerge": true
     },
     {
-      "matchPaths": ["^user-apps/miscellaneous/changedetection/.*"],
+      "matchFileNames": ["deployment.yaml"],
+      "matchPaths": ["user-apps/miscellaneous/changedetection/"],
       "groupName": "Changedetection",
       "automerge": true
     },
