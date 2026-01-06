@@ -23,7 +23,7 @@ spec:
         netpol.cilium.io/ingress-from-intra: "true"
     spec:
       containers:
-      - image: fireflyiii/core:version-6.4.13
+      - image: fireflyiii/core:version-6.4.14
         name: fireflyiii
         env:
           - name: APP_ENV
