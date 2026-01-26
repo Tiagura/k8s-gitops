@@ -25,7 +25,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: gotify
-          image: gotify/server:2.7.3
+          image: gotify/server:2.8.0
           ports:
             - containerPort: 80
           env:
