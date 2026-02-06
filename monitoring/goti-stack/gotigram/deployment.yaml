@@ -86,7 +86,7 @@ spec:
 
       containers:
         - name: gotigram
-          image: tiagura/gotigram:1.0.0
+          image: tiagura/gotigram:1.1.1
           command:
             - /bin/sh
             - -c
