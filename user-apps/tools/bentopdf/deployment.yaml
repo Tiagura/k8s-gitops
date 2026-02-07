@@ -23,7 +23,7 @@ spec:
         fsGroup: 101
       containers:
         - name: bentopdf
-          image: bentopdf/bentopdf-simple:v1.11.2
+          image: bentopdf/bentopdf-simple:v1.15.4
           env:
             - name: LOG_LEVEL
               value: "info"
