@@ -1,21 +1,19 @@
 {
   "mode": "full",
-  "recreateClosed": true,
+  "recreateWhen": "always",
   "dependencyDashboard": true,
-  "schedule": ["* 0-4 * * 1"],
-
+  "schedule": [
+    "* 0-4 * * 1"
+  ],
   "prCreation": "not-pending",
   "rebaseWhen": "behind-base-branch",
-
   "extends": [
     "mergeConfidence:all-badges",
     "config:recommended"
   ],
-
   "helm-values": {
     "enabled": true
   },
-
   "customManagers": [
     {
       "customType": "regex",
@@ -59,9 +57,10 @@
       "versioningTemplate": "semver"
     },
     {
+      "customType": "regex",
       "description": "Update FireflyIII core Docker image via GitHub releases",
-      "fileMatch": [
-        "user-apps/miscellaneous/fireflyiii/core/deployment\\.yaml"
+      "managerFilePatterns": [
+        "/user-apps/miscellaneous/fireflyiii/core/deployment\\.yaml/"
       ],
       "matchStrings": [
         "image:\\s+(?<depName>fireflyiii/core):version-(?<currentValue>\\d+\\.\\d+\\.\\d+)"
@@ -71,9 +70,10 @@
       "versioningTemplate": "semver"
     },
     {
+      "customType": "regex",
       "description": "Update FireflyIII data-importer Docker image via GitHub releases",
-      "fileMatch": [
-        "user-apps/miscellaneous/fireflyiii/importer/deployment\\.yaml"
+      "managerFilePatterns": [
+        "/user-apps/miscellaneous/fireflyiii/importer/deployment\\.yaml/"
       ],
       "matchStrings": [
         "image:\\s+(?<depName>fireflyiii/data-importer):version-(?<currentValue>\\d+\\.\\d+\\.\\d+)"
@@ -108,7 +108,6 @@
       "datasourceTemplate": "github-releases"
     }
   ],
-
   "packageRules": [
     {
       "matchFileNames": [
@@ -125,13 +124,23 @@
       "groupName": "Gotify Stack"
     },
     {
-      "matchDepNames": ["firefly-iii/firefly-iii", "firefly-iii/data-importer"],
+      "matchDepNames": [
+        "firefly-iii/firefly-iii",
+        "firefly-iii/data-importer"
+      ],
       "groupName": "FireflyIII",
-      "matchDatasources": ["github-releases"]
+      "matchDatasources": [
+        "github-releases"
+      ]
     },
     {
-      "matchDepNames": ["firefly-iii/firefly-iii", "firefly-iii/data-importer"],
-      "matchDatasources": ["docker"],
+      "matchDepNames": [
+        "firefly-iii/firefly-iii",
+        "firefly-iii/data-importer"
+      ],
+      "matchDatasources": [
+        "docker"
+      ],
       "enabled": false
     },
     {
@@ -150,13 +159,20 @@
       "groupName": "Changedetection"
     },
     {
-      "matchDatasources": ["docker"]
+      "matchDatasources": [
+        "docker"
+      ]
     },
     {
-      "matchDatasources": ["helm", "github-releases"]
+      "matchDatasources": [
+        "helm",
+        "github-releases"
+      ]
     },
     {
-      "matchManagers": ["custom.regex"]
+      "matchManagers": [
+        "custom.regex"
+      ]
     }
   ]
 }
