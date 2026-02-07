@@ -5,6 +5,6 @@ labels:
   - pairs:
       app.kubernetes.io/component: gotigram
     
-
 resources:
   - deployment.yaml
+  - rbac.yaml
