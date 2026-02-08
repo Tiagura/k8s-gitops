@@ -3,8 +3,8 @@ kind: Kustomization
 namespace: cloudnative-pg
 
 resources:
-  - cluster-init.yaml               # Only for initial cluster creation, after first backup use cluster-from-backup.yaml
-  #- cluster-from-backup.yaml
+  #- cluster-init.yaml               # Only for initial cluster creation, after first backup use cluster-from-backup.yaml
+  - cluster-from-backup.yaml
   - memos-db-secret-sealed.yaml
   - scheduled-backup.yaml
   - db-netpol.yaml

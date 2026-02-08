@@ -29,6 +29,8 @@ spec:
       owner: memos
       secret:
         name: memos-db-creds
+      recoveryTarget:
+        targetTime: "2026-02-08 22:00:00.00000+02"
   externalClusters:
     - name: memos-backup
       plugin:
