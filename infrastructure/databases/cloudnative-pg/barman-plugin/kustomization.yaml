@@ -11,7 +11,7 @@ labels:
       
 
 resources:
-  - https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v0.9.0/manifest.yaml
+  - https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v0.11.0/manifest.yaml
   - barmanObjectStore.yaml
   - barman-s3-credentials-secret-sealed.yaml
 
