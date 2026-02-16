@@ -8,15 +8,16 @@ kind: Role
 metadata:
   name: gotigram-secret-manager
 rules:
-  # Allow the init container to create/update the gotigram-token secret
+  # Allow creating any secret in the namespace (needed for first creation)
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
+
+  # Restrict all other operations to only the gotigram-token secret
   - apiGroups: [""]
     resources: ["secrets"]
     resourceNames: ["gotigram-token"]
-    verbs: ["create","update","patch"]
-  # Allow the init container to get/list secrets (to check if gotigram-token already exists)
-  - apiGroups: [""]
-    resources: ["secrets"]
-    verbs: ["get","list"]
+    verbs: ["get", "update", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

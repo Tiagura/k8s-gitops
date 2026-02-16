@@ -32,6 +32,7 @@
       "description": "Update Docker images in various YAML files",
       "managerFilePatterns": [
         "/deployment\\.yaml$/",
+        "/statefulset\\.yaml$/",
         "/job\\.yaml$/",
         "/cronjob\\.yaml$/",
         "/cluster-.*\\.yaml$/"

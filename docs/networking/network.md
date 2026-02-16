@@ -71,7 +71,7 @@ infrastructure/networking/
   - Services: `10.32.0.0/16`
 
 - **Control Plane**:
-  - API Server VIP: `entry.home.arpa` (IP `192.168.1.26`, change at will just update the DNS record `entry.home.arpa` points to)
+  - API Server VIP: `cluster.home.arpa` (IP `192.168.1.25`, change at will just update the DNS record `cluster.home.arpa` points to)
 
 ## DNS Configurations
 
@@ -89,7 +89,7 @@ Manually Managed. Use:
 
 | Hostname              | IPs            | Description                            |
 | --------------------- | -------------- | -------------------------------------- |
-| `entry.home.arpa`     | `192.168.1.26` | Control-plane / API server VIP         |
+| `cluster.home.arpa`     | `192.168.1.26` | Control-plane / API server VIP         |
 | `k8s-gateway`         | `192.168.1.35` | Internal Gateway endpoint              |
 | `k8s-gateway-external`| `192.168.1.36` | External Gateway endpoint (not needed) |
 | `<service>.<mydomain>`| `k8s-gateway`  | This is a CNAME Record                 |

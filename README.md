@@ -199,7 +199,7 @@ kubectl apply -f infrastructure/controllers/sealed-secrets/sealed-secrets-key.ya
 Apply ArgoCD manifests via `kustomize` with Helm enabled:
 
 ```bash
-kustomize build infrastructure/controllers/argocd --enable-helm | kubectl apply -f -
+kustomize build infrastructure/controllers/argocd --enable-helm | kubectl apply --server-side -f -
 ```
 
 Wait for ArgoCD CRDs to be established:

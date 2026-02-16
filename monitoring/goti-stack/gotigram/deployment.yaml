@@ -51,7 +51,7 @@ spec:
 
               TOKEN=$(echo "$RESP" | jq -r '.[] | select(.name=="Gotigram Client") | .token' | head -n1 || true)
               if [ -n "$TOKEN" ]; then
-                echo "Found existing Gotigram Client token: $TOKEN"
+                echo "Found existing Gotigram Client token"
                 
                 # Create or update the secret
                 kubectl create secret generic gotigram-token \
@@ -72,7 +72,7 @@ spec:
 
               TOKEN=$(echo "$POSTRESP" | jq -r '.token // empty')
               if [ -n "$TOKEN" ]; then
-                echo "Successfully created token: $TOKEN"
+                echo "Successfully created token"
                 
                 # Create or update the secret
                 kubectl create secret generic gotigram-token \

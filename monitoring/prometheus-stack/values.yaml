@@ -62,6 +62,12 @@ alertmanager:
       repeat_interval: 12h
       routes:
         - matchers:
+          # Suppress non-actionable alerts like Watchdog and InfoInhibitor
+            - 'alertname =~ Watchdog|InfoInhibitor'
+            - 'severity = none'
+          receiver: 'null'
+
+        - matchers:
             - 'severity = critical'
           receiver: 'telegram-bot'
           group_wait: 15s

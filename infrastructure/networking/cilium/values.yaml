@@ -4,7 +4,7 @@ cluster:
   id: 1
 
 # Entry point for the Cilium service
-k8sServiceHost: entry.home.arpa
+k8sServiceHost: cluster.home.arpa
 k8sServicePort: 6443
 
 # Gateway API support

@@ -23,7 +23,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: meilisearch
-          image: getmeili/meilisearch:v1.11.1
+          image: getmeili/meilisearch:v1.35.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 7700
@@ -66,5 +66,5 @@ spec:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 128Mi
+            storage: 1Gi
         storageClassName: longhorn
