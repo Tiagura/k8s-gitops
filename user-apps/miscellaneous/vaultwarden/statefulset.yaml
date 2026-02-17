@@ -24,7 +24,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: vaultwarden
-          image: ghcr.io/dani-garcia/vaultwarden:1.35.1
+          image: ghcr.io/dani-garcia/vaultwarden:1.35.3
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
