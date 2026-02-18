@@ -25,15 +25,17 @@ spec:
             issue: There are {{$value}} Longhorn nodes are offline
             severity: critical
         - alert: LonghornVolumeUnhealthy
-          expr: longhorn_volume_robustness != 1
+          expr: longhorn_volume_robustness{state!="healthy"} == 1
           for: 5m
           labels:
-            severity: critical
+            severity: '{{ if eq $labels.state "faulted" }}critical{{ else }}warning{{ end }}'
           annotations:
-            summary: "Longhorn volume {{ $labels.volume }} is unhealthy"
+            summary: "Longhorn volume {{ $labels.volume }} (PVC {{ $labels.pvc }} in {{ $labels.pvc_namespace }}) is {{ $labels.state }}"
             description: |
-              Volume {{ $labels.volume }} robustness is {{ $value }} 
-              (0=unknown, 1=healthy, 2=degraded, 3=faulted).
+              Volume: {{ $labels.volume }}
+              PVC: {{ $labels.pvc }}
+              Namespace: {{ $labels.pvc_namespace }}
+              Current robustness state: {{ $labels.state }}
         - alert: LonghornNodeStorageSpaceLow
           expr: (longhorn_node_storage_usage_bytes / longhorn_node_storage_capacity_bytes) * 100 > 90
           for: 5m

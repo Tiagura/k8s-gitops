@@ -83,7 +83,7 @@ The configured alerts (defined in the [`storage-alerts.yaml`](../../monitoring/p
 | **Alert Name**                  | **Severity** | **Description**                                                                                                                                          |
 | ------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **LonghornNodeDown**            | Critical     | Triggers when one or more Longhorn nodes are offline for more than 10 minutes, indicating potential node or network failures.                            |
-| **LonghornVolumeUnhealthy**     | Critical     | Fires when a volume’s robustness status changes from `Healthy` to `Degraded`, `Faulted`, or `Unknown`, signaling data redundancy or availability issues. |
+| **LonghornVolumeUnhealthy**     | Critical or Warning     | Fires when a volume’s robustness status is `Degraded`, `Faulted`, or `Unknown`, signaling data consistency or availability issues. |
 | **LonghornNodeStorageSpaceLow** | Warning      | Alerts when a Longhorn node’s storage usage exceeds 90% capacity, allowing proactive management before disks run out of space.                           |
 
 
