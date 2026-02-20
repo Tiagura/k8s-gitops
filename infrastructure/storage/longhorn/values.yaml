@@ -49,6 +49,8 @@ defaultSettings:
   # Allows fast rebuilding of replicas using the checksum of snapshot disk files
   fastReplicaRebuildEnabled: "true"
 
+  upgradeChecker: "false"
+
 defaultBackupStore:
   # Endpoint used to access the default backupstore.
   backupTarget: "s3://longhorn-backup-bucket@weur/"
@@ -78,8 +80,19 @@ ingress:
 # Disable pre-upgrade checks (useful for GitOps tools like ArgoCD to avoid sync issues).
 preUpgradeChecker:
   jobEnabled: false
+  upgradeVersionCheck: false
 
 # UI service - to be handled separately by Gateway API
 ui:
   service:
     type: ClusterIP
+
+# Issue with instance manager RAM consuption
+# Remove this in the next release
+# Issue: https://github.com/longhorn/longhorn/issues/12573
+image:
+  longhorn:
+    manager:
+      tag: v1.11.0-hotfix-1
+    instanceManager:
+      tag: v1.11.0-hotfix-2
