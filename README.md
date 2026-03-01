@@ -102,8 +102,8 @@ Before deploying this setup, make sure you have the following:
    - Without kube-proxy → See [Cilium KubeProxy-Free Docs](https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/)
    - If Gateway API is **not installed**, run:
      ```bash
-     kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml
-     kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/experimental-install.yaml
+     kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.0/standard-install.yaml
+     kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.0/experimental-install.yaml
      ```
    - **Tip:** If you don't already have a Kubernetes cluster but have access to a **Proxmox node/cluster**, you can use my other project, which I also use to create my own cluster: [Tiagura/proxmox-k8s-IaC (GatewayAPI branch)](https://github.com/Tiagura/proxmox-k8s-IaC)
 
