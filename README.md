@@ -135,7 +135,7 @@ kubectl get pods -n kube-system -l k8s-app=cilium
 ### 2. Install Sealed Secrets CRDs
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.35.0/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
+kubectl apply -f https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.36.0/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
 ```
 
 
