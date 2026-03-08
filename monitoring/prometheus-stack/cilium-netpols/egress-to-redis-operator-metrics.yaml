@@ -1,0 +1,19 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-redis-operator-metrics
+spec:
+  description: Allow egress only to Redis operator pod metrics (PodMonitor)
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-redis-operator-metrics: "true"
+
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: redis-operator
+            app: redis-operator
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

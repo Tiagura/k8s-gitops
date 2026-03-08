@@ -11,7 +11,7 @@ Cilium Network Policies provide fine-grained network control for pods in Kuberne
 ## Table of contents
 - [Cilium Network Policies](#cilium-network-policies)
   - [Table of contents](#table-of-contents)
-  - [Common Network Policies](#common-network-policies)
+  - [Base Network Policies](#base-network-policies)
     - [How to use them](#how-to-use-them)
     - [How to "import"](#how-to-import)
   - [Caveats for Enforcing Policies on CloudNativePG Cluster Pods](#caveats-for-enforcing-policies-on-cloudnativepg-cluster-pods)
@@ -21,17 +21,17 @@ Cilium Network Policies provide fine-grained network control for pods in Kuberne
       - [Chosen Approach](#chosen-approach)
   - [Resources](#resources)
 
-## Common Network Policies
+## Base Network Policies
 
-The policies in [`common/cilium-network-policies/`](../../common/cilium-network-policies/) are the most basic and reusable ones. They are meant to be imported as needed, depending on which pods or namespaces require them.
+The policies in [`base/cilium-network-policies/`](../../base/cilium-network-policies/) are the most basic and reusable ones. They are meant to be imported as needed, depending on which pods or namespaces require them.
 
 There are also **dedicated policies for specific apps/workloads**, which are found in their respective folders. These should be used only for the apps they are designed for.  
 
 ### How to use them 
 
-Each "common" policy can be applied to pods via **labels**. This allows the policy to selectively target only the pods that need it, without affecting other workloads.  
+Each "base" policy can be applied to pods via **labels**. This allows the policy to selectively target only the pods that need it, without affecting other workloads.  
 
-The following common policies are available in [`common/cilium-network-policies/`](../../common/cilium-network-policies/):
+The following base policies are available in [`base/cilium-network-policies/`](../../base/cilium-network-policies/):
 
 | Policy Name                 | Label to Apply                                        | Description                                                               |
 | --------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------- |
@@ -61,12 +61,7 @@ These policies can be included in your apps/workloads manifests using **Kustomiz
 
 ```yaml
 resources:
-  # All cilium network policies and whatever is in the common folder:
-  - path/to/common/
-  # All cilium network policies
-  - path/to/common/cilium-network-policies/
-  # Specific cilium network policies
-  - path/to/common/cilium-network-policies/<name_of_file>
+  - path/to/base/cilium-network-policies/
 ```
 
 ## Caveats for Enforcing Policies on CloudNativePG Cluster Pods
@@ -104,7 +99,7 @@ egress:
 
 ### Applying policies to `pods` created from CloudNativePG `Cluster` resources
 
-At this time, it is not possible to automatically propagate labels from a `Cluster` resource to the `pods` it creates, nor to directly add labels to these `pods`. While manually labeling the `pods` is technically possible, it would break the GitOps principle of declarative management. As such, it is currently impossible to apply the common network policies directly to these `pods`.
+At this time, it is not possible to automatically propagate labels from a `Cluster` resource to the `pods` it creates, nor to directly add labels to these `pods`. While manually labeling the `pods` is technically possible, it would break the GitOps principle of declarative management. As such, it is currently impossible to apply the base network policies directly to these `pods`.
 
 #### Possible Approaches
 
@@ -113,7 +108,7 @@ In theory, it is possible to propagate labels and/or annotations from the CloudN
 One or more labels or annotations can be defined in the cluster's metadata, and the operator can be configured to ensure they are inherited by all child resources. However, these propagated labels apply the same policies to all database `pods`. This prevents using a label to allow ingress specifically from the corresponding application pod to its respective database `pods`. 
 
 Possible approaches include:
-  1. **Propagate common policy labels** to all database `pods` and **create a smaller policy**, more targeted network policy to allow ingress from the application `pods` to the database `pods`. (This approach is theoretically possible but not tested in this setup.)
+  1. **Propagate base policy labels** to all database `pods` and **create a smaller policy**, more targeted network policy to allow ingress from the application `pods` to the database `pods`. (This approach is theoretically possible but not tested in this setup.)
   2. **Create a larger policy** that targets all database `pods` in the cluster, defining both ingress and egress rules as required. This approach ensures network security while maintaining compatibility with GitOps workflows.
 
 #### Chosen Approach
@@ -122,7 +117,7 @@ The chosen approach to solve this problem is to create a bigger `CiliumNetworkPo
   - All `pods` from `cluster1` receive the same policy `policy1`.
   - All `pods` from `cluster2` receive the same policy `policy2`.
 
-The base `CiliumNetworkPolicy` [`default-database-netpol`](../../infrastructure/databases/db-cilium-netpols/default-db-netpol.yaml) serves as an example that can be customized per `Cluster` resource to define ingress and egress rules that enforce the required security while maintaining compatibility with GitOps workflows.
+The base `CiliumNetworkPolicy` [`default-database-netpol`](../../base/cnpg-db/db-cilium-netpol.yaml) serves as an example that can be customized per `Cluster` resource to define ingress and egress rules that enforce the required security while maintaining compatibility with GitOps workflows.
 
 ## Resources
 

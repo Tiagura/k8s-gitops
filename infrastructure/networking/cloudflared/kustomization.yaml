@@ -22,4 +22,4 @@ resources:
   - deployment.yaml
   - service.yaml
   - cilium-netpol.yaml
-  - ../../../common/cilium-network-policies/
+  - ../../../base/cilium-network-policies/
