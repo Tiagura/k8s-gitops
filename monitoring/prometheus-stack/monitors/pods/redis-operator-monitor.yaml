@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: redis-operator
+  labels:
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+spec:
+  namespaceSelector:
+    matchNames:
+      - redis-operator
+  selector:
+    matchLabels:
+      name: redis-operator
+  podMetricsEndpoints:
+    - port: "8080"
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s

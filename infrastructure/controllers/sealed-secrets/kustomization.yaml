@@ -11,6 +11,7 @@ labels:
 
 resources:
   - namespace.yaml
+  - https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.35.0/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
 
 helmCharts:
   - name: sealed-secrets

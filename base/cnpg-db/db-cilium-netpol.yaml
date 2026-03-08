@@ -1,22 +1,22 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: fireflyiii-database-netpol
+  name: default-database-netpol
 spec:
   description: >
-    Allow fireflyiii database cluster to:
+    Allow database cluster to:
       Egress to:
-        - cloudflare  (S3 compatible storage)
+        - cloudflare R2 (S3 compatible storage)
         - kube-apiserver
         - kube-dns
       Ingress from:
-        - fireflyiii app
+        - corresponding app
         - cnpg operator
         - prometheus
 
   endpointSelector:
     matchLabels:
-      cnpg.io/cluster: fireflyiii-database
+      cnpg.io/cluster: change_me
 
   egress:
     - toCIDRSet:
@@ -51,9 +51,8 @@ spec:
   ingress:
     - fromEndpoints:
       - matchLabels:
-          app: fireflyiii
-          tier: core
-          k8s:io.kubernetes.pod.namespace: fireflyiii
+          app: change_me
+          k8s:io.kubernetes.pod.namespace: change_me
 
     - fromEndpoints:
       - matchLabels:
@@ -64,4 +63,5 @@ spec:
       - matchLabels:
           app.kubernetes.io/instance: cloudnative-pg-operator
           app.kubernetes.io/name: cloudnative-pg
+          # Not needed if both are in the same namespace, but added for clarity, plus can be useful if namespaces change
           k8s:io.kubernetes.pod.namespace: cloudnative-pg

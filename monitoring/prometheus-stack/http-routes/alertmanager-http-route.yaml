@@ -6,7 +6,7 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Monitoring
     gethomepage.dev/name: Alertmanager
-    gethomepage.dev/icon: https://raw.githubusercontent.com/stakater/ForecastleIcons/refs/heads/master/alert-manager.png
+    gethomepage.dev/icon: https://raw.githubusercontent.com/prometheus/alertmanager/refs/heads/main/ui/app/favicon.ico
     gethomepage.dev/href: https://alertmanager.tamhomelab.com
     gethomepage.dev/description: "Alerting Management & Handling"
     gethomepage.dev/pod-selector: "app.kubernetes.io/name=alertmanager"

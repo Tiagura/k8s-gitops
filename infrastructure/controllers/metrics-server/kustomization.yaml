@@ -12,7 +12,7 @@ labels:
 
 resources:
   - namespace.yaml
-  - ../../../common/cilium-network-policies/
+  - ../../../base/cilium-network-policies/
 
 helmCharts:
   - name: metrics-server

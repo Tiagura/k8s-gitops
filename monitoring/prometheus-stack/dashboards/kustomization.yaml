@@ -8,4 +8,6 @@ resources:
   - longhorn-dashboard.yaml
   # - proxmox-dashboard.yaml  # Dashboard for Proxmox without OTEL, using Proxmox VE via HTTP API
   - proxmox-otel-dashboard.yaml
+  - redis-cluster-dashboard.yaml
+  - redis-operator-dashboard.yaml
   - tailscale-dashboard.yaml

@@ -14,4 +14,4 @@ resources:
   - core/
   - cron/
   - importer/
-  - ../../../common/cilium-network-policies/
+  - ../../../base/cilium-network-policies/

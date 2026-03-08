@@ -1,0 +1,19 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-redis-db-metrics
+spec:
+  description: Allow egress to Redis databases metrics
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-redis-db-metrics: "true"
+
+  egress:
+    # Allow egress to Firefly III namespace port 9121 for Redis metrics
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: fireflyiii
+      toPorts:
+        - ports:
+            - port: "9121"
+              protocol: TCP

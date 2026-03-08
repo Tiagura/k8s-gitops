@@ -1,0 +1,53 @@
+redisOperator:
+  name: redis-operator
+  podLabels: {}
+
+  # Spefify to watch specific namespaces, or leave empty to watch all namespaces
+  watchNamespace: ""
+
+  # Uses cert-manager to manage TLS certificates for the webhook server
+  webhook: true
+
+  metrics:
+    enabled: true
+    bindAddress: ":8080"
+
+replicas: 1
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 500Mi
+  requests:
+    cpu: 100m
+    memory: 100Mi
+
+certmanager:
+  enabled: true
+  apiVersion: "cert-manager.io/v1"
+
+# If you already have a ClusterIssuer or Issuer for cert-manager, you can specify it here to avoid creating a new one.
+issuer:
+  create: false
+  kind: ClusterIssuer
+  name: internal-cluster-issuer 
+
+certificate:
+  name: redis-serving-cert
+  secretName: redis-webhook-serving-cert
+
+service:
+  name: webhook-service
+  namespace: redis-operator
+
+rbac:
+  enable: true
+serviceAccountName: redis-operator-sa
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000

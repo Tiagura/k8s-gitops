@@ -9,4 +9,6 @@ resources:
   - egress-to-longhorn-metrics.yaml
   - egress-to-prometheus.yaml
   - egress-to-reloader-metrics.yaml
+  - egress-to-redis-db-metrics.yaml
+  - egress-to-redis-operator-metrics.yaml
   - egress-to-tailscale-node-metrics.yaml
