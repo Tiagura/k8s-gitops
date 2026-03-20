@@ -14,7 +14,8 @@ resources:
   - namespace.yaml
   - cloudflare-token-secret-sealed.yaml
   - cluster-issuer.yaml
-  - ../../../common/cilium-network-policies/
+  - internal-cluster-issuer.yaml
+  - ../../../base/cilium-network-policies/
 
 helmCharts:
   - name: cert-manager

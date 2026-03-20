@@ -282,18 +282,17 @@ Instead of performing steps 5 to 7 manually, you can use the provided restore sc
 
 There are two methods for performing a full cluster recovery from backups: using the [recovery script](../../scripts/restore_from_backups.sh) or using the Longhorn UI. However, regardless of the method, first complete the following initial setup steps to ensure the new cluster can properly restore all secrets and configurations:
   1. [Install Cilium CNI and wait for it to be ready](../../README.md#1-install-cilium-cni-and-wait-for-it-to-be-ready)
-  2. [Install Sealed Secrets CRDs](../../README.md#2-install-sealed-secrets-crds)
-  3. [Apply the Secret Manifest](../../README.md#5-apply-the-secret-manifest) **Note**: The secret manifest should be the same as the one on the previous cluster.
+  2. [Apply the Secret Manifest](../../README.md#4-apply-the-secret-manifest) **Note**: The secret manifest should be the same as the one on the previous cluster.
 
 Once these initial setup steps are complete, you can move on to installing the necessary controllers and storage solutions to prepare the cluster for backup restoration.
 
   4. Install the Sealed Secrets controller
       ```bash
-      kustomize build --enable-helm infrastructure/controllers/sealed-secrets/ | kubectl apply -f -
+      kubectl kustomize --enable-helm infrastructure/controllers/sealed-secrets/ | kubectl create -f -
       ```
   5. Install Longhorn:
       ```bash
-      kustomize build --enable-helm infrastructure/storage/longhorn/ | kubectl apply -f -
+      kubectl kustomize --enable-helm infrastructure/storage/longhorn/ | kubectl apply -f -
       ```
       Wait for Longhorn to be ready
 

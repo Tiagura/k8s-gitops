@@ -1,0 +1,71 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: redis-operator
+
+resources:
+  - namespace.yaml
+  # Fetch the CRDs from source (aka Github), helm chart does not include them
+  - https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/refs/tags/v0.23.0/config/crd/bases/redis.redis.opstreelabs.in_redis.yaml
+  - https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/refs/tags/v0.23.0/config/crd/bases/redis.redis.opstreelabs.in_redisclusters.yaml
+  - https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/refs/tags/v0.23.0/config/crd/bases/redis.redis.opstreelabs.in_redisreplications.yaml
+  - https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/refs/tags/v0.23.0/config/crd/bases/redis.redis.opstreelabs.in_redissentinels.yaml
+
+helmCharts:
+  - name: redis-operator
+    namespace: redis-operator
+    repo: https://ot-container-kit.github.io/helm-charts/
+    version: 0.23.0
+    releaseName: redis-operator
+    valuesFile: values.yaml
+
+# Patches to add cert-manager annotations to the CRDs and MutatingWebhookConfiguration
+patches:
+  - target:
+      group: admissionregistration.k8s.io
+      version: v1
+      kind: MutatingWebhookConfiguration
+      name: mutating-webhook-configuration
+    patch: |-
+      - op: replace
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+        value: redis-operator/redis-serving-cert
+
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: redis.redis.redis.opstreelabs.in
+    patch: |-
+      - op: add
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+        value: redis-operator/redis-serving-cert
+
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: redisclusters.redis.redis.opstreelabs.in
+    patch: |-
+      - op: add
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+        value: redis-operator/redis-serving-cert
+
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: redisreplications.redis.redis.opstreelabs.in
+    patch: |-
+      - op: add
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+        value: redis-operator/redis-serving-cert
+
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: redissentinels.redis.redis.opstreelabs.in
+    patch: |-
+      - op: add
+        path: /metadata/annotations/cert-manager.io~1inject-ca-from
+        value: redis-operator/redis-serving-cert

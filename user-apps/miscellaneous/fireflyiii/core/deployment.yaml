@@ -45,6 +45,12 @@ spec:
               secretKeyRef:
                 name: fireflyiii-secrets
                 key: site_owner
+          - name: STATIC_CRON_TOKEN       # Same token as used in the cronjob
+            valueFrom:
+              secretKeyRef:
+                name: fireflyiii-secrets
+                key: static_cron_token
+          ### Database environment variables ###
           - name: DB_HOST
             value: fireflyiii-database-rw.cloudnative-pg.svc.cluster.local
           - name: DB_CONNECTION
@@ -63,11 +69,30 @@ spec:
               secretKeyRef:
                 name: fireflyiii-secrets
                 key: db_password
-          - name: STATIC_CRON_TOKEN       # Same token as used in the cronjob
+          #####################################
+          ### Redis environment variables ###
+          - name: CACHE_DRIVER
+            value: redis
+          - name: SESSION_DRIVER
+            value: redis
+          - name: REDIS_SCHEME
+            value: tcp
+          - name: REDIS_HOST
+            value: firefly-redis.fireflyiii.svc.cluster.local
+          - name: REDIS_PORT
+            value: "6379"
+          - name: REDIS_USERNAME
+            value: ""
+          - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: fireflyiii-secrets
-                key: static_cron_token
+                key: redis_password
+          - name: REDIS_DB
+            value: "0"
+          - name: REDIS_CACHE_DB
+            value: "1"
+          #####################################
         envFrom:
           - configMapRef:
               name: fireflyiii-other-configs    # Based on https://raw.githubusercontent.com/firefly-iii/firefly-iii/main/.env.example

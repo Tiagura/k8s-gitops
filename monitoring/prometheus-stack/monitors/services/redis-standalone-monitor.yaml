@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis-standalone
+  labels:
+    redis-operator: "true"
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+spec:
+  selector:
+    matchLabels:
+      redis_setup_type: standalone
+  endpoints:
+  - port: redis-exporter
+    interval: 30s
+    scrapeTimeout: 10s
+  namespaceSelector:
+    any: true

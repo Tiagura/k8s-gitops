@@ -28,7 +28,7 @@ windowsMonitoring:
 alertmanager:
   enabled: true
   additionalLabels:
-    # Common Cilium Network Policies labels
+    # Base Cilium Network Policies labels
     netpol.cilium.io/egress-to-public-ips: "true"
     netpol.cilium.io/ingress-from-ingress: "true"
     netpol.cilium.io/ingress-from-prometheus: "true"
@@ -143,7 +143,7 @@ alertmanager:
 grafana:
   enabled: true
   podLabels:
-    # Common Cilium Network Policies labels
+    # Base Cilium Network Policies labels
     netpol.cilium.io/egress-to-kube-apiserver: "true"
     netpol.cilium.io/egress-to-kube-dns: "true"
     netpol.cilium.io/egress-to-prometheus: "true"
@@ -229,8 +229,8 @@ nodeExporter:
 # Prometheus Operator Configuration
 prometheusOperator:
   enabled: true
-  labels:
-    # Common Cilium Network Policies labels
+  podLabels:
+    # Base Cilium Network Policies labels
     netpol.cilium.io/egress-to-kube-apiserver: "true"
     netpol.cilium.io/ingress-from-prometheus: "true"
   serviceAccount:
@@ -282,7 +282,7 @@ prometheus:
     create: true
     name: "prometheus-sa"
   additionalLabels:
-    # Common Cilium Network Policies labels
+    # Base Cilium Network Policies labels
     netpol.cilium.io/egress-to-host: "true"
     netpol.cilium.io/egress-to-intra: "true"
     netpol.cilium.io/egress-to-kube-apiserver: "true"
@@ -295,6 +295,8 @@ prometheus:
     netpol.cilium.io/egress-to-cnpg-db-metrics: "true"
     netpol.cilium.io/egress-to-cnpg-operator-metrics: "true"
     netpol.cilium.io/egress-to-longhorn-metrics: "true"
+    netpol.cilium.io/egress-to-redis-db-metrics: "true"
+    netpol.cilium.io/egress-to-redis-operator-metrics: "true"
     netpol.cilium.io/egress-to-reloader-metrics: "true"
     netpol.cilium.io/egress-to-tailscale-node-metrics: "true"
   prometheusSpec:
@@ -380,7 +382,7 @@ kubeStateMetrics:
 
 kube-state-metrics:
   podLabels:
-    # Common Cilium Network Policies labels
+    # Base Cilium Network Policies labels
     netpol.cilium.io/egress-to-kube-apiserver: "true"
     netpol.cilium.io/ingress-from-prometheus: "true"
   # Rest leave as default

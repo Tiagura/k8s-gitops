@@ -13,6 +13,7 @@ spec:
           - path: infrastructure/controllers/metrics-server
           - path: infrastructure/controllers/reloader
           - path: infrastructure/databases/cloudnative-pg
+          - path: infrastructure/databases/redis-operator
           - path: infrastructure/networking/cloudflared
           - path: infrastructure/networking/external-dns
           - path: infrastructure/storage/local-storage

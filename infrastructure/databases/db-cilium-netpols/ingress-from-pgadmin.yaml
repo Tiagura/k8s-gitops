@@ -1,0 +1,20 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ingress-from-pgadmin
+spec:
+  description: >
+    Allow ingress traffic from pgAdmin pods to all database clusters.
+  endpointSelector:
+    matchExpressions:
+      - key: cnpg.io/cluster
+        operator: Exists
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: pgadmin
+            io.kubernetes.pod.namespace: pgadmin
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP

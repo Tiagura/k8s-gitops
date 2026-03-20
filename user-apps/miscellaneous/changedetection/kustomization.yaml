@@ -12,4 +12,4 @@ resources:
   - namespace.yaml
   - changedetection/
   - playwright/
-  - ../../../common/cilium-network-policies/
+  - ../../../base/cilium-network-policies/

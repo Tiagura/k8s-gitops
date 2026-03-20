@@ -13,4 +13,4 @@ resources:
   - deployment.yaml
   - service.yaml
   - http-route.yaml
-  - ../../../common/cilium-network-policies/
+  - ../../../base/cilium-network-policies/

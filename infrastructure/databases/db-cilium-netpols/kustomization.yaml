@@ -3,3 +3,4 @@ kind: Kustomization
 
 resources:
   - ingress-from-cnpg-operator.yaml
+  - ingress-from-pgadmin.yaml

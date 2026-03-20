@@ -1,0 +1,22 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-redis-db-metrics
+spec:
+  description: Allow egress to Redis databases metrics
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-redis-db-metrics: "true"
+
+  egress:
+    # Allow egress to any Redis instance across all namespaces
+    - toEndpoints:
+        - matchExpressions:
+            - key: redis_setup_type
+              operator: Exists
+            - key: role
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "9121"
+              protocol: TCP

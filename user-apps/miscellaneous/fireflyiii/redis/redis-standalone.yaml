@@ -1,0 +1,29 @@
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: Redis
+metadata:
+  name: firefly-redis
+spec:
+  kubernetesConfig:
+    image: quay.io/opstree/redis:v8.2.5
+    imagePullPolicy: IfNotPresent
+    redisSecret:
+      name: fireflyiii-secrets
+      key: redis_password
+  storage:
+    volumeClaimTemplate:
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+  redisExporter:
+    enabled: true
+    image: quay.io/opstree/redis-exporter:v1.80.2
+    imagePullPolicy: IfNotPresent
+    # env:
+    # - name: REDIS_EXPORTER_INCL_SYSTEM_METRICS
+    #   value: "true"
+  podSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000

@@ -15,4 +15,4 @@ resources:
   - deployment.yaml
   - http-route.yaml
   - http-route-external.yaml
-  - ../../../common/cilium-network-policies/
+  - ../../../base/cilium-network-policies/

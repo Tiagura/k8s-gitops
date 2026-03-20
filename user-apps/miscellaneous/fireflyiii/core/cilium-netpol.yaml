@@ -6,6 +6,7 @@ spec:
   description: >
     Allow Firefly III core pods to egress to the CloudNativePG
     database services (rw, ro, r).
+    Allow Firefly III core pods to egress to Redis instances in the namespace.
   endpointSelector:
     matchLabels:
       app: fireflyiii
@@ -19,5 +20,17 @@ spec:
       toPorts:
         - ports:
             - port: "5432"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": fireflyiii
+          matchExpressions:
+            - key: redis_setup_type
+              operator: Exists
+            - key: role
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "6379"
               protocol: TCP
       

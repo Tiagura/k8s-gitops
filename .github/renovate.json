@@ -2,6 +2,7 @@
   "mode": "full",
   "recreateWhen": "always",
   "dependencyDashboard": true,
+  "minimumReleaseAge": "7 days",
   "schedule": [
     "* 0-4 * * 1"
   ],
@@ -85,14 +86,26 @@
     },
     {
       "customType": "regex",
-      "description": "Update Sealed Secrets CRD URL in README.md",
+      "description": "Update Sealed Secrets CRD URL in kustomization.yaml",
       "managerFilePatterns": [
-        "/README\\.md/"
+        "/infrastructure/controllers/sealed-secrets/kustomization\\.yaml/"
       ],
       "matchStrings": [
         "https://raw\\.githubusercontent\\.com/bitnami-labs/sealed-secrets/v(?<currentValue>[^/]+)/helm/sealed-secrets/crds/bitnami\\.com_sealedsecrets\\.yaml"
       ],
       "depNameTemplate": "bitnami-labs/sealed-secrets",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "description": "Update Redis Operator CRD URLs in kustomization.yaml",
+      "managerFilePatterns": [
+        "/infrastructure/databases/redis-operator/kustomization\\.yaml/"
+      ],
+      "matchStrings": [
+        "https://raw\\.githubusercontent\\.com/OT-CONTAINER-KIT/redis-operator/refs/tags/v(?<currentValue>[^/]+)/config/crd/bases/redis\\.redis\\.opstreelabs\\.in_[^\\s]+\\.yaml"
+      ],
+      "depNameTemplate": "OT-CONTAINER-KIT/redis-operator",
       "datasourceTemplate": "github-releases"
     },
     {
@@ -116,6 +129,18 @@
         "infrastructure/databases/cloudnative-pg/barman-plugin/kustomization.yaml"
       ],
       "groupName": "CNPG Stack"
+    },
+    {
+      "matchFileNames": [
+        "infrastructure/controllers/sealed-secrets/**"
+      ],
+      "groupName": "Sealed Secrets"
+    },
+    {
+      "matchFileNames": [
+        "infrastructure/databases/redis-operator/**"
+      ],
+      "groupName": "Redis Operator"
     },
     {
       "matchFileNames": [

@@ -9,18 +9,21 @@ This repository contains the configuration and manifests for a **GitOps-driven K
   - [Features](#features)
   - [Cluster Components and Apps](#cluster-components-and-apps)
     - [Infrastructure](#infrastructure)
+      - [CI/CD](#cicd)
+      - [Networking](#networking)
+      - [Policies and Security](#policies-and-security)
+      - [Storage and Databases](#storage-and-databases)
     - [Monitoring](#monitoring)
     - [Applications](#applications)
   - [Prerequisites](#prerequisites)
   - [Bootstrapping the Cluster](#bootstrapping-the-cluster)
     - [1. Install Cilium CNI and wait for it to be ready](#1-install-cilium-cni-and-wait-for-it-to-be-ready)
-    - [2. Install Sealed Secrets CRDs](#2-install-sealed-secrets-crds)
-    - [3. Create Encryption and Decryption Keys for Sealed Secrets](#3-create-encryption-and-decryption-keys-for-sealed-secrets)
-    - [4. Create the Kubernetes Secret Manifest](#4-create-the-kubernetes-secret-manifest)
-    - [5. Apply the Secret Manifest](#5-apply-the-secret-manifest)
-    - [6. Deploy ArgoCD Main Components and CRDs](#6-deploy-argocd-main-components-and-crds)
-    - [7. Bootstrap the GitOps Loop](#7-bootstrap-the-gitops-loop)
-    - [8. Optional: Access ArgoCD Web GUI](#8-optional-access-argocd-web-gui)
+    - [2. Create Encryption and Decryption Keys for Sealed Secrets](#2-create-encryption-and-decryption-keys-for-sealed-secrets)
+    - [3. Create the Kubernetes Secret Manifest](#3-create-the-kubernetes-secret-manifest)
+    - [4. Apply the Secret Manifest](#4-apply-the-secret-manifest)
+    - [5. Deploy ArgoCD Main Components and CRDs](#5-deploy-argocd-main-components-and-crds)
+    - [6. Bootstrap the GitOps Loop](#6-bootstrap-the-gitops-loop)
+    - [7. Optional: Access ArgoCD Web GUI](#7-optional-access-argocd-web-gui)
       - [Get the ArgoCD Initial Admin Password](#get-the-argocd-initial-admin-password)
       - [Access the Web GUI](#access-the-web-gui)
       - [Changing Login Credentials](#changing-login-credentials)
@@ -51,28 +54,47 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 
 ### Infrastructure
 
+#### CI/CD
+
 | Logo | Name | Purpose |
 |------|------|---------|
 | <img src="https://argo-cd.readthedocs.io/en/stable/assets/logo.png" width="50"/> | [ArgoCD](https://argo-cd.readthedocs.io/) | GitOps continuous delivery controller |
-| <img src="https://raw.githubusercontent.com/cert-manager/cert-manager/refs/heads/master/logo/logo-small.png" width="50"/> | [Cert-Manager](https://cert-manager.io/) | Automated TLS certificate management |
-| <img src="https://raw.githubusercontent.com/cilium/cilium/main/Documentation/images/logo-solo.svg" width="50"/> | [Cilium](https://cilium.io/) | Super CNI with advanced networking. Uses eBPF and has observability and security. Also acts as a kube-proxy replacement in this case |
-| <img src="https://cloudnative-pg.io/images/hero_image.png" width="50"/> | [CloudNativePG](https://cloudnative-pg.io/) | Operator for managing PostgreSQL clusters, with automated scaling, failover, and backups (with [Barman Cloud plugin](https://cloudnative-pg.io/plugin-barman-cloud/)) |
-| <img src="https://cdn-1.webcatalog.io/catalog/cloudflare-zero-trust/cloudflare-zero-trust-icon-unplated.png?v=1714773945620" width="50"/> | [Cloudflare Zero Trust](https://www.cloudflare.com/zero-trust/) | External secure access and tunneling |
-| <img src="https://kubernetes-sigs.github.io/external-dns/latest/docs/img/external-dns.png" width="50"/> | [External DNS](https://kubernetes-sigs.github.io/external-dns/latest/) | DNS synchronisation and automation |
-| <img src="https://longhorn.io/img/logos/longhorn-icon-color.png" width="50"/> | [Longhorn](https://longhorn.io/) | Distributed block storage for Kubernetes |
 | <img src="https://digicactus.com/wp-content/uploads/2020/07/1_8Irsw8IlIHORa2eeFh0f0g.png" width="50"/> | [Reloader](https://github.com/stakater/Reloader) | Auto-reloads workloads on ConfigMap/Secret changes. |
 | <img src="https://docs.renovatebot.com/assets/images/logo.png" width="50"/> | [Renovate](https://docs.renovatebot.com/) | Automated dependency updates (Github Application) |
-| <img src="https://avatars.githubusercontent.com/u/34656521?v=4" width="50"/> | [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) | Encrypt and manage Kubernetes secrets securely |
+
+#### Networking
+
+| Logo | Name | Purpose |
+|------|------|---------|
+| <img src="https://raw.githubusercontent.com/cilium/cilium/main/Documentation/images/logo-solo.svg" width="50"/> | [Cilium](https://cilium.io/) | Super CNI with advanced networking. Uses eBPF and has observability and security. Also acts as a kube-proxy replacement in this case |
+| <img src="https://cdn-1.webcatalog.io/catalog/cloudflare-zero-trust/cloudflare-zero-trust-icon-unplated.png?v=1714773945620" width="50"/> | [Cloudflare Zero Trust](https://www.cloudflare.com/zero-trust/) | External secure access and tunneling |
+| <img src="https://kubernetes-sigs.github.io/external-dns/latest/docs/img/external-dns.png" width="50"/> | [External DNS](https://kubernetes-sigs.github.io/external-dns/latest/) | DNS synchronisation and automation |
+
+#### Policies and Security
+
+| Logo | Name | Purpose |
+|------|------|---------|
+| <img src="https://raw.githubusercontent.com/cert-manager/cert-manager/refs/heads/master/logo/logo-small.png" width="50"/> | [Cert-Manager](https://cert-manager.io/) | Automated TLS certificate management |
+| <img src="https://avatars.githubusercontent.com/u/34656521?v=4" width="50"/> | [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) | Encrypt and manage secrets |
+
+#### Storage and Databases
+
+| Logo | Name | Purpose |
+|------|------|---------|
+| <img src="https://cloudnative-pg.io/images/hero_image.png" width="50"/> | [CloudNativePG](https://cloudnative-pg.io/) | Operator for managing PostgreSQL clusters, with automated scaling, failover, and backups (with [Barman Cloud plugin](https://cloudnative-pg.io/plugin-barman-cloud/)) |
+| <img src="https://longhorn.io/img/logos/longhorn-icon-color.png" width="50"/> | [Longhorn](https://longhorn.io/) | Distributed block storage for Kubernetes |
+| <img src="https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/refs/heads/main/static/redis-operator-logo.svg" width="50"/> | [Redis Operator](https://github.com/OT-CONTAINER-KIT/redis-operator) | Operator for managing Redis |
 
 ### Monitoring
 
 | Logo | Name | Purpose |
 |------|---------|-------------|
-| <img src="https://raw.githubusercontent.com/stakater/ForecastleIcons/refs/heads/master/alert-manager.png" width="50"/> | [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/) | Manages and routes alerts |
+| <img src="https://raw.githubusercontent.com/prometheus/alertmanager/refs/heads/main/ui/app/favicon.ico" width="50"/> | [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/) | Manages and routes alerts |
 | <img src="https://gotify.net/img/logo.png" width="50"/> | [Gotify](https://gotify.net/) | Push notification server |
 | <img src="https://raw.githubusercontent.com/Tiagura/gotigram/refs/heads/main/images/logo_no_background.png" width="50"/> | [Gotigram](https://github.com/Tiagura/gotigram) | Forwards Gotify notifications to Telegram |
-| <img src="https://raw.githubusercontent.com/grafana/grafana/d199c33d7e0bc815ac456c3350e1bd45261ea0fd/public/img/grafana_icon.svg" width="50"/> | [Grafana](https://grafana.com/) | Data Visualization |
-| <img src="https://raw.githubusercontent.com/prometheus/prometheus/906f6a33b60cec2596018ac8cc97ac41b16b06b7/documentation/images/prometheus-logo.svg" width="50"/> | [Prometheus](https://prometheus.io/) | Metrics collection and monitoring |
+| <img src="https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg" width="50"/> | [Grafana](https://grafana.com/) | Data visualization |
+| <img src="https://raw.githubusercontent.com/cilium/hubble-ui/refs/heads/master/src/assets/images/hubble-logo.png" width="50"/> | [Hubble](https://github.com/cilium/hubble) | Networking and security observability (part of [Cilium](https://cilium.io/))|
+| <img src="https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/images/prometheus-logo.svg" width="50"/> | [Prometheus](https://prometheus.io/) | Metrics collection and monitoring |
 
 
 ### Applications
@@ -89,7 +111,8 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 | <img src="https://raw.githubusercontent.com/usememos/memos/refs/heads/main/web/public/logo.webp" width="50"/> | [Memos](https://usememos.com/)| Note Taking |
 | <img src="https://raw.githubusercontent.com/technomancer702/nodecast-tv/main/public/favicon.svg" width="50"/> | [NodeCast TV](https://github.com/technomancer702/nodecast-tv) | Web IPTV Player | 
 | <img src="https://github.com/schlagmichdoch/PairDrop/raw/master/public/images/android-chrome-512x512.png" width="50"/> | [PairDrop](https://github.com/schlagmichdoch/pairdrop) | Local File Sharing |
-| <img src="https://www.stremio.com/website/stremio-logo-small.png" width="50"/> | [Stremio](https://www.stremio.com/) | Media Streaming |
+| <img src="https://raw.githubusercontent.com/pgadmin-org/pgadmin4/refs/heads/master/docs/en_US/images/logo-128.png" width="50"/> | [pgAdmin](https://github.com/pgadmin-org/pgadmin4) | PostgreSQL Admin Tool |
+| <img src="https://raw.githubusercontent.com/Stremio/stremio-brand/refs/heads/master/logos/SVG/stremio-logo-icon-only-fullcolor.svg" width="50"/> | [Stremio](https://www.stremio.com/) | Media Streaming |
 | <img src="https://raw.githubusercontent.com/dani-garcia/vaultwarden/refs/heads/main/src/static/images/vaultwarden-icon.png" width="50"/> | [Vaultwarden](https://github.com/dani-garcia/vaultwarden) | Password Manager |
 
 
@@ -105,7 +128,7 @@ Before deploying this setup, make sure you have the following:
      kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.0/standard-install.yaml
      kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.0/experimental-install.yaml
      ```
-   - **Tip:** If you don't already have a Kubernetes cluster but have access to a **Proxmox node/cluster**, you can use my other project, which I also use to create my own cluster: [Tiagura/proxmox-k8s-IaC (GatewayAPI branch)](https://github.com/Tiagura/proxmox-k8s-IaC)
+   - **Tip:** If you don't already have a Kubernetes cluster but have access to a **Proxmox node/cluster**, you can use my other project, which I also use to create my own cluster: [Tiagura/proxmox-k8s-IaC](https://github.com/Tiagura/proxmox-k8s-IaC)
 
 2. **A domain configured on Cloudflare**
 
@@ -113,6 +136,7 @@ Before deploying this setup, make sure you have the following:
    - [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl)
    - [`kustomize`](https://kubectl.docs.kubernetes.io/installation/kustomize/) (Normally installed when `kubectl` is installed)
    - [`kubeseal`](https://github.com/bitnami-labs/sealed-secrets?tab=readme-ov-file#kubeseal)
+   - [`helm`](https://helm.sh/docs/intro/install/)
 
 ## Bootstrapping the Cluster
 
@@ -132,14 +156,7 @@ kubectl get pods -n kube-system -l k8s-app=cilium
 ```
 
 
-### 2. Install Sealed Secrets CRDs
-
-```bash
-kubectl apply -f https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.35.0/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
-```
-
-
-### 3. Create Encryption and Decryption Keys for Sealed Secrets
+### 2. Create Encryption and Decryption Keys for Sealed Secrets
 
 Generate a private key:
 
@@ -161,7 +178,7 @@ base64 -w0 sealed-secrets.crt > crt.b64
 ```
 
 
-### 4. Create the Kubernetes Secret Manifest
+### 3. Create the Kubernetes Secret Manifest
 
 Edit `sealed-secrets-key.yaml` (for example with `nano sealed-secrets-key.yaml`) and paste the following, replacing `<contents-of-crt.b64>` and `<contents-of-key.b64>` with the base64-encoded contents from above:
 
@@ -179,7 +196,7 @@ data:
 
   - **Note:** If you change the value of metadata.name, you must also update the `existingSecret` field in the [values file](infrastructure/controllers/sealed-secrets/values.yaml) to match. Otherwise, the controller won’t be able to find and use the correct key pair.
 
-### 5. Apply the Secret Manifest
+### 4. Apply the Secret Manifest
 
 Create the namespace for sealed-secrets:
 
@@ -194,12 +211,12 @@ kubectl apply -f infrastructure/controllers/sealed-secrets/sealed-secrets-key.ya
 ```
 
 
-### 6. Deploy ArgoCD Main Components and CRDs
+### 5. Deploy ArgoCD Main Components and CRDs
 
 Apply ArgoCD manifests via `kustomize` with Helm enabled:
 
 ```bash
-kustomize build infrastructure/controllers/argocd --enable-helm | kubectl apply --server-side -f -
+kubectl kustomize infrastructure/controllers/argocd --enable-helm | kubectl apply --server-side -f -
 ```
 
 Wait for ArgoCD CRDs to be established:
@@ -215,7 +232,7 @@ kubectl wait --for=condition=Available deployment/argocd-server -n argocd --time
 ```
 
 
-### 7. Bootstrap the GitOps Loop
+### 6. Bootstrap the GitOps Loop
 
 Now that ArgoCD is running and its CRDs are ready, apply the root application to start the self-managing GitOps workflow:
 
@@ -223,7 +240,7 @@ Now that ArgoCD is running and its CRDs are ready, apply the root application to
 kubectl apply -f infrastructure/controllers/argocd/root.yaml
 ```
 
-### 8. Optional: Access ArgoCD Web GUI
+### 7. Optional: Access ArgoCD Web GUI
 
 After ArgoCD is up and running, you can access its **Web GUI** for a visual overview of your cluster's current status.  
 The Web GUI provides insight into the synchronization state of applications, health status of resources, and allows you to perform certain operations directly from the interface.

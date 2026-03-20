@@ -1,0 +1,22 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-cnpg-db-metrics
+spec:
+  description: Allow egress to CNPG databases metrics
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-cnpg-db: "true"
+
+  egress:
+    # Allow egress to CNPG databases
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: cloudnative-pg
+          matchExpressions:
+            - key: cnpg.io/cluster
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP

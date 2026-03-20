@@ -6,5 +6,39 @@ resources:
   # - cluster-init.yaml               # Only for initial cluster creation, after first backup use cluster-from-backup.yaml
   - cluster-from-backup.yaml
   - fireflyiii-db-secret-sealed.yaml
-  - scheduled-backup.yaml
-  - db-netpol.yaml
+  - ../../../../base/cnpg-db/
+  
+patches:
+  - target:
+      group: cilium.io
+      version: v2
+      kind: CiliumNetworkPolicy
+      name: default-database-netpol
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: fireflyiii-database-netpol
+      - op: replace
+        path: /spec/endpointSelector/matchLabels/cnpg.io~1cluster
+        value: fireflyiii-database
+      - op: replace
+        path: /spec/ingress/0/fromEndpoints/0/matchLabels/app
+        value: fireflyiii
+      - op: replace
+        path: /spec/ingress/0/fromEndpoints/0/matchLabels/k8s:io.kubernetes.pod.namespace
+        value: fireflyiii
+      - op: add
+        path: /spec/ingress/0/fromEndpoints/0/matchLabels/tier
+        value: core
+  - target:
+      group: postgresql.cnpg.io
+      version: v1
+      kind: ScheduledBackup
+      name: default-scheduled-backup
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: fireflyiii-db-backup
+      - op: replace
+        path: /spec/cluster/name
+        value: fireflyiii-database
