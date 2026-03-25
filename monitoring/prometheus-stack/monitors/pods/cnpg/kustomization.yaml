@@ -3,5 +3,4 @@ kind: Kustomization
 
 resources:
   - cloudnative-pg-operator-monitor.yaml
-  - fireflyiii-db-monitor.yaml
-  - memos-db-monitor.yaml
+  - db-monitor.yaml

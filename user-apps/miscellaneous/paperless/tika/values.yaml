@@ -1,0 +1,59 @@
+nameOverride: "tika"
+fullnameOverride: "tika"
+
+image:
+  repository: apache/tika
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+config:
+  base_url: "http://tika/"
+
+serviceAccount:
+  create: false
+
+podLabels:
+  # Added for Cilium network policies
+  netpol.cilium.io/egress-to-intra: "true"
+  netpol.cilium.io/egress-to-kube-dns: "true"
+  netpol.cilium.io/ingress-from-intra: "true"
+  netpol.cilium.io/ingress-from-ingress: "true"
+
+podSecurityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  runAsNonRoot: true
+
+securityContext:
+  allowPrivilegeEscalation: true
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsGroup: 35002
+  runAsNonRoot: true
+  runAsUser: 35002
+
+service:
+  type: ClusterIP
+  port: 9998
+
+resources:
+  limits:
+    cpu: "200m"
+    memory: 200Mi
+  requests:
+    cpu: "100m"
+    memory: 150Mi
+
+autoscaling:
+  enabled: false
+
+ingress:
+  enabled: false
+
+# Cluster uses CiliumNetworkPolicies
+networkPolicy:
+  enabled: false

@@ -2,11 +2,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   labels:
-    app.kubernetes.io/name: memos
-    cnpg.io/cluster: memos-database
     release: kube-prometheus-stack
     prometheus: kube-prometheus-stack-prometheus
-  name: memos-database
+  name: cnpg-db-metrics-monitor
 spec:
   namespaceSelector:
     matchNames:
@@ -14,5 +12,6 @@ spec:
   podMetricsEndpoints:
   - port: metrics
   selector:
-    matchLabels:
-      cnpg.io/cluster: memos-database
+    matchExpressions:
+      - key: cnpg.io/cluster
+        operator: Exists

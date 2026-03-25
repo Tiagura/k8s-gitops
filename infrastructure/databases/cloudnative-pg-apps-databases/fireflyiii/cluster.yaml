@@ -5,7 +5,7 @@ metadata:
   labels:
     app: fireflyiii
 spec:
-  instances: 1
+  instances: 2
   imageName: ghcr.io/cloudnative-pg/postgresql:18.3
   plugins:
   - name: barman-cloud.cloudnative-pg.io
@@ -19,12 +19,30 @@ spec:
       max_wal_size: "512MB"
     pg_hba:
       - host fireflyiii fireflyiii 10.32.0.0/16 scram-sha-256   # Allow connections from the cluster network (i.e. Pod CIDR)
+  # FIRST-TIME BOOTSTRAP (FROM INITDB)
+  # bootstrap:
+  #   initdb:
+  #     database: fireflyiii
+  #     owner: fireflyiii
+  #     secret:
+  #       name: fireflyiii-db-creds  
+  # ---
+  # BOOTSTRAP FROM BACKUP  
   bootstrap:
-    initdb:
+    recovery:
+      source: fireflyiii-backup
       database: fireflyiii
       owner: fireflyiii
       secret:
         name: fireflyiii-db-creds
+  externalClusters:
+    - name: fireflyiii-backup
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: barman-object-store
+          serverName: fireflyiii-database
+  # ---
   storage:
     size: 5Gi
     storageClass: cnpg-longhorn-storage

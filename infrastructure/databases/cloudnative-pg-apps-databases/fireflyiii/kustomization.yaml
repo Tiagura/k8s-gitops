@@ -3,8 +3,7 @@ kind: Kustomization
 namespace: cloudnative-pg
 
 resources:
-  # - cluster-init.yaml               # Only for initial cluster creation, after first backup use cluster-from-backup.yaml
-  - cluster-from-backup.yaml
+  - cluster.yaml
   - fireflyiii-db-secret-sealed.yaml
   - ../../../../base/cnpg-db/
   
@@ -22,6 +21,9 @@ patches:
         path: /spec/endpointSelector/matchLabels/cnpg.io~1cluster
         value: fireflyiii-database
       - op: replace
+        path: /spec/egress/0/toEndpoints/0/matchLabels/cnpg.io~1cluster
+        value: fireflyiii-database
+      - op: replace
         path: /spec/ingress/0/fromEndpoints/0/matchLabels/app
         value: fireflyiii
       - op: replace
@@ -30,6 +32,9 @@ patches:
       - op: add
         path: /spec/ingress/0/fromEndpoints/0/matchLabels/tier
         value: core
+      - op: replace
+        path: /spec/ingress/1/fromEndpoints/0/matchLabels/cnpg.io~1cluster
+        value: fireflyiii-database
   - target:
       group: postgresql.cnpg.io
       version: v1

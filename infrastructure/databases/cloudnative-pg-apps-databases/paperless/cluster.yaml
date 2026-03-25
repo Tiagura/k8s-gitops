@@ -1,0 +1,51 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: paperless-database
+  labels:
+    app: paperless
+spec:
+  instances: 2
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.3
+  plugins:
+  - name: barman-cloud.cloudnative-pg.io
+    isWALArchiver: true
+    parameters:
+      barmanObjectName: barman-object-store
+  postgresql:
+    parameters:
+      shared_buffers: "256MB"
+      wal_compression: "on"
+      max_wal_size: "512MB"
+    pg_hba:
+      - host paperless paperless 10.32.0.0/16 scram-sha-256   # Allow connections from the cluster network (i.e. Pod CIDR)
+  # FIRST-TIME BOOTSTRAP (FROM INITDB)
+  bootstrap:
+    initdb:
+      database: paperless
+      owner: paperless
+      secret:
+        name: paperless-db-creds
+  # ---
+  # BOOTSTRAP FROM BACKUP
+  # bootstrap:
+  #   recovery:
+  #     source: paperless-backup
+  #     database: paperless
+  #     owner: paperless
+  #     secret:
+  #       name: paperless-db-creds
+  # externalClusters:
+  #   - name: paperless-backup
+  #     plugin:
+  #       name: barman-cloud.cloudnative-pg.io
+  #       parameters:
+  #         barmanObjectName: barman-object-store
+  #         serverName: paperless-database
+  # ---
+  storage:
+    size: 5Gi
+    storageClass: cnpg-longhorn-storage
+  walStorage:
+    size: 2Gi
+    storageClass: cnpg-longhorn-storage

@@ -6,11 +6,13 @@ spec:
   description: >
     Allow database cluster to:
       Egress to:
+        - other database cluster pods (for replication)
         - cloudflare R2 (S3 compatible storage)
         - kube-apiserver
         - kube-dns
       Ingress from:
         - corresponding app
+        - other database cluster pods (for replication)
         - cnpg operator
         - prometheus
 
@@ -19,6 +21,18 @@ spec:
       cnpg.io/cluster: change_me
 
   egress:
+
+    - toEndpoints:
+      - matchLabels:
+          cnpg.io/cluster: change_me
+          k8s:io.kubernetes.pod.namespace: cloudnative-pg
+      toPorts:
+      - ports:
+        - port: "5432"
+          protocol: TCP
+        - port: "8000"
+          protocol: TCP
+
     - toCIDRSet:
       - cidr: 173.245.48.0/20
       - cidr: 103.21.244.0/22
@@ -37,31 +51,53 @@ spec:
       - cidr: 131.0.72.0/22
 
     - toEntities:
-        - kube-apiserver
+      - kube-apiserver
 
     - toEndpoints:
       - matchLabels:
           "k8s:io.kubernetes.pod.namespace": kube-system
           "k8s:k8s-app": kube-dns
       toPorts:
-        - ports:
-           - port: "53"
-             protocol: ANY
+      - ports:
+        - port: "53"
+          protocol: ANY
 
   ingress:
     - fromEndpoints:
       - matchLabels:
           app: change_me
           k8s:io.kubernetes.pod.namespace: change_me
+      toPorts:
+      - ports:
+        - port: "5432"
+          protocol: TCP
 
     - fromEndpoints:
       - matchLabels:
-          app.kubernetes.io/name: prometheus
-          k8s:io.kubernetes.pod.namespace: prometheus-stack
+          cnpg.io/cluster: change_me
+          k8s:io.kubernetes.pod.namespace: cloudnative-pg
+      toPorts:
+      - ports:
+        - port: "5432"
+          protocol: TCP
+        - port: "8000"
+          protocol: TCP
 
     - fromEndpoints:
       - matchLabels:
           app.kubernetes.io/instance: cloudnative-pg-operator
           app.kubernetes.io/name: cloudnative-pg
-          # Not needed if both are in the same namespace, but added for clarity, plus can be useful if namespaces change
           k8s:io.kubernetes.pod.namespace: cloudnative-pg
+      toPorts:
+      - ports:
+        - port: "8000"
+          protocol: TCP
+
+    - fromEndpoints:
+      - matchLabels:
+          app.kubernetes.io/name: prometheus
+          k8s:io.kubernetes.pod.namespace: prometheus-stack
+      toPorts:
+        - ports:
+            - port: "9187"
+              protocol: TCP

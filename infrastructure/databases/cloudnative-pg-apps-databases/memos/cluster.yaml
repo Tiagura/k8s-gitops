@@ -5,7 +5,7 @@ metadata:
   labels:
     app: memos
 spec:
-  instances: 1
+  instances: 2
   imageName: ghcr.io/cloudnative-pg/postgresql:18.3
   plugins:
   - name: barman-cloud.cloudnative-pg.io
@@ -19,12 +19,30 @@ spec:
       max_wal_size: "512MB"
     pg_hba:
       - host memos memos 10.32.0.0/16 scram-sha-256   # Allow connections from the cluster network (i.e. Pod CIDR)
+  # FIRST-TIME BOOTSTRAP (FROM INITDB)
+  # bootstrap:
+  #   initdb:
+  #     database: memos
+  #     owner: memos
+  #     secret:
+  #       name: memos-db-creds
+  # ---
+  # BOOTSTRAP FROM BACKUP
   bootstrap:
-    initdb:
+    recovery:
+      source: memos-backup
       database: memos
       owner: memos
       secret:
         name: memos-db-creds
+  externalClusters:
+    - name: memos-backup
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: barman-object-store
+          serverName: memos-database
+  # ---
   storage:
     size: 5Gi
     storageClass: cnpg-longhorn-storage

@@ -5,7 +5,7 @@ labels:
   - pairs:
       app.kubernetes.io/name: nodecast-tv
       app.kubernetes.io/component: iptv
-      app.kubernetes.io/part-of: user-apps
+      app.kubernetes.io/part-of: nodecast-tv
       app.kubernetes.io/managed-by: argocd
     
 resources:

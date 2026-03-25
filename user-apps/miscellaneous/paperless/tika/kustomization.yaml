@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - pairs:
+      app.kubernetes.io/name: tika
+      app.kubernetes.io/component: metadata-extraction
+      app.kubernetes.io/part-of: paperless
+
+helmCharts:
+  - name: tika
+    repo: https://apache.jfrog.io/artifactory/tika
+    version: 3.2.2
+    releaseName: "tika"
+    namespace: paperless
+    valuesFile: values.yaml
+
+# Patches to add Cilium network policy labels to the tika deployment, as the helm chart doesn't support adding custom labels to the pod template.
+patches:
+  - target:
+      kind: Deployment
+      name: tika
+    patch: |-
+      - op: add
+        path: /spec/template/metadata/labels/netpol.cilium.io~1egress-to-intra
+        value: "true"
+      - op: add
+        path: /spec/template/metadata/labels/netpol.cilium.io~1egress-to-kube-dns
+        value: "true"
+      - op: add
+        path: /spec/template/metadata/labels/netpol.cilium.io~1ingress-from-intra
+        value: "true"

@@ -4,6 +4,9 @@ namespace: fireflyiii
 
 labels:
   - pairs:
+      app.kubernetes.io/name: cronjob
+      app.kubernetes.io/component: automation
+      app.kubernetes.io/part-of: fireflyiii
       # Added for Cilium network policies
       netpol.cilium.io/egress-to-intra: "true"
       netpol.cilium.io/egress-to-kube-dns: "true"

@@ -4,7 +4,7 @@ namespace: cloudnative-pg
 
 resources:
   - cluster.yaml
-  - memos-db-secret-sealed.yaml
+  - paperless-db-secret-sealed.yaml
   - ../../../../base/cnpg-db/
 
 patches:
@@ -16,22 +16,25 @@ patches:
     patch: |-
       - op: replace
         path: /metadata/name
-        value: memos-database-netpol
+        value: paperless-database-netpol
       - op: replace
         path: /spec/endpointSelector/matchLabels/cnpg.io~1cluster
-        value: memos-database
+        value: paperless-database
       - op: replace
         path: /spec/egress/0/toEndpoints/0/matchLabels/cnpg.io~1cluster
-        value: memos-database
+        value: paperless-database
       - op: replace
         path: /spec/ingress/0/fromEndpoints/0/matchLabels/app
-        value: memos
+        value: paperless
+      - op: add
+        path: /spec/ingress/0/fromEndpoints/0/matchLabels/tier
+        value: web
       - op: replace
         path: /spec/ingress/0/fromEndpoints/0/matchLabels/k8s:io.kubernetes.pod.namespace
-        value: memos
+        value: paperless
       - op: replace
         path: /spec/ingress/1/fromEndpoints/0/matchLabels/cnpg.io~1cluster
-        value: memos-database
+        value: paperless-database
   - target:
       group: postgresql.cnpg.io
       version: v1
@@ -40,10 +43,10 @@ patches:
     patch: |-
       - op: replace
         path: /metadata/name
-        value: memos-db-backup
+        value: paperless-db-backup
       - op: replace
         path: /spec/cluster/name
-        value: memos-database
+        value: paperless-database
       - op: replace
         path: /spec/schedule
-        value: '0 0 2 */2 * *'       # Every 2 days at 2:00 AM
+        value: '0 0 1 */2 * *'       # Every day at 2:00 AM

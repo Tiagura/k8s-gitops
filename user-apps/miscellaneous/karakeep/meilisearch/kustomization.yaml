@@ -1,9 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: karakeep
+
 labels:
   - pairs:
-      app.kubernetes.io/component: meilisearch
+      app.kubernetes.io/name: meilisearch
+      app.kubernetes.io/component: search-engine
+      app.kubernetes.io/part-of: karakeep
     
 resources:
   - statefulset.yaml

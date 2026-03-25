@@ -5,7 +5,7 @@ labels:
   - pairs:
       app.kubernetes.io/name: bentopdf
       app.kubernetes.io/component: pdf-tools
-      app.kubernetes.io/part-of: user-apps
+      app.kubernetes.io/part-of: bentopdf
       app.kubernetes.io/managed-by: argocd
     
 resources:

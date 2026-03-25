@@ -1,0 +1,57 @@
+nameOverride: "gotenberg"
+fullnameOverride: "gotenberg"
+
+image:
+  repository: gotenberg/gotenberg
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+serviceAccount:
+  create: false
+
+podLabels:
+  # Added for Cilium network policies
+  netpol.cilium.io/egress-to-intra: "true"
+  netpol.cilium.io/egress-to-kube-dns: "true"
+  netpol.cilium.io/ingress-from-intra: "true"
+  netpol.cilium.io/ingress-from-ingress: "true"
+
+podSecurityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  runAsNonRoot: true
+
+service:
+  type: ClusterIP
+  port: 3000
+
+resources:
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+
+autoscaling:
+  enabled: false
+
+vpa:
+  create: false
+
+pdb:
+  create: false
+
+ingress:
+  enabled: false
+
+# Declared http route outside of the helm chart
+gateway:
+  enabled: false
+
+# From https://github.com/paperless-ngx/paperless-ngx/blob/main/docker/compose/docker-compose.postgres-tika.yml
+chromium:
+  disableJavaScript: true
+  allowList: "file:///tmp/.*"

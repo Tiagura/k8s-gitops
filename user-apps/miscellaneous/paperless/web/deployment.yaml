@@ -1,0 +1,153 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: paperless
+    tier: web
+  name: paperless
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperless
+      tier: web
+  template:
+    metadata:
+      labels:
+        app: paperless
+        tier: web
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/egress-to-world: "true"
+        netpol.cilium.io/egress-to-intra: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
+    spec:
+      # Paperless pods need to be scheduled on the same node to share the pvc
+      # This prevents Multi-Attach errors if replicas are increased
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - paperless
+            topologyKey: kubernetes.io/hostname
+      initContainers:
+      - name: wait-for-db
+        image: busybox:latest
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z paperless-database-rw.cloudnative-pg.svc.cluster.local 5432; do
+            echo "Waiting for database..."
+            sleep 2
+          done
+          echo "Database is ready!"
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+      containers:
+      - image: ghcr.io/paperless-ngx/paperless-ngx:2.20.12
+        name: paperless-ngx
+        ports:
+        - containerPort: 8000
+          name: http 
+        resources:
+          requests:
+            cpu: 1000m
+          limits:
+            cpu: 2000m  # Consider PAPERLESS_TASK_WORKERS * PAPERLESS_THREADS_PER_WORKER to not exceed your CPU core count
+            memory: 2Gi
+        envFrom:
+          - configMapRef:
+              name: paperless-config
+        env:
+        ### Paperless
+        - name: PAPERLESS_PORT
+          value: "8000"
+        ### Hosting and Security
+        - name: PAPERLESS_URL
+          value: https://docs.tamhomelab.com
+        - name: PAPERLESS_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: paperless-secrets
+              key: secret_key
+        - name: PAPERLESS_ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              name: paperless-secrets
+              key: admin_user
+        - name: PAPERLESS_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: paperless-secrets
+              key: admin_password
+        - name: PAPERLESS_ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: paperless-secrets
+              key: admin_email
+        ### Redis
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: paperless-secrets
+              key: redis_password
+        - name: PAPERLESS_REDIS
+          value: redis://:$(REDIS_PASSWORD)@paperless-redis.paperless.svc.cluster.local:6379
+        ### DB
+        - name: PAPERLESS_DBENGINE
+          value: postgresql
+        - name: PAPERLESS_DBHOST
+          value: paperless-database-rw.cloudnative-pg.svc.cluster.local
+        - name: PAPERLESS_DBPORT
+          value: "5432" 
+        - name: PAPERLESS_DBNAME
+          value: "paperless"
+        - name: PAPERLESS_DBUSER
+          valueFrom:
+            secretKeyRef:
+              name: paperless-secrets
+              key: db_username
+        - name: PAPERLESS_DBPASS
+          valueFrom:
+            secretKeyRef:
+              name: paperless-secrets
+              key: db_password
+        ### Tika and Gotenberg
+        - name: PAPERLESS_TIKA_ENABLED
+          value: "true"
+        - name: PAPERLESS_TIKA_ENDPOINT
+          value: http://tika.paperless.svc.cluster.local:9998
+        - name: PAPERLESS_GOTENBERG_ENDPOINT
+          value: http://gotenberg.paperless.svc.cluster.local:3000
+        volumeMounts:
+        - name: data
+          mountPath: /usr/src/paperless/data
+        - name: media
+          mountPath: /usr/src/paperless/media
+        - name: export
+          mountPath: /usr/src/paperless/export
+        - name: consume
+          mountPath: /usr/src/paperless/consume
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: paperless-data-pvc
+      - name: media
+        persistentVolumeClaim:
+          claimName: paperless-media-pvc
+      - name: export
+        persistentVolumeClaim:
+          claimName: paperless-export-pvc
+      - name: consume
+        persistentVolumeClaim:
+          claimName: paperless-consume-pvc

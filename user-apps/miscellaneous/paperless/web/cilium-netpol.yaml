@@ -1,0 +1,36 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: paperless-web-netpol
+spec:
+  description: >
+    Allow Paperless web pods to egress to the CloudNativePG
+    database services (rw, ro, r).
+    Allow Paperless web pods to egress to Redis instances in the namespace.
+  endpointSelector:
+    matchLabels:
+      app: paperless
+      tier: web
+
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: cloudnative-pg
+            cnpg.io/cluster: paperless-database
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": paperless
+          matchExpressions:
+            - key: redis_setup_type
+              operator: Exists
+            - key: role
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "6379"
+              protocol: TCP
+      

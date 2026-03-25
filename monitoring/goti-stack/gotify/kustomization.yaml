@@ -3,7 +3,9 @@ kind: Kustomization
 
 labels:
   - pairs:
-      app.kubernetes.io/component: gotify
+      app.kubernetes.io/name: gotify
+      app.kubernetes.io/component: notification-server
+      app.kubernetes.io/part-of: goti-stack
     
 
 resources:

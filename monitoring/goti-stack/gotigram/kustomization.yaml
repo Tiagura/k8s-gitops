@@ -3,7 +3,9 @@ kind: Kustomization
 
 labels:
   - pairs:
-      app.kubernetes.io/component: gotigram
+      app.kubernetes.io/name: gotigram
+      app.kubernetes.io/component: telegram-bot
+      app.kubernetes.io/part-of: goti-stack
     
 resources:
   - deployment.yaml

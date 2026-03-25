@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: cloudnative-pg-operator
+  name: cloudnative-pg-operator-monitor
   labels:
     app.kubernetes.io/name: cloudnative-pg
     release: kube-prometheus-stack

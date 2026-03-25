@@ -5,7 +5,7 @@ labels:
   - pairs:
       app.kubernetes.io/name: pgadmin
       app.kubernetes.io/component: database-admin
-      app.kubernetes.io/part-of: management
+      app.kubernetes.io/part-of: pgadmin
       app.kubernetes.io/managed-by: argocd
     
 resources:
