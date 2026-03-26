@@ -3,19 +3,19 @@ kind: Deployment
 metadata:
   name: chrome
   labels:
-    app: karakeep
-    tier: chrome
+    app: chrome
+    tier: crawler
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: karakeep
-      tier: chrome
+      app: chrome
+      tier: crawler
   template:
     metadata:
       labels:
-        app: karakeep
-        tier: chrome
+        app: chrome
+        tier: crawler
         netpol.cilium.io/egress-to-intra: "true"
         netpol.cilium.io/egress-to-kube-dns: "true"
         netpol.cilium.io/egress-to-public-ips: "true"
@@ -32,7 +32,7 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9222
-              name: chrome-pod
+              name: http
           command:
             - chromium-browser
             - --headless

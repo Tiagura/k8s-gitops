@@ -32,7 +32,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
-              name: karakeep-pod
+              name: http
           readinessProbe:
             httpGet:
               path: /

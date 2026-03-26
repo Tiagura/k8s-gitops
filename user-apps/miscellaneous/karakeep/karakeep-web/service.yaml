@@ -7,8 +7,8 @@ spec:
     app: karakeep
     tier: web
   ports:
-    - name: karakeep-svc
+    - name: http
       port: 3000
       protocol: TCP
-      targetPort: karakeep-pod
+      targetPort: http
   type: ClusterIP

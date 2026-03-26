@@ -3,15 +3,15 @@ kind: Service
 metadata:
   name: chrome
   labels:
-    app: karakeep
-    tier: chrome
+    app: chrome
+    tier: crawler
 spec:
   selector:
-    app: karakeep
-    tier: chrome
+    app: chrome
+    tier: crawler
   ports:
-    - name: chrome-svc
+    - name: http
       port: 9222
       protocol: TCP
-      targetPort: chrome-pod
+      targetPort: http
   type: ClusterIP

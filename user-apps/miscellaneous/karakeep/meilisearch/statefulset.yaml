@@ -4,16 +4,19 @@ metadata:
   name: meilisearch
   labels:
     app: meilisearch
+    tier: search-engine
 spec:
   serviceName: meilisearch-headless
   replicas: 1
   selector:
     matchLabels:
       app: meilisearch
+      tier: search-engine
   template:
     metadata:
       labels:
         app: meilisearch
+        tier: search-engine
     spec:
       securityContext:
         runAsNonRoot: true
@@ -27,7 +30,7 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 7700
-              name: meilisearch-pod
+              name: http
           readinessProbe:
             httpGet:
               path: /health

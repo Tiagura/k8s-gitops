@@ -3,13 +3,13 @@ kind: Service
 metadata:
   name: meilisearch-headless
   labels:
-    app: karakeep
-    tier: meilisearch
+    app: meilisearch
+    tier: search-engine
 spec:
   clusterIP: None
   selector:
-    app: karakeep
-    tier: meilisearch
+    app: meilisearch
+    tier: search-engine
   ports:
     - port: 7700
-      name: meilisearch
+      name: http
