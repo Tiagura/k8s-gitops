@@ -27,7 +27,7 @@ spec:
         fsGroup: 5050
       containers:
         - name: pgadmin
-          image: dpage/pgadmin4:9.13.0
+          image: dpage/pgadmin4:9.14.0
           env:
             - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
               value: "True"
