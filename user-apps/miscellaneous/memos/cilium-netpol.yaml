@@ -13,7 +13,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: cloudnative-pg
-            cnpg.io/cluster: memos-database
+            cnpg.io/cluster: memos-database-v1
       toPorts:
         - ports:
             - port: "5432"

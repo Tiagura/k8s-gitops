@@ -24,7 +24,7 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
       containers:
-      - image: neosmemo/memos:0.26.2
+      - image: neosmemo/memos:0.25.3
         name: memos
         ports:
         - containerPort: 5230
@@ -59,7 +59,7 @@ spec:
         - name: MEMOS_DRIVER
           value: postgres
         - name: MEMOS_DSN
-          value: postgresql://$(DB_USERNAME):$(DB_PASSWORD)@memos-database-rw.cloudnative-pg.svc.cluster.local:5432/memos?sslmode=disable
+          value: postgresql://$(DB_USERNAME):$(DB_PASSWORD)@memos-database-v1-rw.cloudnative-pg.svc.cluster.local:5432/memos?sslmode=disable
         resources:
           requests:
             memory: 32Mi
