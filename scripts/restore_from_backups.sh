@@ -119,7 +119,7 @@ wait_for_pvc_bind() {
 # Build Volume, PV, PVC YAML
 # -------------------------
 build_manifests() {
-  local pvc_name="$1" ns="$2" size_bytes="$3" backup_url="$4" volume_name="$5" access_mode="$6" pv_name="$7"
+  local pvc_name="$1" ns="$2" size_bytes="$3" backup_url="$4" volume_name="$5" access_mode="$6"
 
   local size
   size=$(bytes_to_size "$size_bytes")
@@ -182,7 +182,7 @@ restore_backupvolume() {
   local bv="$1"
   info "Processing backupVolume: $bv"
 
-  local raw pvc ns last_backup volume_name size_bytes access_mode backup_url pv
+  local raw pvc ns last_backup volume_name size_bytes access_mode backup_url
   raw=$(kubectl get backupvolumes.longhorn.io "$bv" -n "$LONGHORN_NS" -o json)
   pvc=$(echo "$raw" | jq -r '(.status.labels.KubernetesStatus // "{}") | fromjson | .pvcName // empty')
   ns=$(echo "$raw" | jq -r '(.status.labels.KubernetesStatus // "{}") | fromjson | .namespace // empty')
@@ -192,15 +192,11 @@ restore_backupvolume() {
   access_mode=$(echo "$raw" | jq -r '.status.labels["longhorn.io/volume-access-mode"] // "rwo"')
   backup_url=$(kubectl get backups.longhorn.io "$last_backup" -n "$LONGHORN_NS" -o jsonpath='{.status.url}')
 
-  # **Extract original PV name from backup metadata**
-  pv=$(echo "$raw" | jq -r '(.status.labels.KubernetesStatus // "{}") | fromjson | .pvName // empty')
-  pv="${pv:-}"   # default to empty if unset
-
   [[ -z "$pvc" || -z "$last_backup" || -z "$volume_name" ]] && { warn "Skipping $bv: missing pvc, backup, or volume name"; return; }
 
   ensure_namespace "$ns"
   local manifest
-  manifest=$(build_manifests "$pvc" "$ns" "$size_bytes" "$backup_url" "$volume_name" "$access_mode" "$pv")
+  manifest=$(build_manifests "$pvc" "$ns" "$size_bytes" "$backup_url" "$volume_name" "$access_mode")
 
   # Create Volume
   if ! kubectl get volumes.longhorn.io "$volume_name" -n "$LONGHORN_NS" >/dev/null 2>&1; then

@@ -1,0 +1,99 @@
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-kubernetes-manifests:
+    name: Validate Kustomize + Kubernetes YAML
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v5
+        with:
+          version: 1.33    # Do not use kubectl version (1.34-35.*that has kustomize v5.7.1 Issue: https://github.com/kubernetes/kubectl/issues/1839
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v5
+        with:
+          version: v3.16.2
+
+      - name: Render all Kustomize manifests
+        run: |
+          set -euo pipefail
+
+          mapfile -t dirs < <(
+            find infrastructure monitoring user-apps \
+              -type f -name kustomization.yaml \
+              -exec dirname {} \; | sort -u
+          )
+
+          if [ "${#dirs[@]}" -eq 0 ]; then
+            echo "No kustomization directories found."
+            exit 1
+          fi
+
+          : > /tmp/all-manifests.yaml
+
+          for dir in "${dirs[@]}"; do
+            echo "Rendering ${dir}"
+            kubectl kustomize --enable-helm "${dir}" >> /tmp/all-manifests.yaml
+            echo "---" >> /tmp/all-manifests.yaml
+          done
+
+          if [ ! -s /tmp/all-manifests.yaml ]; then
+            echo "ERROR: No manifests rendered"
+            exit 1
+          fi
+
+          echo "Splitting manifests..."
+
+          csplit -z -f /tmp/doc- /tmp/all-manifests.yaml '/^---$/' '{*}' >/dev/null || true
+
+          # ALWAYS reset output file
+          : > /tmp/filtered-manifests.yaml
+
+          for f in /tmp/doc-*; do
+            [ -f "$f" ] || continue
+            cat "$f" >> /tmp/filtered-manifests.yaml
+          done
+
+      - name: Install kubeconform
+        run: |
+          set -euo pipefail
+
+          echo "Fetching latest kubeconform version..."
+
+          VERSION=$(curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest \
+            | grep '"tag_name":' \
+            | cut -d '"' -f 4)
+
+          echo "Latest version: $VERSION"
+
+          URL="https://github.com/yannh/kubeconform/releases/download/${VERSION}/kubeconform-linux-amd64.tar.gz"
+
+          curl -sSL -o /tmp/kubeconform.tar.gz "$URL"
+
+          tar -xzf /tmp/kubeconform.tar.gz -C /tmp
+          sudo mv /tmp/kubeconform /usr/local/bin/kubeconform
+
+          echo "Installed version:"
+          kubeconform -v
+
+      - name: Validate Kubernetes manifests
+        run: |
+          set -euo pipefail
+
+          kubeconform \
+            -summary \
+            -strict \
+            -ignore-missing-schemas \
+            -schema-location default \
+            -schema-location https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json \
+            /tmp/filtered-manifests.yaml

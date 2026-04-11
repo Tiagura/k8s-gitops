@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: renovate
+
+helmCharts:
+  - name: renovate
+    repo: oci://ghcr.io/renovatebot/charts/
+    version: 46.111.0
+    releaseName: renovate
+    valuesFile: values.yaml
+
+resources:
+  - namespace.yaml
+  - renovate-secret-sealed.yaml
+  - ../../../base/cilium-network-policies/

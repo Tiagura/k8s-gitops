@@ -1,0 +1,95 @@
+nameOverride: 'renovate'
+fullnameOverride: 'renovate'
+
+cronjob:
+  schedule: '0 4,8 * * *' # Run at 4:00 and 8:00 every day
+  timeZone: Europe/Lisbon
+  # -- "Allow" to allow concurrent runs, "Forbid" to skip new runs if a previous run is still running or "Replace" to replace the previous run
+  concurrencyPolicy: Forbid
+  # -- "Number of successful completions is reached to mark the job as complete"
+  completions: ''
+  # -- "Where the jobs should be NonIndexed or Indexed"
+  completionMode: ''
+  # -- Amount of failed jobs to keep in history
+  failedJobsHistoryLimit: 3
+  # -- Amount of completed jobs to keep in history
+  successfulJobsHistoryLimit: 5
+  # -- Set to Never to restart the job when the pod fails or to OnFailure to restart when a container fails
+  jobRestartPolicy: Never
+
+  parallelism: 1
+
+pod:
+  labels:
+    netpol.cilium.io/egress-to-kube-dns: "true"
+    netpol.cilium.io/egress-to-world: "true"
+    netpol.cilium.io/ingress-deny: "true"
+
+image:
+  # -- Set `true` to use the full image. See <https://docs.renovatebot.com/getting-started/running/#the-full-image>
+  useFull: false
+
+renovate:
+  # -- Custom exiting global renovate config
+  existingConfigFile: ''
+  # -- Inline global renovate config.json
+  # See https://docs.renovatebot.com/self-hosted-configuration
+  config: |
+    {
+      "platform": "github",
+      "autodiscover": "false",
+      "printConfig": true,
+      "repositories": ["Tiagura/k8s-gitops"]
+    }
+
+  # -- Renovate Container-level security-context
+  securityContext:  
+    capabilities:
+      drop:
+        - ALL
+    runAsUser: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+    privileged: false
+    allowPrivilegeEscalation: false
+
+  # Instead of a file system cache, it is highly recommended to use SQLite.
+  # Take a look at https://github.com/renovatebot/renovate/discussions/30525 for more information.
+  # -- Options related to persistence
+  persistence:
+    cache:
+      enabled: false
+
+# -- k8s secret to reference environment variables from. Overrides secrets if set
+existingSecret: renovate-secret
+
+serviceAccount:
+  create: true
+  name: renovate-sa
+
+resources:
+  limits:
+   cpu: 500m
+   memory: 1Gi
+  requests:
+   cpu: 100m
+   memory: 128Mi
+
+env:
+  LOG_LEVEL: debug
+  RENOVATE_GIT_AUTHOR: 'Selfhosted Renovate Bot <renovate@local>'
+  # If limit memory is set and you are experiencing out of memory errors,
+  # with pods being killed due to OOM, you can set the NODE_OPTIONS environment variable to limit the maximum old space size of Node.js.
+  # Set about 50-75% of the memory limit.
+  NODE_OPTIONS: "--max-old-space-size=800"
+
+# -- Pod-level security-context
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault

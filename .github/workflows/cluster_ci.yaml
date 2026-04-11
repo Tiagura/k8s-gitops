@@ -1,0 +1,39 @@
+name: Cluster CI Validation
+
+on:
+  workflow_call:
+
+  pull_request:
+    paths:
+      - infrastructure/**
+      - monitoring/**
+      - user-apps/**
+      - scripts/**
+      - .github/workflows/**
+
+  push:
+    branches:
+      - main
+    paths:
+      - infrastructure/**
+      - monitoring/**
+      - user-apps/**
+      - scripts/**
+      - .github/workflows/**
+
+permissions:
+  contents: read
+
+jobs:
+  validate-argocd-apps:
+    uses: ./.github/workflows/validate_argocd_apps.yml
+    secrets: inherit
+
+  validate-kubernetes-manifests:
+    uses: ./.github/workflows/validate_kubernetes_namifests.yml
+    secrets: inherit
+
+  validate-shell-scripts:
+    uses: ./.github/workflows/validate_shell_scripts.yml
+    secrets: inherit
+  
