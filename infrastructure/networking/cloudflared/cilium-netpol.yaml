@@ -11,6 +11,7 @@ spec:
         - access to the externally exposed apps:
             misc:
               - excalidraw
+              - karakeep
               - memos
             media:
               - nodecast-tv
@@ -41,6 +42,16 @@ spec:
       toPorts:
         - ports:
             - port: "80"
+              protocol: TCP
+
+    - toEndpoints:
+      - matchLabels:
+          app: karakeep
+          tier: web
+          k8s:io.kubernetes.pod.namespace: karakeep
+      toPorts:
+        - ports:
+            - port: "3000"
               protocol: TCP
   
     - toEndpoints:

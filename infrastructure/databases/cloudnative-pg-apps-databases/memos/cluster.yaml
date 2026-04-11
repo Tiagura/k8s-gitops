@@ -4,8 +4,15 @@ metadata:
   name: memos-database-v1
   labels:
     app: memos
+  annotations:
+    # Use this annotation to skip the empty WAL archive check during recovery
+    # useful when the restoring cluster name is equal to the source cluster name
+    # careful when using this annotation, as it may lead to data loss
+    # use only when bootstrapping not with initdb
+    # Issue: https://github.com/cloudnative-pg/plugin-barman-cloud/issues/683
+    cnpg.io/skipEmptyWalArchiveCheck: "enabled"
 spec:
-  instances: 2
+  instances: 1
   imageName: ghcr.io/cloudnative-pg/postgresql:18.3
   plugins:
   - name: barman-cloud.cloudnative-pg.io
