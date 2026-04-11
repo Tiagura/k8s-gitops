@@ -1,132 +1,64 @@
 {
-  "mode": "full",
-  "recreateWhen": "always",
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "dependencyDashboard": true,
+  "recreateWhen": "always",
   "minimumReleaseAge": "7 days",
-  "schedule": [
-    "* 0-4 * * 1"
-  ],
-  "prCreation": "not-pending",
+  "minimumReleaseAgeBehaviour": "timestamp-optional",
   "rebaseWhen": "behind-base-branch",
-  "extends": [
-    "mergeConfidence:all-badges",
-    "config:recommended"
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
+  "extends": ["config:recommended", "mergeConfidence:all-badges"],
+  "enabledManagers": [
+    "kustomize",
+    "kubernetes",
+    "argocd",
+    "helm-values",
+    "custom.regex"
   ],
-  "helm-values": {
-    "enabled": true
+  "kustomize": {
+    "managerFilePatterns": ["(^|/)kustomization\\.ya?ml$"]
   },
-  "customManagers": [
-    {
-      "customType": "regex",
-      "description": "Update Helm chart versions in kustomization.yaml",
-      "managerFilePatterns": [
-        "/kustomization\\.yaml$/"
-      ],
-      "matchStrings": [
-        "name:\\s+(?<depName>[^\\s]+)\\s+repo:\\s+(?<registryUrl>[^\\s]+)\\s+version:\\s+(?<currentValue>[^\\s]+)"
-      ],
-      "datasourceTemplate": "helm",
-      "registryUrlTemplate": "{{registryUrl}}"
-    },
-    {
-      "customType": "regex",
-      "description": "Update Docker images in various YAML files",
-      "managerFilePatterns": [
-        "/deployment\\.yaml$/",
-        "/statefulset\\.yaml$/",
-        "/job\\.yaml$/",
-        "/cronjob\\.yaml$/",
-        "/cluster-.*\\.yaml$/"
-      ],
-      "matchStrings": [
-        "image:\\s+(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)",
-        "imageName:\\s+(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)"
-      ],
-      "datasourceTemplate": "docker",
-      "versioningTemplate": "docker"
-    },
-    {
-      "customType": "regex",
-      "description": "Update CloudNative PG Barman plugin manifest version",
-      "managerFilePatterns": [
-        "infrastructure/databases/cloudnative-pg/barman-plugin/kustomization\\.yaml"
-      ],
-      "matchStrings": [
-        "https://github\\.com/cloudnative-pg/plugin-barman-cloud/releases/download/v(?<currentValue>[^/]+)/manifest\\.yaml"
-      ],
-      "depNameTemplate": "cloudnative-pg/plugin-barman-cloud",
-      "datasourceTemplate": "github-releases",
-      "versioningTemplate": "semver"
-    },
-    {
-      "customType": "regex",
-      "description": "Update FireflyIII core Docker image via GitHub releases",
-      "managerFilePatterns": [
-        "/user-apps/miscellaneous/fireflyiii/core/deployment\\.yaml/"
-      ],
-      "matchStrings": [
-        "image:\\s+(?<depName>fireflyiii/core):version-(?<currentValue>\\d+\\.\\d+\\.\\d+)"
-      ],
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "firefly-iii/firefly-iii",
-      "versioningTemplate": "semver"
-    },
-    {
-      "customType": "regex",
-      "description": "Update FireflyIII data-importer Docker image via GitHub releases",
-      "managerFilePatterns": [
-        "/user-apps/miscellaneous/fireflyiii/importer/deployment\\.yaml/"
-      ],
-      "matchStrings": [
-        "image:\\s+(?<depName>fireflyiii/data-importer):version-(?<currentValue>\\d+\\.\\d+\\.\\d+)"
-      ],
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "firefly-iii/data-importer",
-      "versioningTemplate": "semver"
-    },
-    {
-      "customType": "regex",
-      "description": "Update Sealed Secrets CRD URL in kustomization.yaml",
-      "managerFilePatterns": [
-        "/infrastructure/controllers/sealed-secrets/kustomization\\.yaml/"
-      ],
-      "matchStrings": [
-        "https://raw\\.githubusercontent\\.com/bitnami-labs/sealed-secrets/v(?<currentValue>[^/]+)/helm/sealed-secrets/crds/bitnami\\.com_sealedsecrets\\.yaml"
-      ],
-      "depNameTemplate": "bitnami-labs/sealed-secrets",
-      "datasourceTemplate": "github-releases"
-    },
-    {
-      "customType": "regex",
-      "description": "Update Redis Operator CRD URLs in kustomization.yaml",
-      "managerFilePatterns": [
-        "/infrastructure/databases/redis-operator/kustomization\\.yaml/"
-      ],
-      "matchStrings": [
-        "https://raw\\.githubusercontent\\.com/OT-CONTAINER-KIT/redis-operator/refs/tags/v(?<currentValue>[^/]+)/config/crd/bases/redis\\.redis\\.opstreelabs\\.in_[^\\s]+\\.yaml"
-      ],
-      "depNameTemplate": "OT-CONTAINER-KIT/redis-operator",
-      "datasourceTemplate": "github-releases"
-    },
-    {
-      "customType": "regex",
-      "description": "Update Gateway API release URL in README.md",
-      "managerFilePatterns": [
-        "/README\\.md/"
-      ],
-      "matchStrings": [
-        "https://github\\.com/kubernetes-sigs/gateway-api/releases/download/v(?<currentValue>[^/]+)/standard-install\\.yaml",
-        "https://github\\.com/kubernetes-sigs/gateway-api/releases/download/v(?<currentValue>[^/]+)/experimental-install\\.yaml"
-      ],
-      "depNameTemplate": "kubernetes-sigs/gateway-api",
-      "datasourceTemplate": "github-releases"
-    }
-  ],
+  "kubernetes": {
+    "managerFilePatterns": [
+      "/^infrastructure/.+\\.ya?ml$/",
+      "/^user-apps/.+\\.ya?ml$/",
+      "/^monitoring/.+\\.ya?ml$/"
+    ]
+  },
+  "argocd": {
+    "managerFilePatterns": ["/^infrastructure\\/controllers\\/argocd\\/apps\\/.*\\.ya?ml$/"]
+  },
+  "helm-values": {
+    "enabled": true,
+    "managerFilePatterns": [
+      "/^infrastructure/.+/values\\.yaml$/",
+      "/^user-apps/.+/values\\.yaml$/",
+      "/^monitoring/.+/values\\.yaml$/"
+    ]
+  },
   "packageRules": [
     {
+    "matchUpdateTypes": ["patch"],
+    "automerge": true,
+    "automergeType": "branch"
+    },
+    {
+    "matchUpdateTypes": ["minor", "major"],
+    "automerge": false,
+    "prCreation": "immediate"
+    },
+    {
       "matchFileNames": [
-        "infrastructure/databases/cloudnative-pg/cloudnative-pg-operator/kustomization.yaml",
-        "infrastructure/databases/cloudnative-pg/barman-plugin/kustomization.yaml"
+        "infrastructure/controllers/argocd/**", 
+        "infrastructure/databases/cloudnative-pg/**", 
+        "infrastructure/databases/cloudnative-pg-apps-databases/**",
+        "infrastructure/networking/cilium/**",
+        "infrastructure/storage/longhorn/**"],
+      "automerge": false
+    },
+    {
+      "matchFileNames": [
+        "infrastructure/databases/cloudnative-pg/**"
       ],
       "groupName": "CNPG Stack"
     },
@@ -144,61 +76,109 @@
     },
     {
       "matchFileNames": [
-        "monitoring/goti-stack/gotify/deployment.yaml",
-        "monitoring/goti-stack/gotigram/deployment.yaml"
+        "monitoring/goti-stack/**"
       ],
       "groupName": "Gotify Stack"
     },
     {
-      "matchDepNames": [
-        "firefly-iii/firefly-iii",
-        "firefly-iii/data-importer"
+      "matchFileNames": [
+        "user-apps/miscellaneous/fireflyiii/**"
       ],
-      "groupName": "FireflyIII",
-      "matchDatasources": [
-        "github-releases"
-      ]
-    },
-    {
-      "matchDepNames": [
-        "firefly-iii/firefly-iii",
-        "firefly-iii/data-importer"
-      ],
-      "matchDatasources": [
-        "docker"
-      ],
-      "enabled": false
+      "groupName": "FireflyIII"
     },
     {
       "matchFileNames": [
-        "user-apps/miscellaneous/karakeep/chrome/deployment.yaml",
-        "user-apps/miscellaneous/karakeep/karakeep-web/deployment.yaml",
-        "user-apps/miscellaneous/karakeep/meilisearch/deployment.yaml"
+        "user-apps/miscellaneous/karakeep/**"
       ],
       "groupName": "Karakeep"
     },
     {
       "matchFileNames": [
-        "user-apps/miscellaneous/changedetection/changedetection/deployment.yaml",
-        "user-apps/miscellaneous/changedetection/playwright/deployment.yaml"
+        "user-apps/miscellaneous/changedetection/**"
       ],
       "groupName": "Changedetection"
     },
     {
-      "matchDatasources": [
-        "docker"
-      ]
+      "matchFileNames": [
+        "user-apps/miscellaneous/paperless/**"
+      ],
+      "groupName": "Paperless"
+    }
+  ],
+  "customManagers": [
+    {
+      "description": "CloudNative PG Barman plugin manifest",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/infrastructure/databases/cloudnative-pg/barman-plugin/kustomization\\.yaml$/"
+      ],
+      "matchStrings": [
+        "https://github\\.com/cloudnative-pg/plugin-barman-cloud/releases/download/v(?<currentValue>[^/]+)/manifest\\.yaml"
+      ],
+      "depNameTemplate": "cloudnative-pg/plugin-barman-cloud",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
     },
     {
-      "matchDatasources": [
-        "helm",
-        "github-releases"
-      ]
+      "description": "FireflyIII core image via GitHub releases",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/user-apps/miscellaneous/fireflyiii/core/deployment\\.yaml$/"
+      ],
+      "matchStrings": [
+        "image:\\s+(?<depName>fireflyiii/core):version-(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "firefly-iii/firefly-iii",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
     },
     {
-      "matchManagers": [
-        "custom.regex"
-      ]
+      "description": "FireflyIII importer via GitHub releases",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/user-apps/miscellaneous/fireflyiii/importer/deployment\\.yaml$/"
+      ],
+      "matchStrings": [
+        "image:\\s+(?<depName>fireflyiii/data-importer):version-(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "firefly-iii/data-importer",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "description": "Sealed Secrets CRD version (GitHub Releases)",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/infrastructure/controllers/sealed-secrets/kustomization\\.yaml$/"
+      ],
+      "matchStrings": [
+        "https://raw\\.githubusercontent\\.com/bitnami-labs/sealed-secrets/v(?<currentValue>[^/]+)/helm/sealed-secrets/crds/bitnami\\.com_sealedsecrets\\.yaml"
+      ],
+      "depNameTemplate": "bitnami-labs/sealed-secrets",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "description": "Redis Operator CRD version (GitHub Releases)",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/infrastructure/databases/redis-operator/kustomization\\.yaml$/"
+      ],
+      "matchStrings": [
+        "https://raw\\.githubusercontent\\.com/OT-CONTAINER-KIT/redis-operator/refs/tags/v(?<currentValue>[^/]+)/config/crd/bases/redis\\.redis\\.opstreelabs\\.in_[^\\s]+\\.yaml"
+      ],
+      "depNameTemplate": "OT-CONTAINER-KIT/redis-operator",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "description": "Gateway API YAML versions in README",
+      "customType": "regex",
+      "managerFilePatterns": ["/README\\.md$/"],
+      "matchStrings": [
+        "https://github\\.com/kubernetes-sigs/gateway-api/releases/download/v(?<currentValue>[^/]+)/standard-install\\.yaml",
+        "https://github\\.com/kubernetes-sigs/gateway-api/releases/download/v(?<currentValue>[^/]+)/experimental-install\\.yaml"
+      ],
+      "depNameTemplate": "kubernetes-sigs/gateway-api",
+      "datasourceTemplate": "github-releases"
     }
   ]
 }
