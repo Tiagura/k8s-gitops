@@ -60,7 +60,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 |------|------|---------|
 | <img src="https://argo-cd.readthedocs.io/en/stable/assets/logo.png" width="50"/> | [ArgoCD](https://argo-cd.readthedocs.io/) | GitOps continuous delivery controller |
 | <img src="https://digicactus.com/wp-content/uploads/2020/07/1_8Irsw8IlIHORa2eeFh0f0g.png" width="50"/> | [Reloader](https://github.com/stakater/Reloader) | Auto-reloads workloads on ConfigMap/Secret changes. |
-| <img src="https://docs.renovatebot.com/assets/images/logo.png" width="50"/> | [Renovate](https://docs.renovatebot.com/) | Automated dependency updates (Github Application) |
+| <img src="https://docs.renovatebot.com/assets/images/logo.png" width="50"/> | [Renovate](https://docs.renovatebot.com/) | Automated dependency updates |
 
 #### Networking
 
@@ -89,7 +89,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 
 | Logo | Name | Purpose |
 |------|---------|-------------|
-| <img src="https://raw.githubusercontent.com/prometheus/alertmanager/refs/heads/main/ui/app/favicon.ico" width="50"/> | [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/) | Manages and routes alerts |
+| <img src="https://raw.githubusercontent.com/prometheus/alertmanager/refs/heads/main/ui/app/public/favicon.ico" width="50"/> | [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/) | Manages and routes alerts |
 | <img src="https://gotify.net/img/logo.png" width="50"/> | [Gotify](https://gotify.net/) | Push notification server |
 | <img src="https://raw.githubusercontent.com/Tiagura/gotigram/refs/heads/main/images/logo_no_background.png" width="50"/> | [Gotigram](https://github.com/Tiagura/gotigram) | Forwards Gotify notifications to Telegram |
 | <img src="https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg" width="50"/> | [Grafana](https://grafana.com/) | Data visualization |

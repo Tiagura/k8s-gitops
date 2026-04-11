@@ -3,11 +3,10 @@
   "recreateWhen": "always",
   "dependencyDashboard": true,
   "minimumReleaseAge": "7 days",
-  "schedule": [
-    "* 0-4 * * 1"
-  ],
-  "prCreation": "not-pending",
+  "minimumReleaseAgeBehaviour": "timestamp-optional",
   "rebaseWhen": "behind-base-branch",
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
   "extends": [
     "mergeConfidence:all-badges",
     "config:recommended"
@@ -36,7 +35,8 @@
         "/statefulset\\.yaml$/",
         "/job\\.yaml$/",
         "/cronjob\\.yaml$/",
-        "/cluster-.*\\.yaml$/"
+        "/cluster\\.yaml$/",
+        "/redis-*\\.yaml$/"
       ],
       "matchStrings": [
         "image:\\s+(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)",
@@ -124,9 +124,26 @@
   ],
   "packageRules": [
     {
+    "matchUpdateTypes": ["patch"],
+    "automerge": true,
+    "automergeType": "branch"
+    },
+    {
+    "matchUpdateTypes": ["minor", "major"],
+    "automerge": false
+    },
+    {
       "matchFileNames": [
-        "infrastructure/databases/cloudnative-pg/cloudnative-pg-operator/kustomization.yaml",
-        "infrastructure/databases/cloudnative-pg/barman-plugin/kustomization.yaml"
+        "infrastructure/controllers/argocd/**", 
+        "infrastructure/databases/cloudnative-pg/**", 
+        "infrastructure/databases/cloudnative-pg-apps-databases/**",
+        "infrastructure/networking/cilium/**",
+        "infrastructure/storage/longhorn/**"],
+      "automerge": false
+    },
+    {
+      "matchFileNames": [
+        "infrastructure/databases/cloudnative-pg/**"
       ],
       "groupName": "CNPG Stack"
     },
@@ -144,8 +161,7 @@
     },
     {
       "matchFileNames": [
-        "monitoring/goti-stack/gotify/deployment.yaml",
-        "monitoring/goti-stack/gotigram/deployment.yaml"
+        "monitoring/goti-stack/**"
       ],
       "groupName": "Gotify Stack"
     },
@@ -171,34 +187,21 @@
     },
     {
       "matchFileNames": [
-        "user-apps/miscellaneous/karakeep/chrome/deployment.yaml",
-        "user-apps/miscellaneous/karakeep/karakeep-web/deployment.yaml",
-        "user-apps/miscellaneous/karakeep/meilisearch/deployment.yaml"
+        "user-apps/miscellaneous/karakeep/**"
       ],
       "groupName": "Karakeep"
     },
     {
       "matchFileNames": [
-        "user-apps/miscellaneous/changedetection/changedetection/deployment.yaml",
-        "user-apps/miscellaneous/changedetection/playwright/deployment.yaml"
+        "user-apps/miscellaneous/changedetection/**"
       ],
       "groupName": "Changedetection"
     },
     {
-      "matchDatasources": [
-        "docker"
-      ]
-    },
-    {
-      "matchDatasources": [
-        "helm",
-        "github-releases"
-      ]
-    },
-    {
-      "matchManagers": [
-        "custom.regex"
-      ]
+      "matchFileNames": [
+        "user-apps/miscellaneous/paperless/**"
+      ],
+      "groupName": "Paperless"
     }
   ]
 }
