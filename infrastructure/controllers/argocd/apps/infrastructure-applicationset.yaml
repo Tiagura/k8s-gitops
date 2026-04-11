@@ -12,6 +12,7 @@ spec:
         directories:
           - path: infrastructure/controllers/metrics-server
           - path: infrastructure/controllers/reloader
+          - path: infrastructure/controllers/renovate
           - path: infrastructure/databases/cloudnative-pg
           - path: infrastructure/databases/redis-operator
           - path: infrastructure/networking/cloudflared

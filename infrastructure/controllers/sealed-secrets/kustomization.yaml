@@ -11,11 +11,11 @@ labels:
 
 resources:
   - namespace.yaml
-  - https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.36.1/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
+  - https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.36.6/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
 
 helmCharts:
   - name: sealed-secrets
     repo: https://bitnami-labs.github.io/sealed-secrets
-    version: 2.18.4
+    version: 2.18.5
     namespace: sealed-secrets
     valuesFile: values.yaml

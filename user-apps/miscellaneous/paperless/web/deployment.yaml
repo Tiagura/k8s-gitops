@@ -54,7 +54,7 @@ spec:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
       containers:
-      - image: ghcr.io/paperless-ngx/paperless-ngx:2.20.12
+      - image: ghcr.io/paperless-ngx/paperless-ngx:2.20.14
         name: paperless-ngx
         ports:
         - containerPort: 8000
@@ -62,6 +62,7 @@ spec:
         resources:
           requests:
             cpu: 1000m
+            memory: 512Mi
           limits:
             cpu: 2000m  # Consider PAPERLESS_TASK_WORKERS * PAPERLESS_THREADS_PER_WORKER to not exceed your CPU core count
             memory: 2Gi

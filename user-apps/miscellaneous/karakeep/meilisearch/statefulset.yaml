@@ -60,10 +60,6 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: meilisearch-data
-        labels:
-          recurring-job.longhorn.io/source: enabled
-          recurring-job-group.longhorn.io/standard: enabled
-          recurring-job-group.longhorn.io/default: disabled
       spec:
         accessModes: 
           - ReadWriteOnce

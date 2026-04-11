@@ -189,5 +189,5 @@ Next steps:
 5) Optionally, after verifying everything is working, delete the backup files in:
    ${ROTATE_TMP} and the *.bak files next to each sealed secret.
    Note: You can run this script in cleanup mode to do this automatically:
-      ./scripts/rotate-seal-key.sh cleanup
+      ./scripts/rotate_seal_key.sh cleanup
 EOF

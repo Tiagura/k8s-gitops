@@ -84,7 +84,7 @@ Rotating the seal and unseal key pair is necessary to maintain security while ke
         ```
 
 ### Using the Key Rotation Script
-Alternatively, the key rotation process can be automated using the provided `scripts/rotate-seal-key.sh` script. The script automates steps 1-3 and also backups up files. 
+Alternatively, the key rotation process can be automated using the provided `scripts/rotate_seal_key.sh` script. The script automates steps 1-3 and also backups up files. 
 Specifically:
   - The old key pair, along with the newly generated key pair, is stored inside the `.sealed-secrets-rotation` folder.
 
