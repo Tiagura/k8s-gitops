@@ -4,7 +4,6 @@
   "dependencyDashboard": true,
   "minimumReleaseAge": "7 days",
   "minimumReleaseAgeBehaviour": "timestamp-optional",
-  "prCreation": "not-pending",
   "rebaseWhen": "behind-base-branch",
   "extends": [
     "mergeConfidence:all-badges",
