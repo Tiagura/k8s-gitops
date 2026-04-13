@@ -18,7 +18,7 @@ spec:
             storage: 1Gi
   redisExporter:
     enabled: true
-    image: quay.io/opstree/redis-exporter:v1.80.2
+    image: quay.io/opstree/redis-exporter:v1.82.0
     imagePullPolicy: IfNotPresent
     # env:
     # - name: REDIS_EXPORTER_INCL_SYSTEM_METRICS
