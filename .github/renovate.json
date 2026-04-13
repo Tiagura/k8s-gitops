@@ -39,11 +39,12 @@
     {
     "matchUpdateTypes": ["patch"],
     "automerge": true,
-    "automergeType": "pr"
+    "automergeType": "branch"
     },
     {
     "matchUpdateTypes": ["minor", "major"],
-    "automerge": false
+    "automerge": false,
+    "prCreation": "immediate"
     },
     {
       "matchFileNames": [
