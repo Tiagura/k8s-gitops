@@ -4,7 +4,7 @@ metadata:
   name: paperless-redis
 spec:
   kubernetesConfig:
-    image: quay.io/opstree/redis:v8.2.5
+    image: quay.io/opstree/redis:v8.6.2
     imagePullPolicy: IfNotPresent
     redisSecret:
       name: paperless-secrets
@@ -18,7 +18,7 @@ spec:
             storage: 1Gi
   redisExporter:
     enabled: true
-    image: quay.io/opstree/redis-exporter:v1.80.2
+    image: quay.io/opstree/redis-exporter:v1.82.0
     imagePullPolicy: IfNotPresent
   podSecurityContext:
     runAsUser: 1000
