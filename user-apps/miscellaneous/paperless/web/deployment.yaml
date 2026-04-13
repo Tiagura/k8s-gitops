@@ -54,7 +54,7 @@ spec:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
       containers:
-      - image: ghcr.io/paperless-ngx/paperless-ngx:2.20.12
+      - image: ghcr.io/paperless-ngx/paperless-ngx:2.20.13
         name: paperless-ngx
         ports:
         - containerPort: 8000
