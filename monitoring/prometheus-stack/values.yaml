@@ -117,7 +117,6 @@ alertmanager:
     storage:
       volumeClaimTemplate:
         spec:
-          storageClassName: longhorn
           accessModes:
             - ReadWriteOnce
           resources:
@@ -164,7 +163,6 @@ grafana:
   # Storage for Grafana
   persistence:
     enabled: true
-    storageClassName: longhorn
     ## (Optional) Use this to bind the claim to an existing PersistentVolume (PV) by name.
     # volumeName: ""
     size: 1Gi
@@ -233,6 +231,7 @@ prometheusOperator:
     # Base Cilium Network Policies labels
     netpol.cilium.io/egress-to-kube-apiserver: "true"
     netpol.cilium.io/ingress-from-prometheus: "true"
+    netpol.cilium.io/ingress-from-remote-node: "true"
   serviceAccount:
     create: true
     name: "prometheus-operator-sa"
@@ -281,25 +280,30 @@ prometheus:
   serviceAccount:
     create: true
     name: "prometheus-sa"
-  additionalLabels:
-    # Base Cilium Network Policies labels
-    netpol.cilium.io/egress-to-host: "true"
-    netpol.cilium.io/egress-to-intra: "true"
-    netpol.cilium.io/egress-to-kube-apiserver: "true"
-    netpol.cilium.io/egress-to-kube-dns: "true"
-    netpol.cilium.io/egress-to-remote-node: "true"
-    netpol.cilium.io/ingress-from-ingress: "true"
-    # Specific Cilium Network Policies labels
-    netpol.cilium.io/egress-to-argocd-metrics: "true"
-    netpol.cilium.io/egress-to-cilium-hubble-metrics: "true"
-    netpol.cilium.io/egress-to-cnpg-db-metrics: "true"
-    netpol.cilium.io/egress-to-cnpg-operator-metrics: "true"
-    netpol.cilium.io/egress-to-longhorn-metrics: "true"
-    netpol.cilium.io/egress-to-redis-db-metrics: "true"
-    netpol.cilium.io/egress-to-redis-operator-metrics: "true"
-    netpol.cilium.io/egress-to-reloader-metrics: "true"
-    netpol.cilium.io/egress-to-tailscale-node-metrics: "true"
   prometheusSpec:
+    podMetadata:
+      # Cilium Network Policies labels for the Prometheus pods
+      labels:
+        # Base Cilium Network Policies labels
+        netpol.cilium.io/egress-to-host: "true"
+        netpol.cilium.io/egress-to-intra: "true"
+        netpol.cilium.io/egress-to-kube-apiserver: "true"
+        netpol.cilium.io/egress-to-kube-dns: "true"
+        netpol.cilium.io/egress-to-kube-dns-metrics: "true"
+        netpol.cilium.io/egress-to-remote-node: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
+        netpol.cilium.io/ingress-from-intra: "true"
+        # Specific Cilium Network Policies labels
+        netpol.cilium.io/egress-to-argocd-metrics: "true"
+        netpol.cilium.io/egress-to-cert-manager-metrics: "true"
+        netpol.cilium.io/egress-to-cilium-hubble-metrics: "true"
+        netpol.cilium.io/egress-to-cnpg-db-metrics: "true"
+        netpol.cilium.io/egress-to-cnpg-operator-metrics: "true"
+        netpol.cilium.io/egress-to-longhorn-metrics: "true"
+        netpol.cilium.io/egress-to-redis-db-metrics: "true"
+        netpol.cilium.io/egress-to-redis-operator-metrics: "true"
+        netpol.cilium.io/egress-to-reloader-metrics: "true"
+        netpol.cilium.io/egress-to-tailscale-node-metrics: "true"
     # Data retention
     retention: 7d
     retentionSize: 5GB
@@ -312,12 +316,11 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: longhorn
           accessModes:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 10Gi
+              storage: 30Gi
     # Resource allocation
     resources:
       requests:

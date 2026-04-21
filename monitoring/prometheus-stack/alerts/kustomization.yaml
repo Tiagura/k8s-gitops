@@ -4,6 +4,9 @@ kind: Kustomization
 resources:
   - aplications-alerts.yaml
   - argocd-alerts.yaml
+  - cert-manager-alerts.yaml
+  - cnpg-backup-alerts.yaml
+  - cnpg-db-alerts.yaml
   - kubernetes-alerts.yaml
   - prometheus-stack-alerts.yaml
   - storage-alerts.yaml

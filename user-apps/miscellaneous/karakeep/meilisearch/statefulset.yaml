@@ -5,6 +5,9 @@ metadata:
   labels:
     app: meilisearch
     tier: search-engine
+  annotations:
+    # Enable Stakater Reloader for automatic reloads on ConfigMap/Secret changes
+    reloader.stakater.com/auto: "true"
 spec:
   serviceName: meilisearch-headless
   replicas: 1
@@ -66,4 +69,3 @@ spec:
         resources:
           requests:
             storage: 1Gi
-        storageClassName: longhorn

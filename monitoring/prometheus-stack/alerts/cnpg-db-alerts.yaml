@@ -1,0 +1,113 @@
+# Adapted from: https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/refs/heads/main/docs/src/samples/monitoring/alerts.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cnpg-db-alerts
+  labels:
+    app.kubernetes.io/name: kube-prometheus-stack
+    app.kubernetes.io/instance: kube-prometheus-stack
+    app.kubernetes.io/managed-by: Helm
+    prometheus: kube-prometheus-stack-prometheus
+    role: alert-rules
+spec:
+  groups:
+    - name: database.cnpg.transaction
+      rules:
+      - alert: LongRunningTransaction
+        annotations:
+          description: Pod {{ $labels.pod }} has a long running transaction (>10m).
+          summary: Long running query detected.
+        expr: cnpg_backends_max_tx_duration_seconds > 600
+        for: 2m
+        labels:
+          severity: warning
+
+      - alert: LongRunningTransaction
+        annotations:
+          description: Pod {{ $labels.pod }} has a critical long running transaction (>30m).
+          summary: Critical long running query detected.
+        expr: cnpg_backends_max_tx_duration_seconds > 1800
+        for: 1m
+        labels:
+          severity: critical
+
+    - name: database.cnpg.backendswaiting
+      rules: 
+      - alert: BackendsWaiting
+        annotations:
+          description: Pod {{ $labels.pod }} has backend wait activity in last 5m.
+          summary: Backend waiting detected.
+        expr: cnpg_backends_waiting_total > 300
+        for: 2m
+        labels:
+          severity: warning
+
+    - name: database.cnpg.xid
+      rules:
+      - alert: PGDatabase
+        annotations:
+          description: Pod {{ $labels.pod }} has high XID age (>200M).
+          summary: XID age is increasing.
+        expr: cnpg_pg_database_xid_age > 200000000
+        for: 5m
+        labels:
+          severity: warning
+
+      - alert: PGDatabase
+        annotations:
+          description: Pod {{ $labels.pod }} is at risk of XID wraparound (>500M).
+          summary: Critical XID wraparound risk.
+        expr: cnpg_pg_database_xid_age > 500000000
+        for: 1m
+        labels:
+          severity: critical
+
+    - name: database.cnpg.replication
+      rules:
+      - alert: PGReplication
+        annotations:
+          description: Replica lag is above 60s on pod {{ $labels.pod }}.
+          summary: Replication lag detected.
+        expr: cnpg_pg_replication_lag > 60
+        for: 2m
+        labels:
+          severity: warning
+
+      - alert: PGReplication
+        annotations:
+          description: Replica lag is above 5 minutes on pod {{ $labels.pod }}.
+          summary: High replication lag.
+        expr: cnpg_pg_replication_lag > 300
+        for: 1m
+        labels:
+          severity: critical
+
+    - name: database.cnpg.walarchiving
+      rules:
+      - alert: LastFailedArchiveTime
+        annotations:
+          description: WAL archiving failed recently on pod {{ $labels.pod }}.
+          summary: WAL archiving failure detected.
+        expr: (cnpg_pg_stat_archiver_last_failed_time - cnpg_pg_stat_archiver_last_archived_time) > 1
+        for: 1m
+        labels:
+          severity: critical
+      - alert: ReplicaFailingReplication
+        annotations:
+          description: Replica {{ $labels.pod }} is not receiving WAL.
+          summary: Replication is failing.
+        expr: cnpg_pg_replication_in_recovery > cnpg_pg_replication_is_wal_receiver_up
+        for: 1m
+        labels:
+          severity: critical
+
+    - name: database.cnpg.deadlock
+      rules:
+      - alert: DatabaseDeadlockConflicts
+        annotations:
+          description: There are over 10 deadlock conflicts in {{ $labels.pod }}.
+          summary: Checks the number of database conflicts.
+        expr: cnpg_pg_stat_database_deadlocks > 10
+        for: 1m
+        labels:
+          severity: warning

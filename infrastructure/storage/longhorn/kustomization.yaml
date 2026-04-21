@@ -4,7 +4,6 @@ namespace: longhorn
 
 resources:
   - namespace.yaml
-  - cnpg-longhorn-storage.yaml
   - s3-remote-backup-secret-sealed.yaml
   - backup-settings.yaml
   - recurring-backup-jobs.yaml

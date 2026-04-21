@@ -12,7 +12,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: redis-operator
-            app: redis-operator
+            name: redis-operator
       toPorts:
         - ports:
             - port: "8080"

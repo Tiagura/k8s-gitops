@@ -19,3 +19,12 @@ helmCharts:
     version: 2.18.5
     namespace: sealed-secrets
     valuesFile: values.yaml
+
+# Enable Stakater Reloader for automatic reloads on ConfigMap/Secret changes
+patches:
+  - target:
+      kind: Deployment
+    patch: |-
+      - op: add
+        path: /metadata/annotations/reloader.stakater.com~1auto
+        value: "true"

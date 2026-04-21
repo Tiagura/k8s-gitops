@@ -1,0 +1,41 @@
+# Storage: Longhorn App of ArgoCD
+# Wave 1, storage layer
+# Depends on: Cilium, Sealed Secrets
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: openebs
+  labels:
+    app.kubernetes.io/part-of: infrastructure
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
+spec:
+  project: infrastructure
+  source:
+    repoURL: https://github.com/Tiagura/k8s-gitops.git
+    targetRevision: main
+    path: infrastructure/storage/openebs
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openebs
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - respectIgnoreDifferences=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 1m
+        factor: 2
+        maxDuration: 5m
+  info:
+    - name: Description
+      value: 'OpenEBS Local PV for node-local storage provisioning'

@@ -35,3 +35,10 @@ patches:
       - op: add
         path: /spec/template/metadata/labels/netpol.cilium.io~1ingress-from-cnpg-operator
         value: "true"
+  # Enable Stakater Reloader for automatic reloads on ConfigMap/Secret changes# Enable Stakater Reloader for automatic reloads on ConfigMap/Secret changes
+  - target:
+      kind: Deployment
+    patch: |-
+      - op: add
+        path: /metadata/annotations/reloader.stakater.com~1auto
+        value: "true"

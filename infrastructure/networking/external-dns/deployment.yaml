@@ -28,9 +28,12 @@ spec:
           args:
             # Gateway API sources
             - --source=gateway-httproute
-            - --source=gateway-tlsroute
-            - --source=gateway-tcproute
-            - --source=gateway-udproute
+            # - --source=gateway-grpcroute
+            # - --source=gateway-tlsroute
+
+            # Experimental Gateway API CRDs
+            # - --source=gateway-tcproute
+            # - --source=gateway-udproute
 
             # Label filter for gateways
             - --gateway-label-filter=app=gateway-external

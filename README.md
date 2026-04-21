@@ -38,17 +38,22 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 
 ## Features
 
-- **GitOps Pattern:** Uses ApplicationSets to create separate ArgoCD Applications for infrastructure and workloads, keeping deployments modular, clear, and easy to manage.
-- **App of Apps Pattern:** Enables management of multiple applications through a single ArgoCD application, automatically detecting and deploying changes from the Git repository to the Kubernetes cluster.
-- **Self-Management:** ArgoCD manages its own installation and configuration, while continuously reconciling all other infrastructure components and applications declared in this repository, ensuring the entire cluster remains consistent with the Git source of truth.
-- **External & Internal Access to Services**  
-  - Internal: All services are accessible inside the home network.  
-  - External: Selected services are available from the internet through **Cloudflare Tunnel**.
-- **Monitoring**: Full observability of the cluster, including node metrics, cluster health, ArgoCD applications, and other critical components, with dashboards and alerts.
-- **Backups:**
-  - PV/PVC: Tiered backup strategy for all volumes, with automated snapshots and retention policies.
-  - Database: Backups of database data to ensure recoverability and integrity.
-
+- **GitOps-first architecture** powered by Argo CD, using both ApplicationSets and standalone Applications depending on workload needs.
+- **Self-managed cluster**, where Argo CD continuously reconciles itself and all platform components.
+- **End-to-end CI/CD pipeline**
+  - GitHub Actions for CI automation
+  - Renovate for automated dependency updates
+  - Argo CD for continuous deployment
+  - Reloader for live config updates
+- **Full observability stack** covering cluster health, applications, and infrastructure with dashboards and alerts.
+- **Unified service exposure**  
+  - Internal access via home network  
+  - External access via **Cloudflare Tunnel**
+  - Automatic DNS management via **ExternalDNS**
+- **Backup and recovery strategy**
+  - Tiered PV/PVC backup strategy for all volumes, with automated snapshots and retention policies
+  - Database backups with point-in-time recovery support
+- **Network security enforcement** through `CiliumNetworkPolicy`, controlling and isolating service-to-service communication as well as ingress and egress traffic within the cluster.
 
 ## Cluster Components and Apps
 
@@ -81,8 +86,9 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 
 | Logo | Name | Purpose |
 |------|------|---------|
-| <img src="https://cloudnative-pg.io/images/hero_image.png" width="50"/> | [CloudNativePG](https://cloudnative-pg.io/) | Operator for managing PostgreSQL clusters, with automated scaling, failover, and backups (with [Barman Cloud plugin](https://cloudnative-pg.io/plugin-barman-cloud/)) |
 | <img src="https://longhorn.io/img/logos/longhorn-icon-color.png" width="50"/> | [Longhorn](https://longhorn.io/) | Distributed block storage for Kubernetes |
+| <img src="https://avatars.githubusercontent.com/u/20769039" width="50"/> | [OpenEBS](https://openebs.io/) | Local PV storage for lightweight, node-level provisioning |
+| <img src="https://cloudnative-pg.io/images/hero_image.png" width="50"/> | [CloudNativePG](https://cloudnative-pg.io/) | Operator for managing PostgreSQL clusters, with automated scaling, failover, and backups (with [Barman Cloud plugin](https://cloudnative-pg.io/plugin-barman-cloud/)) |
 | <img src="https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/refs/heads/main/static/redis-operator-logo.svg" width="50"/> | [Redis Operator](https://github.com/OT-CONTAINER-KIT/redis-operator) | Operator for managing Redis |
 
 ### Monitoring
@@ -127,6 +133,7 @@ Before deploying this setup, make sure you have the following:
    - If Gateway API is **not installed**, run:
      ```bash
      kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml
+     # OR
      kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/experimental-install.yaml
      ```
    - **Tip:** If you don't already have a Kubernetes cluster but have access to a **Proxmox node/cluster**, you can use my other project, which I also use to create my own cluster: [Tiagura/proxmox-k8s-IaC](https://github.com/Tiagura/proxmox-k8s-IaC)

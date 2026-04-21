@@ -62,7 +62,9 @@
         "infrastructure/databases/cloudnative-pg/**", 
         "infrastructure/databases/cloudnative-pg-apps-databases/**",
         "infrastructure/networking/cilium/**",
-        "infrastructure/storage/longhorn/**"],
+        "infrastructure/storage/longhorn/**",
+        "infrastructure/storage/openebs/**"
+      ],
       "automerge": false
     },
     {

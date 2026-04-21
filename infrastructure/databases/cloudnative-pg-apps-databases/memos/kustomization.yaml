@@ -19,10 +19,10 @@ patches:
         value: memos-database-netpol
       - op: replace
         path: /spec/endpointSelector/matchLabels/cnpg.io~1cluster
-        value: memos-database-v1
+        value: memos-database
       - op: replace
         path: /spec/egress/0/toEndpoints/0/matchLabels/cnpg.io~1cluster
-        value: memos-database-v1
+        value: memos-database
       - op: replace
         path: /spec/ingress/0/fromEndpoints/0/matchLabels/app
         value: memos
@@ -31,7 +31,7 @@ patches:
         value: memos
       - op: replace
         path: /spec/ingress/1/fromEndpoints/0/matchLabels/cnpg.io~1cluster
-        value: memos-database-v1
+        value: memos-database
   - target:
       group: postgresql.cnpg.io
       version: v1
@@ -43,7 +43,7 @@ patches:
         value: memos-db-backup
       - op: replace
         path: /spec/cluster/name
-        value: memos-database-v1
+        value: memos-database
       - op: replace
         path: /spec/schedule
         value: '0 0 2 */2 * *'       # Every 2 days at 2:00 AM

@@ -9,8 +9,8 @@ spec:
       netpol.cilium.io/egress-to-tailscale-node-metrics: "true"
 
   egress:
-    - toFQDNs:
-        - matchName: "tailscale-exit-node"
+    - toCIDR:
+        - 192.168.1.78/32
       toPorts:
         - ports:
             - port: "5252"

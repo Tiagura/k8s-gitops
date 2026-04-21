@@ -4,9 +4,18 @@ metadata:
   name: paperless-database
   labels:
     app: paperless
+  annotations:
+    # Use this annotation to skip the empty WAL archive check during recovery
+    # useful when the restoring cluster name is equal to the source cluster name
+    # careful when using this annotation, as it may lead to data loss
+    # use only when bootstrapping not with initdb
+    # Issue: https://github.com/cloudnative-pg/plugin-barman-cloud/issues/683
+    cnpg.io/skipEmptyWalArchiveCheck: "enabled" 
 spec:
-  instances: 1
+  instances: 2
   imageName: ghcr.io/cloudnative-pg/postgresql:18.3
+  affinity:
+    podAntiAffinityType: required
   plugins:
   - name: barman-cloud.cloudnative-pg.io
     isWALArchiver: true
@@ -14,9 +23,9 @@ spec:
       barmanObjectName: barman-object-store
   postgresql:
     parameters:
-      shared_buffers: "256MB"
+      shared_buffers: "512MB"
       wal_compression: "on"
-      max_wal_size: "512MB"
+      max_wal_size: "1024MB"
     pg_hba:
       - host paperless paperless 10.32.0.0/16 scram-sha-256   # Allow connections from the cluster network (i.e. Pod CIDR)
   # FIRST-TIME BOOTSTRAP (FROM INITDB)
@@ -44,8 +53,8 @@ spec:
   #         serverName: paperless-database
   # ---
   storage:
-    size: 5Gi
-    storageClass: cnpg-longhorn-storage
+    size: 10Gi
+    storageClass: openebs-hostpath
   walStorage:
     size: 2Gi
-    storageClass: cnpg-longhorn-storage
+    storageClass: openebs-hostpath

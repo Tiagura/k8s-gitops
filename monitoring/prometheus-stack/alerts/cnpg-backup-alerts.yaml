@@ -1,0 +1,41 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cnpg-backup-alerts
+  labels:
+    app.kubernetes.io/name: kube-prometheus-stack
+    app.kubernetes.io/instance: kube-prometheus-stack
+    app.kubernetes.io/managed-by: Helm
+    prometheus: kube-prometheus-stack-prometheus
+    role: alert-rules
+spec:
+  groups:
+  - name: database.cnpg.backup
+    rules:
+    - alert: BackupFailureDetected
+      expr: barman_cloud_cloudnative_pg_io_last_failed_backup_timestamp > 0
+        and
+        barman_cloud_cloudnative_pg_io_last_failed_backup_timestamp
+        > barman_cloud_cloudnative_pg_io_last_available_backup_timestamp
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: Backup failure detected
+        description: A backup attempt failed on pod {{ $labels.pod }}.
+    - alert: BackupStale
+      expr: (time() - barman_cloud_cloudnative_pg_io_last_available_backup_timestamp) > 604800
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: No recent backup available
+        description: Last successful backup is older than 7 days on pod {{ $labels.pod }}.
+    - alert: BackupLagging
+      expr: (time() - barman_cloud_cloudnative_pg_io_last_available_backup_timestamp) > 432000
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: Backup is getting stale
+        description: Last successful backup is older than 5 days on pod {{ $labels.pod }}.

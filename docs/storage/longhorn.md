@@ -9,22 +9,20 @@
   - [Default Settings](#default-settings)
   - [Storage Classes](#storage-classes)
     - [`longhorn` (default)](#longhorn-default)
-    - [`cnpg-longhorn-storage`](#cnpg-longhorn-storage)
   - [Snapshots and Backups](#snapshots-and-backups)
   - [Monitoring \& Alerts](#monitoring--alerts)
     - [Alerts](#alerts)
   - [Resources](#resources)
 
 ## Declarative Setup
-All longhorn components described in this document — **Storage Classes**, **Snapshots and Backups**, **Settings** — are deployed declaratively through the infrastructure ApplicationSet. No manual helm or kubectl commands are required.
-Their manifests are stored under infrastructure/storage/longhorn and are automatically synchronized by Argo CD to maintain a consistent and version-controlled network configuration.
+Longhorn is deployed declaratively through its respective [ArgoCD application](../../infrastructure/controllers/argocd/apps/openebs-app.yaml). No manual Helm or kubectl commands are required.
+All manifest live under `infrastructure/storage/longhorn/` and are automatically synced by Argo CD.
 
 ## Directory Structure
 
 ```plaintext
 infrastructure/storage/longhorn/
 ├── backup-settings.yaml                    # Backup Settings
-├── cnpg-longhorn-storage.yaml              # Cloudnative-pg exclusive StorageClass
 ├── http-route.yaml                         # Route for Longhorn GUI
 ├── kustomization.yaml                      
 ├── namespace.yaml
@@ -45,17 +43,6 @@ Used for general workloads with 2 replicas and recurring snapshot/backup schedul
 ```bash
 kubectl describe storageclass longhorn
 ```
-
-### `cnpg-longhorn-storage`
-Specialized storage class used **exclusively by CloudNativePG** replicas.
-
-Unlike regular workloads that rely on Longhorn’s own snapshot and backup automation, databases managed by CloudNativePG already implement **native replication and backup management**. To avoid overlapping or redundant data protection mechanisms, this storage class is configured to disable all Longhorn recurring jobs (snapshots and backups) and to **accomodate cloudnative-pg** needs.
-
-Some Key Configurations:
-- Non-default class – Explicitly used only by CloudNativePG, not general workloads.
-- `numberOfReplicas` = `1` : Prevents redundant replication since CloudNativePG already replicates data at the database level.
-- `dataLocality` = `strict-local` : Ensures the volume is placed on the same node as the pod using the PostgreSQL database.
-- `recurringJobSelector` = `'[]'` – Disables Longhorn’s automatic snapshots/backups. CloudNativePG manages its own backup and restore processes.
 
 ## Snapshots and Backups
 
@@ -93,7 +80,6 @@ The configured alerts (defined in the [`storage-alerts.yaml`](../../monitoring/p
 
 - [Longhorn Best Practices](https://longhorn.io/docs/latest/best-practices/)
 - [Longhorn Data Locality](https://longhorn.io/docs/latest/high-availability/data-locality/)
-- [CNPG Block Storage Considerations](https://cloudnative-pg.io/documentation/1.27/storage/#block-storage-considerations-cephlonghorn)
 - [CNPG + Longhorn Community](https://medium.com/@camphul/cloudnative-pg-in-the-homelab-with-longhorn-b08c40b85384)
 - [Longhorn Metrics for Monitoring](https://longhorn.io/docs/latest/monitoring/metrics/)
 - [Setting up Prometheus and Grafana to monitor Longhorn](https://longhorn.io/docs/latest/monitoring/prometheus-and-grafana-setup/)

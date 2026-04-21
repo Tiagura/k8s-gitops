@@ -1,0 +1,20 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-cert-manager-metrics
+spec:
+  description: >
+    Allow Prometheus to scrape cert-manager metrics.
+
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-cert-manager-metrics: "true"
+
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: cert-manager
+      toPorts:
+        - ports:
+            - port: "http-metrics"
+              protocol: TCP

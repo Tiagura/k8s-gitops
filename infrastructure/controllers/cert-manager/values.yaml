@@ -23,16 +23,16 @@ podLabels:
   netpol.cilium.io/egress-to-kube-apiserver: "true"
   netpol.cilium.io/egress-to-kube-dns: "true"
   netpol.cilium.io/egress-to-outside-dns: "true"
-  netpol.cilium.io/ingress-deny: "true"
+  netpol.cilium.io/ingress-from-prometheus: "true"
   # netpol.cilium.io/ingress-from-remote-node: "true"
 
 deploymentAnnotations:
   # Enable Stakater Reloader for automatic reloads on ConfigMap/Secret changes
   reloader.stakater.com/auto: "true"
 
-# Disable built-in monitoring
+# Disable built-in pod and service monitoring, those will be added after
 prometheus:
-  enabled: false
+  enabled: true
   servicemonitor:
     enabled: false
   podmonitor:
@@ -50,11 +50,12 @@ resources:
     memory: 256Mi
   requests:
     cpu: 20m
-    memory: 128Mi
+    memory: 64Mi
 webhook:
   podLabels:
     # Cilium Network Policies labels
     netpol.cilium.io/egress-to-kube-apiserver: "true"
+    netpol.cilium.io/ingress-from-prometheus: "true"
     netpol.cilium.io/ingress-from-remote-node: "true"
   securityContext:
     runAsNonRoot: true
@@ -67,12 +68,12 @@ webhook:
       memory: 128Mi
     requests:
       cpu: 10m
-      memory: 64Mi
+      memory: 16Mi
 cainjector:
   podLabels:
     # Cilium Network Policies labels
     netpol.cilium.io/egress-to-kube-apiserver: "true"
-    netpol.cilium.io/ingress-deny: "true"
+    netpol.cilium.io/ingress-from-prometheus: "true"
   securityContext:
     runAsNonRoot: true
     runAsUser: 65534
@@ -84,4 +85,4 @@ cainjector:
       memory: 256Mi
     requests:
       cpu: 20m
-      memory: 128Mi
+      memory: 64Mi

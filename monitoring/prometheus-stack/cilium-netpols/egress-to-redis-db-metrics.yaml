@@ -11,10 +11,11 @@ spec:
   egress:
     # Allow egress to any Redis instance across all namespaces
     - toEndpoints:
-        - matchExpressions:
-            - key: redis_setup_type
-              operator: Exists
-            - key: role
+        - matchLabels:
+            k8s:app.kubernetes.io/name: redis
+            k8s:app.kubernetes.io/component: cache
+          matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
               operator: Exists
       toPorts:
         - ports:

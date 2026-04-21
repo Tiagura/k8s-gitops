@@ -1,0 +1,48 @@
+# Main Chart values: https://github.com/openebs/openebs/blob/main/charts/values.yaml
+openebs-crds:
+  csi:
+    volumeSnapshots:
+      enabled: false
+
+zfs-localpv:
+  enabled: false
+
+lvm-localpv:
+  enabled: false
+
+engines:
+  local:
+    lvm:
+      enabled: false
+    zfs:
+      enabled: false
+    rawfile:
+      enabled: false
+  replicated:
+    mayastor:
+      enabled: false
+
+loki:
+  enabled: false
+
+alloy:
+  enabled: false
+
+## Sub Chart with dynamic localpv provisioning: https://github.com/openebs/dynamic-localpv-provisioner/blob/develop/deploy/helm/charts/values.yaml
+localpv-provisioner:
+  localpv:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+
+  hostpathClass:
+    name: openebs-hostpath
+    reclaimPolicy: Retain
+    basePath: /var/lib/openebs
+
+  analytics:
+    enabled: false 

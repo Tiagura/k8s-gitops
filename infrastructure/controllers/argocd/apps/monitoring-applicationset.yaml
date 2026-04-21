@@ -55,6 +55,10 @@ spec:
           jqPathExpressions:
             - ".spec.volumeClaimTemplates[].apiVersion"
             - ".spec.volumeClaimTemplates[].kind"
+        - group: ""
+          kind: PersistentVolumeClaim
+          jsonPointers:
+            - /spec/storageClassName
       info:
         - name: Description
           value: 'Monitoring component: {{path.basename}}'

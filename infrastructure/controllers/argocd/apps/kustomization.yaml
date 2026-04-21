@@ -9,6 +9,7 @@ resources:
   - sealed-secrets-app.yaml
   # Wave 1: Storage components
   - longhorn-app.yaml
+  - openebs-app.yaml
   # Wave 2: ArgoCD, gateway, and cert-manager
   - argocd-app.yaml
   - gateway-app.yaml

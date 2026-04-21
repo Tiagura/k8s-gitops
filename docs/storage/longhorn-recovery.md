@@ -288,7 +288,7 @@ Once these initial setup steps are complete, you can move on to installing the n
 
   4. Install the Sealed Secrets controller
       ```bash
-      kubectl kustomize --enable-helm infrastructure/controllers/sealed-secrets/ | kubectl create -f -
+      kubectl kustomize --enable-helm infrastructure/controllers/sealed-secrets/ | kubectl apply -f -
       ```
   5. Install Longhorn:
       ```bash

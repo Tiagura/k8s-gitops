@@ -1,0 +1,20 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-kube-dns-metrics
+spec:
+  description: Allow egress to Kube-DNS namespace for monitoring Kube-DNS components.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-kube-dns-metrics: "true"
+
+  egress:
+    # Allow to kube-dns for DNS resolution
+    - toEndpoints:
+      - matchLabels:
+          "k8s:io.kubernetes.pod.namespace": kube-system
+          "k8s:k8s-app": kube-dns
+      toPorts:
+        - ports:
+           - port: "9153"
+             protocol: ANY

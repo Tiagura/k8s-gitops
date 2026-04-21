@@ -19,6 +19,10 @@ spec:
           labels:
             app: fireflyiii
             tier: cron
+            # Added for Cilium network policies
+            netpol.cilium.io/egress-to-intra: "true"
+            netpol.cilium.io/egress-to-kube-dns: "true"
+            netpol.cilium.io/ingress-deny: "true"
         spec:
           containers:
             - name: cron

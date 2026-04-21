@@ -7,7 +7,6 @@ metadata:
     recurring-job-group.longhorn.io/standard: enabled
     recurring-job-group.longhorn.io/default: disabled
 spec:
-  storageClassName: longhorn
   accessModes:
     - ReadWriteOnce   # SQLite needs ReadWriteOnce
   resources:

@@ -13,10 +13,14 @@ This clusters runs PostgreSQL using the [CloudNativePG](https://cloudnative-pg.i
   - [Backups](#backups)
     - [Cluster Configuration](#cluster-configuration)
     - [Schedule Backups](#schedule-backups)
-  - [Monitoring](#monitoring)
-    - [Operator Monitoring](#operator-monitoring)
-    - [Cluster Monitoring](#cluster-monitoring)
-    - [Plugin / Backup Monitoring](#plugin--backup-monitoring)
+  - [Monitoring & Alerts](#monitoring)
+    - [Monitoring](#monitoring)
+      - [Operator Monitoring](#operator-monitoring)
+      - [Cluster Monitoring](#cluster-monitoring)
+      - [Plugin / Backup Monitoring](#plugin--backup-monitoring)
+    - [Alerts](#alerts)
+      - [CNPG Alerts](#cnpg-alerts)
+      - [CNPG Backup Alerts](#cnpg-backup-alerts)
   - [PostgreSQL Version Upgrade](#postgresql-version-upgrade)
     - [Minor Upgrade](#minor-upgrade)
     - [Major Upgrade](#major-upgrade)
@@ -121,11 +125,13 @@ spec:
 
 > **NOTE:** Backups can also be triggered on demand. See the [docs](https://cloudnative-pg.io/docs/1.28/backup#on-demand-backups).
 
-## Monitoring
+## Monitoring Alerts
+
+### Monitoring
 
 It is possible to monitor all components of this PostgreSQL setup—including the operator, clusters, and plugins using Prometheus and Grafana. All manifests related to monitoring are available in [here](../../monitoring/prometheus-stack/monitors/pods/databases).
 
-### Operator Monitoring
+#### Operator Monitoring
 
 The Helm chart’s built-in `PodMonitor` is deployed in the operator’s namespace, which cannot be scraped by Prometheus in its own namespace. Therefore, we disable automatic PodMonitor creation. However, grafana dashboards from the Helm chart can still be created correctly in the Prometheus stack namespace. So in the operator’s [values file](../../infrastructure/databases/cloudnative-pg/cloudnative-pg-operator/values.yaml):
 ```yaml
@@ -163,7 +169,7 @@ spec:
       app.kubernetes.io/name: cloudnative-pg
 ```
 
-### Cluster Monitoring
+#### Cluster Monitoring
 
 Each PostgreSQL `Cluster` exposes metrics on the metrics port. To collect these, we create a manual `PodMonitor` per cluster:
 ```yaml
@@ -187,9 +193,33 @@ spec:
     - port: metrics
 ```
 
-### Plugin / Backup Monitoring
+#### Plugin / Backup Monitoring
 
 The Barman Cloud plugin exposes backup-related metrics on the same /metrics endpoint as the `cluster`. These are collected automatically by the cluster’s `PodMonitor`.
+
+### Alerts
+
+The configured alerts (defined in the [`cnpg-alerts.yaml`](../../monitoring/prometheus-stack/alerts/cnpg-alerts.yaml) and [`cnpg-backup-alerts.yaml`](../../monitoring/prometheus-stack/alerts/cnpg-backup-alerts.yaml)) provide monitoring for postgresql database health, replication, and backup reliability, covering both runtime issues and disaster recovery risks.
+
+#### CNPG Alerts
+| **Alert Name**                | **Severity**       | **Description**                                                                                                                                                       |
+| ----------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **LongRunningTransaction**    | Warning / Critical | Triggers when a PostgreSQL transaction runs longer than expected (>10 min warning, >30 min critical), indicating slow queries or blocking operations on the database. |
+| **BackendsWaiting**           | Warning            | Fires when backend processes are waiting in PostgreSQL for extended periods, indicating lock contention or resource pressure in the database.                         |
+| **PGDatabase**                | Warning / Critical | Alerts when transaction ID (XID) age becomes dangerously high, warning of potential wraparound risk that can threaten database integrity.                             |
+| **PGReplication**             | Warning / Critical | Indicates replication lag between primary and standby nodes, warning at moderate lag and critical when replication delay exceeds 5 minutes.                           |
+| **LastFailedArchiveTime**     | Critical           | Fires when WAL archiving fails, meaning backups or archive storage are not receiving transaction logs, risking data loss or broken recovery chains.                   |
+| **ReplicaFailingReplication** | Critical           | Indicates a standby replica is not receiving WAL data from the primary, meaning replication is broken or stalled.                                                     |
+| **DatabaseDeadlockConflicts** | Warning            | Triggers when PostgreSQL detects deadlocks between queries, indicating contention issues in database workload that may impact performance.                            |
+
+#### CNPG Backup Alerts
+
+| **Alert Name**            | **Severity** | **Description**                                                                                                                                                                       |
+| ------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **BackupFailureDetected** | Critical     | Fires when a backup attempt fails and the failure timestamp is newer than the last successful backup, indicating an active backup pipeline failure and risk of losing recoverability. |
+| **BackupStale**           | Critical     | Triggers when no successful backup has been created for more than 7 days, meaning the system has exceeded its recovery point objective (RPO) and is at serious risk of data loss.     |
+| **BackupLagging**         | Warning      | Alerts when the most recent successful backup is older than 5 days, indicating that backups are degrading and approaching a critical staleness threshold.                             |
+
 
 ## PostgreSQL Version Upgrade
 
@@ -207,17 +237,20 @@ This method works well in a homelab where some downtime is acceptable and doesn'
 
 ## Some consideration regarding storage class
 
-As described before, in the [longhorn readme.md](../storage/longhorn.md#cnpg-longhorn-storage), a **special** Longhorn storage class is used for PostgreSQL volumes. In the `Cluster` resources, both the main database volume and a dedicated WAL volume use this class:
+In the Cluster resources, both the main database volume and a dedicated WAL volume use the same storage class:
 ```yaml
 spec:
   storage:
-    size: 5Gi
-    storageClass: cnpg-longhorn-storage
+    storageClass: openebs-hostpath
   walStorage:
-    size: 1Gi
-    storageClass: cnpg-longhorn-storage
+    storageClass: openebs-hostpath
 ```
-The separate WAL volume is required because backups and point-in-time recovery rely on continuous WAL archiving. Using the specialized storage class ensures proper replication and backup handling by CloudNativePG.
+This setup relies on OpenEBS Local PV (hostpath-based provisioning), meaning data is written directly to the node filesystem without any additional abstraction or network layer. Keeping storage local helps reduce latency and avoids the overhead that comes with distributed storage systems.
+
+That said, there’s no need to push complexity down into the storage layer. CloudNativePG already provides everything needed for a production-ready setup, including replication, failover, and backup management. Adding replication at the storage level would just duplicate responsibilities.
+
+By keeping storage simple and local, the system stays efficient while letting CloudNativePG handle consistency, durability, and clustering where it naturally belongs.
+
 
 ## Resources
 The CloudNativePG ecosystem is vast and extensively documented. This guide does not cover every feature, so for full details and advanced usage, please refer to the official documentation

@@ -3,5 +3,6 @@ kind: Kustomization
 
 resources:
   - cnpg/
+  - cert-manager-monitor.yaml
   - redis-operator-monitor.yaml
   - reloader-monitor.yaml

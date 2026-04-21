@@ -10,51 +10,46 @@ spec:
       netpol.cilium.io/egress-to-argocd-metrics: "true"
 
   egress:
-    # Application Controller metrics
-    - toServices:
-        - k8sService:
-            namespace: argocd
-            serviceName: argocd-application-controller-metrics
+    - toEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/component: application-controller
+            k8s:io.kubernetes.pod.namespace: argocd
       toPorts:
         - ports:
             - port: "8082"
               protocol: TCP
 
-    # ApplicationSet Controller metrics
-    - toServices:
-        - k8sService:
-            namespace: argocd
-            serviceName: argocd-applicationset-controller-metrics
+    - toEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/component: applicationset-controller
+            k8s:io.kubernetes.pod.namespace: argocd
       toPorts:
         - ports:
             - port: "8080"
               protocol: TCP
 
-    # Repo Server metrics
-    - toServices:
-        - k8sService:
-            namespace: argocd
-            serviceName: argocd-repo-server-metrics
-      toPorts:
-        - ports:
-            - port: "8084"
-              protocol: TCP
-
-    # Server metrics
-    - toServices:
-        - k8sService:
-            namespace: argocd
-            serviceName: argocd-server-metrics
+    - toEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/component: server
+            k8s:io.kubernetes.pod.namespace: argocd
       toPorts:
         - ports:
             - port: "8083"
               protocol: TCP
 
-    # Redis metrics
-    - toServices:
-        - k8sService:
-            namespace: argocd
-            serviceName: argocd-redis-metrics
+    - toEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/component: repo-server
+            k8s:io.kubernetes.pod.namespace: argocd
+      toPorts:
+        - ports:
+            - port: "8084"
+              protocol: TCP
+
+    - toEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/component: redis
+            k8s:io.kubernetes.pod.namespace: argocd
       toPorts:
         - ports:
             - port: "9121"

@@ -23,7 +23,7 @@ spec:
         fsGroup: 101
       containers:
         - name: bentopdf
-          image: ghcr.io/alam00000/bentopdf:2.8.3
+          image: ghcr.io/alam00000/bentopdf-simple:2.8.3
           env:
             - name: LOG_LEVEL
               value: "info"
@@ -39,20 +39,12 @@ spec:
               containerPort: 8080
           livenessProbe:
             httpGet:
-              path: /healthz
+              path: /
               port: http
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /readyz
+              path: /
               port: http
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            timeoutSeconds: 3
-            failureThreshold: 3
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: false
