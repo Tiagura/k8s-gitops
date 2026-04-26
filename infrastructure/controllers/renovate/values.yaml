@@ -2,7 +2,7 @@ nameOverride: 'renovate'
 fullnameOverride: 'renovate'
 
 cronjob:
-  schedule: '0 4,6,8 * * *' # Run at 4:00, 6:00 and 8:00 every day
+  schedule: '0 7 * * *' # Run at 7:00 every day
   timeZone: Europe/Lisbon
   # -- "Allow" to allow concurrent runs, "Forbid" to skip new runs if a previous run is still running or "Replace" to replace the previous run
   concurrencyPolicy: Forbid

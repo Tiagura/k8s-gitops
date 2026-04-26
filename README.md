@@ -72,7 +72,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 | Logo | Name | Purpose |
 |------|------|---------|
 | <img src="https://raw.githubusercontent.com/cilium/cilium/main/Documentation/images/logo-solo.svg" width="50"/> | [Cilium](https://cilium.io/) | Super CNI with advanced networking. Uses eBPF and has observability and security. Also acts as a kube-proxy replacement in this case |
-| <img src="https://cdn-1.webcatalog.io/catalog/cloudflare-zero-trust/cloudflare-zero-trust-icon-unplated.png?v=1714773945620" width="50"/> | [Cloudflare Zero Trust](https://www.cloudflare.com/zero-trust/) | External secure access and tunneling |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg" width="50"/> | [Cloudflare Tunnel](https://github.com/cloudflare/cloudflared) | External secure access and tunneling |
 | <img src="https://kubernetes-sigs.github.io/external-dns/latest/docs/img/external-dns.png" width="50"/> | [External DNS](https://kubernetes-sigs.github.io/external-dns/latest/) | DNS synchronisation and automation |
 
 #### Policies and Security

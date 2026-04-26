@@ -1,25 +1,25 @@
 ---
 - Social:
     - Instagram:
-        - abbr: INSTA
+        - icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/instagram.svg
           href: https://instagram.com/
     - WhatsApp:
-        - abbr: Whats
+        - icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/whatsapp.svg
           href: https://web.whatsapp.com/
     - X:
-        - abbr: X
+        - icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/x-light.svg
           href: https://x.com/
     - Reddit:
-        - abbr: RE
+        - icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/reddit.svg
           href: https://reddit.com/
 
 - Entertainment:
     - YouTube:
-        - abbr: YT
+        - icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/youtube.svg
           href: https://youtube.com/
-    - Anime:
-        - href: https://hianime.to/recently-updated
     - Manga:
-        - href: https://www.natomanga.com/
+        - icon: https://www.natomanga.com/images/logo-manganato.webp
+          href: https://www.natomanga.com/
     - 9GAG:
-        - href: https://9gag.com/
+        - icon: https://upload.wikimedia.org/wikipedia/commons/4/42/9gag_logo.svg
+          href: https://9gag.com/
