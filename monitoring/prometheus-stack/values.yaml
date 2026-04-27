@@ -56,9 +56,9 @@ alertmanager:
       
     route:
       receiver: 'telegram-bot'
-      group_by: ['cluster', 'alertname', 'severity']
-      group_wait: 30s
-      group_interval: 5m
+      group_by: ['alertname', 'severity']
+      group_wait: 5s
+      group_interval: 1m
       repeat_interval: 12h
       routes:
         - matchers:
@@ -68,24 +68,24 @@ alertmanager:
           receiver: 'null'
 
         - matchers:
+            - 'alertname =~ NodeDown|KubeletDown|PrometheusDown'
+          receiver: 'telegram-bot'
+          group_wait: 1s
+          group_interval: 1m
+          repeat_interval: 6h
+
+        - matchers:
             - 'severity = critical'
           receiver: 'telegram-bot'
-          group_wait: 15s
-          group_interval: 10m
-          repeat_interval: 12h
+          group_wait: 2s
+          group_interval: 2m
+          repeat_interval: 6h
 
         - matchers:
             - 'severity = warning'
           receiver: 'telegram-bot'
-          group_interval: 15m
-          repeat_interval: 12h
-
-        - matchers:
-            - 'alertname =~ NodeDown|KubeletDown|PrometheusDown'
-          receiver: 'telegram-bot'
-          group_wait: 5s
           group_interval: 5m
-          repeat_interval: 6h
+          repeat_interval: 12h
 
     receivers:
       - name: 'null'
@@ -97,10 +97,11 @@ alertmanager:
             send_resolved: true
             message: |-
               <b>[{{ .CommonLabels.severity | toUpper }}]</b> {{ .CommonLabels.alertname }}
-              (Cluster: {{ .CommonLabels.cluster }}, Namespace: {{ .CommonLabels.namespace }})
+              (Namespace: {{ .CommonLabels.namespace }})
               {{ range .Alerts }}
               • <i>{{ .Annotations.summary }}</i>
-              {{ end }}       
+                <pre>{{ .Annotations.description }}</pre>
+              {{ end }}     
   # End of Alertmanager configuration
 
   serviceAccount:
