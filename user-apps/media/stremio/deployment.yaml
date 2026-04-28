@@ -36,6 +36,11 @@ spec:
           volumeMounts:
             - name: stremio-data
               mountPath: /srv/stremio-config
+          resources:
+            limits:
+              memory: 1.5Gi
+            requests:
+              memory: 64Mi
       volumes:
         - name: stremio-data
           persistentVolumeClaim:
