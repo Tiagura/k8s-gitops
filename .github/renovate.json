@@ -38,7 +38,7 @@
   },
   "packageRules": [
     {
-      "matchUpdateTypes": ["patch", "minor"],
+      "matchUpdateTypes": ["patch", "minor", "digest"],
       "automerge": true
     },
     {
@@ -114,6 +114,12 @@
         "user-apps/miscellaneous/paperless/**"
       ],
       "groupName": "Paperless"
+    },
+    {
+    "matchFileNames": [
+      "**/redis-*.yaml"
+    ],
+    "groupName": "Redis Deployments"
     }
   ],
   "customManagers": [

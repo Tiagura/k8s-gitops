@@ -30,9 +30,6 @@ spec:
               value: "1"
             - name: APP_PATH
               value: "/srv/stremio-config"
-            # Prevent potential OOM issues by limiting Node.js memory usage
-            - name: NODE_OPTIONS
-              value: "--max-old-space-size=1100"
           securityContext:
             allowPrivilegeEscalation: false
             privileged: false
