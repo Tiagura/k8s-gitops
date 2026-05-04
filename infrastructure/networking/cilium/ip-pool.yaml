@@ -7,7 +7,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "1"
 spec:
   blocks:
-    - cidr: "192.168.1.32/29"  # Usable IPs: 192.168.101.34 to 192.168.101.37
+    - cidr: "10.10.20.32/29"  # Usable IPs: 10.10.20.34 to 10.10.20.37
   allowFirstLastIPs: "No"  # Required in Cilium 1.16+ if reserving first/last IPs
   # Announce for all LoadBalancer services
   serviceSelector:

@@ -60,18 +60,18 @@ infrastructure/networking/
 ## IP Allocations
 
 - **Home Network**:
-  - Network: `192.168.1.32/29`
-  - Usable Range: `192.168.1.34` to `192.168.1.37` 
-  - Cilium Ingress Controller (Disabled): `192.168.1.34`
-  - Internal Gateway: `192.168.1.35`
-  - External Gateway: `192.168.1.36`
-  - Spare: `192.168.1.37`
+  - Network: `10.10.20.32/29`
+  - Usable Range: `10.10.20.34` to `10.10.20.37` 
+  - Cilium Ingress Controller (Disabled): `- 10.10.20.34`
+  - Internal Gateway: `10.10.20.35`
+  - External Gateway: `10.10.20.36`
+  - Spare: `10.10.20.37`
   
 - **Pod Network**:
   - Services: `10.32.0.0/16`
 
 - **Control Plane**:
-  - API Server VIP: `cluster.home.arpa` (IP `192.168.1.25`, change at will just update the DNS record `cluster.home.arpa` points to)
+  - API Server VIP: `cluster.tamhomelab.com` (IP `10.10.20.25`, change at will just update the DNS record `cluster.tamhomelab.com` points to)
 
 ## DNS Configurations
 
@@ -89,9 +89,9 @@ Manually Managed. Use:
 
 | Hostname              | IPs            | Description                            |
 | --------------------- | -------------- | -------------------------------------- |
-| `cluster.home.arpa`     | `192.168.1.26` | Control-plane / API server VIP         |
-| `k8s-gateway`         | `192.168.1.35` | Internal Gateway endpoint              |
-| `k8s-gateway-external`| `192.168.1.36` | External Gateway endpoint (not needed) |
+| `cluster.tamhomelab.com` | `10.10.20.25` | Control-plane / API server VIP         |
+| `k8s-gateway`         | `10.10.20.35` | Internal Gateway endpoint              |
+| `k8s-gateway-external`| `10.10.20.36` | External Gateway endpoint (not needed) |
 | `<service>.<mydomain>`| `k8s-gateway`  | This is a CNAME Record                 |
 
 ### ExternalDNS and CLoudflare DNS Server Mapping

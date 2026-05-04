@@ -51,6 +51,7 @@ The following base policies are available in [`base/cilium-network-policies/`](.
 | ingress-from-ingress        | `netpol.cilium.io/ingress-from-ingress="true"`        | Allows ingress traffic from ingress controllers or gateways APIs          |
 | ingress-from-intra          | `netpol.cilium.io/ingress-from-intra="true"`          | Allows ingress traffic from other pods in the same namespace.             |
 | ingress-from-kube-apiserver | `netpol.cilium.io/ingress-from-kube-apiserver="true"` | Allows ingress traffic from the Kubernetes API server.                    |
+| ingress-from-mgmt     | `netpol.cilium.io/ingress-from-mgmt="true"`     | Allows ingress traffic from management network.                   |
 | ingress-from-prometheus     | `netpol.cilium.io/ingress-from-prometheus="true"`     | Allows ingress traffic from Prometheus monitoring pods.                   |
 | ingress-from-remote-node    | `netpol.cilium.io/ingress-from-remote-node="true"`    | Allows ingress traffic from other nodes' local network.                   |
 | ingress-from-world          | `netpol.cilium.io/ingress-from-world="true"`          | Allows ingress traffic from any external source.                          |

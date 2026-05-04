@@ -18,6 +18,7 @@ resources:
   - ingress-from-ingress.yaml
   - ingress-from-intra.yaml
   - ingress-from-kube-apiserver.yaml
+  - ingress-from-mgmt.yaml
   - ingress-from-prometheus.yaml
   - ingress-from-remote-node.yaml
   - ingress-from-world.yaml

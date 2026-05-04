@@ -109,7 +109,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 |------|------|---------|
 | <img src="https://raw.githubusercontent.com/alam00000/bentopdf/main/public/images/favicon.svg" width="50"/> | [Bento PDF](https://bentopdf.com/) | PDF Toolkit |
 | <img src="https://raw.githubusercontent.com/dgtlmoon/changedetection.io/master/changedetectionio/static/images/generic-icon.svg" width="50"/> | [ChangeDetection](https://changedetection.io/) | Website Monitor |
-| <img src="https://svgicons.com/api/ogimage/?id=221729&n=file-type-excalidraw" width="50"/> | [Excalidraw](https://excalidraw.com/) | Whiteboard |
+| <img src="https://raw.githubusercontent.com/excalidraw/excalidraw/refs/heads/master/public/favicon.ico" width="50"/> | [Excalidraw](https://excalidraw.com/) | Whiteboard |
 | <img src="https://raw.githubusercontent.com/firefly-iii/firefly-iii/develop/.github/assets/img/logo-small.png" width="50"/> | [Firefly III](https://www.firefly-iii.org/) | Personal Finance Manager |
 | <img src="https://raw.githubusercontent.com/gethomepage/homepage/refs/heads/dev/public/android-chrome-192x192.png" width="50"/> | [Homepage](https://gethomepage.dev/) | Dashboard  |
 | <img src="https://raw.githubusercontent.com/CorentinTh/it-tools/refs/heads/main/public/android-chrome-192x192.png" width="50"/> | [IT Tools](https://github.com/CorentinTh/it-tools/tree/main) | Developer Tools |

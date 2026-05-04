@@ -9,15 +9,20 @@
         href: https://dash.cloudflare.com/
         description: External Access
         siteMonitor: http://cloudflared-metrics.cloudflared.svc.cluster.local:2000/ready
-    - Pihole:
-        icon: https://wp-cdn.pi-hole.net/wp-content/uploads/2016/12/Vortex-R.png
-        href: http://pihole.{{HOMEPAGE_VAR_BASE_DOMAIN}}
-        description: Main DNS Server
-        siteMonitor: http://pihole
     - Tailscale:
-        icon: https://play-lh.googleusercontent.com/wczDL05-AOb39FcL58L32h6j_TrzzGTXDLlOrOmJ-aNsnoGsT1Gkk2vU4qyTb7tGxRw
+        icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/tailscale-light.svg
         href: https://login.tailscale.com/admin/machines/
         description: Exit Node Machine
+    - Main DNS Server:
+        icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/technitium.svg
+        href: https://dns01.{{HOMEPAGE_VAR_BASE_DOMAIN}}/
+        description: Porygon Technitium DNS Server
+        siteMonitor: https://porygon.dns.{{HOMEPAGE_VAR_BASE_DOMAIN}}:53443/
+    - Backup DNS Server:
+        icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/technitium.svg
+        href: https://dns02.{{HOMEPAGE_VAR_BASE_DOMAIN}}/
+        description: Porygon2 Technitium DNS Server
+        siteMonitor: https://porygon2.dns.{{HOMEPAGE_VAR_BASE_DOMAIN}}:53443/
 
 # - Monitoring:
 
@@ -27,11 +32,20 @@
     - Plusle:
         icon: https://img.icons8.com/fluency/2x/proxmox.png
         href: https://plusle.{{HOMEPAGE_VAR_BASE_DOMAIN}}
-        ping: plusle
+        ping: plusle.home.arpa
         description: GMKTEC NucBox M5 PLUS
         widget:
           type: proxmox
-          url: https://plusle:8006
+          url: https://plusle.home.arpa:8006
           username: "{{HOMEPAGE_VAR_PROXMOX_USER}}"
           password: "{{HOMEPAGE_VAR_PROXMOX_PWD}}"
           #node: pve-1  # Uncomment if proxmox has more than 1 node
+    - Porygon:
+        icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/raspberry-pi.svg
+        ping: porygon.home.arpa
+        description: Raspberry Pi 4B
+    - Porygon2:
+        icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/raspberry-pi.svg
+        ping: porygon2.home.arpa
+        description: Raspberry Pi 4B
+    

@@ -107,7 +107,6 @@ server:
     netpol.cilium.io/egress-to-intra: "true"
     netpol.cilium.io/egress-to-kube-apiserver: "true"
     netpol.cilium.io/egress-to-kube-dns: "true"
-    # netpol.cilium.io/ingress-from-host: "true"
     netpol.cilium.io/ingress-from-ingress: "true"
     netpol.cilium.io/ingress-from-prometheus: "true"
     netpol.cilium.io/ingress-from-remote-node: "true"

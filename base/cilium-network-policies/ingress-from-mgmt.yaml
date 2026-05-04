@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ingress-from-mgmt
+spec:
+  description: >
+    Allow ingress traffic to selected pods from management network.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/ingress-from-mgmt: "true"
+
+  ingress:
+  - fromCIDR:
+    - 10.10.10.0/24

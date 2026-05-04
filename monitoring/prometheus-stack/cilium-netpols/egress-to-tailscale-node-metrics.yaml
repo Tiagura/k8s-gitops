@@ -10,7 +10,7 @@ spec:
 
   egress:
     - toCIDR:
-        - 192.168.1.78/32
+        - 10.10.20.50/32
       toPorts:
         - ports:
             - port: "5252"

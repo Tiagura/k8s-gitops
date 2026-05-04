@@ -292,8 +292,8 @@ prometheus:
         netpol.cilium.io/egress-to-kube-dns: "true"
         netpol.cilium.io/egress-to-kube-dns-metrics: "true"
         netpol.cilium.io/egress-to-remote-node: "true"
-        netpol.cilium.io/ingress-from-ingress: "true"
         netpol.cilium.io/ingress-from-intra: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
         # Specific Cilium Network Policies labels
         netpol.cilium.io/egress-to-argocd-metrics: "true"
         netpol.cilium.io/egress-to-cert-manager-metrics: "true"
@@ -345,7 +345,7 @@ prometheus:
       - job_name: 'tailscale-metrics'
         static_configs:
           - targets:
-            - 'tailscale-exit-node:5252'
+            - 'tailscale-exit-node.home.arpa:5252'
       # Scrape Cilium metrics
       # See https://docs.cilium.io/en/stable/observability/metrics/#monitoring-metrics
       # Cilium Agent metrics
