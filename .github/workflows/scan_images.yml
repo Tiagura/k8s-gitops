@@ -65,7 +65,7 @@ jobs:
             exit 0
           fi
 
-      - name: Extract images from changed files only
+      - name: Extract images from changed files
         run: |
           set -euo pipefail
 
@@ -77,12 +77,20 @@ jobs:
             echo "---" >> /tmp/changed.yaml
           done < /tmp/changed-files.txt
 
-          yq '.. | .image? // empty' /tmp/changed.yaml \
+          # Extract images safely (no failure on empty)
+          yq eval '.. | select(has("image")) | .image' /tmp/changed.yaml \
+            2>/dev/null \
             | sed '/^$/d' \
             | sort -u \
-            > /tmp/images.txt
+            > /tmp/images.txt || true
 
           echo "Images detected in PR:"
+
+          if [ ! -s /tmp/images.txt ]; then
+            echo "No images changed in this PR"
+            exit 0
+          fi
+
           cat /tmp/images.txt
 
       - name: Scan images with Trivy
