@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: stremio
+  name: stremio-server
 spec:
   selector:
     app: stremio
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 11470
+      targetPort: server

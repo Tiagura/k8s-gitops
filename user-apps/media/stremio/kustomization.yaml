@@ -12,9 +12,11 @@ labels:
 
 resources:
   - namespace.yaml
-  - service.yaml
-  - deployment.yaml
-  - http-route.yaml
-  - http-route-external.yaml
   - pvc-data.yaml
+  - deployment.yaml
+  - service-gui.yaml
+  - service-server.yaml
+  - http-route-gui-external.yaml
+  - http-route-gui.yaml
+  - http-route-server.yaml
   - ../../../base/cilium-network-policies/

@@ -123,6 +123,10 @@ repoServer:
     limits:
       cpu: 4000m
       memory: 1024Mi
+  env:
+    # Increase the repo server execution timeout to 5 minutes to prevent timeouts during large kustomize builds or Helm chart rendering
+    - name: ARGOCD_EXEC_TIMEOUT
+      value: 5m
   podLabels:
     # Cilium network policy labels
     netpol.cilium.io/egress-to-intra: "true"
