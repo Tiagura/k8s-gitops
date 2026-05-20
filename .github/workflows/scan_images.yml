@@ -1,0 +1,120 @@
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  scan-images:
+    name: Scan images for vulnerabilities
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v5
+        with:
+          version: 1.33    # Do not use kubectl version (1.34-35.*that has kustomize v5.7.1 Issue: https://github.com/kubernetes/kubectl/issues/1839
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v5
+        with:
+          version: v3.16.2
+
+      - name: Install yq
+        run: |
+          set -euo pipefail
+          sudo wget -qO /usr/local/bin/yq \
+            https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Install Trivy (latest)
+        run: |
+          set -euo pipefail
+
+          TRIVY_VERSION=$(curl -s https://api.github.com/repos/aquasecurity/trivy/releases/latest \
+            | grep tag_name | cut -d '"' -f 4)
+
+          echo "Installing Trivy ${TRIVY_VERSION}"
+
+          wget -qO /tmp/trivy.deb \
+            https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION#v}_Linux-64bit.deb
+
+          sudo dpkg -i /tmp/trivy.deb
+
+          trivy version
+
+      - name: Get changed YAML files
+        run: |
+          set -euo pipefail
+
+          curl -s \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/compare/${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} \
+            | jq -r '.files[].filename' \
+            | grep -E '\.ya?ml$' \
+            > /tmp/changed-files.txt || true
+
+          echo "Changed yaml files:"
+
+          if [ -s /tmp/changed-files.txt ]; then
+            cat /tmp/changed-files.txt
+          else
+            echo "No YAML changes detected. Exiting."
+            exit 0
+          fi
+
+      - name: Extract images from changed files
+        run: |
+          set -euo pipefail
+
+          : > /tmp/changed.yaml
+
+          while read -r file; do
+            [ -f "$file" ] || continue
+            cat "$file" >> /tmp/changed.yaml
+            echo "---" >> /tmp/changed.yaml
+          done < /tmp/changed-files.txt
+
+          # Extract images safely (no failure on empty)
+          yq eval '.. | select(has("image")) | .image' /tmp/changed.yaml \
+            2>/dev/null \
+            | sed '/^$/d' \
+            | sort -u \
+            > /tmp/images.txt || true
+
+          echo "Images detected in PR:"
+
+          if [ ! -s /tmp/images.txt ]; then
+            echo "No images changed in this PR"
+            exit 0
+          fi
+
+          cat /tmp/images.txt
+
+      - name: Scan images with Trivy
+        run: |
+          set -euo pipefail
+
+          if [ ! -s /tmp/images.txt ]; then
+            echo "No images to scan"
+            exit 0
+          fi
+
+          while read -r image; do
+            echo "===================================="
+            echo "Scanning: $image"
+            echo "===================================="
+
+            trivy image \
+              --severity HIGH,CRITICAL \
+              --exit-code 1 \
+              --ignore-unfixed \
+              --no-progress \
+              "$image"
+
+          done < /tmp/images.txt

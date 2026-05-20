@@ -14,7 +14,8 @@ This repository includes a GitHub Actions pipeline that validates **all changes*
   - [Validation Jobs](#validation-jobs)
     - [1. ArgoCD Applications Validation](#1-argocd-applications-validation)
     - [2. Kubernetes Manifests Validation](#2-kubernetes-manifests-validation)
-    - [3. Shell Script Validation](#3-shell-script-validation)
+    - [3. Container Image Security Scanning](#3-container-image-security-scanning)
+    - [4. Shell Script Validation](#4-shell-script-validation)
   - [Failure Conditions](#failure-conditions)
 
 ## Purpose
@@ -108,8 +109,26 @@ Ensures that all Kubernetes manifests can be rendered and are schema-valid.
 - CRD support via external schema catalogs
 - Graceful handling of missing schemas
 
+### 3. Container Image Security Scanning
 
-### 3. Shell Script Validation
+**Workflow:** `.github/workflows/scan_images.yml`
+
+Scans container images referenced in Kubernetes manifests.
+
+#### Process:
+
+1. Detect changed YAML manifests in the Pull Request using the GitHub compare API
+2. Extract container image references from modified manifests using `yq`
+3. Deduplicate detected image references
+4. Scan each image individually using Trivy
+
+#### Behavior:
+- Scans only images introduced or modified in the Pull Request
+- Fails the pipeline if HIGH or CRITICAL vulnerabilities with available fixes are detected
+- Ignores vulnerabilities without available fixes
+- Skips execution if no container images are found in the modified manifests
+
+### 4. Shell Script Validation
 
 **Workflow:** `.github/workflows/validate_shell_scripts.yml`
 
@@ -129,6 +148,20 @@ shellcheck -S warning scripts/*.sh
 
 The pipeline will fail if any of the following occur:
 
-* ArgoCD application conflicts or structural issues are detected
-* Kubernetes manifests fail to render or do not pass schema validation
-* Shell script validation fails (including warnings reported by `shellcheck`)
+### ArgoCD Validation
+  - Duplicate applications detected
+  - Invalid or inconsistent sync-wave ordering
+  - Missing application references in kustomization
+
+### Kubernetes Manifests Validation
+  - Invalid manifests
+  - Schema violations
+  - Helm rendering errors
+
+### Container Image Security (Trivy)
+  - Any container image contains:
+    - `HIGH` severity vulnerabilities
+    - `CRITICAL` severity vulnerabilities (with available fixes)
+
+### Shell Validation
+  - Any shellcheck warning or error

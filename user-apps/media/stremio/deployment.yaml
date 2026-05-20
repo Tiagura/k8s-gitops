@@ -15,15 +15,19 @@ spec:
         app: stremio
         netpol.cilium.io/egress-to-kube-dns: "true"
         netpol.cilium.io/egress-to-world: "true"
-        netpol.cilium.io/egress-to-intra: "true"
         netpol.cilium.io/ingress-from-ingress: "true"
     spec:
       containers:
         - name: stremio
           image: tsaridas/stremio-docker:v1.3.3
           ports:
-            - containerPort: 8080
+            - name: webgui
+              containerPort: 8080
+            - name: server
+              containerPort: 11470  # Stremio server  http port
           env:
+            - name: DISABLE_CACHING
+              value: "1"
             - name: NO_CORS
               value: "1"
             - name: AUTO_SERVER_URL

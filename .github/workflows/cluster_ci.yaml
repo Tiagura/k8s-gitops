@@ -1,17 +1,9 @@
 name: Cluster CI Validation
 
 on:
-  workflow_call:
+  workflow_dispatch:
 
   pull_request:
-    paths:
-      - infrastructure/**
-      - monitoring/**
-      - user-apps/**
-      - scripts/**
-      - .github/workflows/**
-
-  push:
     branches:
       - main
     paths:
@@ -30,10 +22,13 @@ jobs:
     secrets: inherit
 
   validate-kubernetes-manifests:
-    uses: ./.github/workflows/validate_kubernetes_namifests.yml
+    uses: ./.github/workflows/validate_kubernetes_manifests.yml
+    secrets: inherit
+
+  scan-images:
+    uses: ./.github/workflows/scan_images.yml
     secrets: inherit
 
   validate-shell-scripts:
     uses: ./.github/workflows/validate_shell_scripts.yml
     secrets: inherit
-  

@@ -87,6 +87,14 @@
     },
     {
       "matchFileNames": [
+        "infrastructure/controllers/renovate/kustomization.yaml"
+      ],
+      "schedule": [
+        "* * * * 4"
+      ]
+    },
+    {
+      "matchFileNames": [
         "monitoring/goti-stack/**"
       ],
       "groupName": "Gotify Stack"
