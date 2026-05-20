@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: stremio
-          image: tsaridas/stremio-docker:v1.3.2
+          image: tsaridas/stremio-docker:v1.3.3
           ports:
             - containerPort: 8080
           env:
