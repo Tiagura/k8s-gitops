@@ -68,29 +68,71 @@ jobs:
             exit 0
           fi
 
-      - name: Extract images from changed files
+      - name: Extract images from YAML and rendered Helm charts
         run: |
           set -euo pipefail
 
-          : > /tmp/changed.yaml
+          : > /tmp/all-images.txt
 
           while read -r file; do
             [ -f "$file" ] || continue
-            cat "$file" >> /tmp/changed.yaml
-            echo "---" >> /tmp/changed.yaml
+
+            echo "------------------------------------"
+            echo "Processing: $file"
+            echo "------------------------------------"
+
+            #
+            # 1. Extract images directly from YAML
+            #
+            yq eval '.. | select(has("image")) | .image' "$file" \
+              2>/dev/null \
+              | sed '/^$/d' \
+              >> /tmp/all-images.txt || true
+
+            #
+            # 2. If this is a kustomization file with helmCharts,
+            #    render it and extract images from rendered manifests
+            #
+            filename="$(basename "$file")"
+
+            if [[ "$filename" =~ ^kustomization\.ya?ml$ ]]; then
+
+              helm_count=$(
+                yq eval '.helmCharts | length' "$file" 2>/dev/null || echo 0
+              )
+
+              if [[ "$helm_count" != "0" && "$helm_count" != "null" ]]; then
+                echo "Helm charts detected in $file"
+
+                workdir="$(dirname "$file")"
+
+                rendered="/tmp/rendered-$(basename "$workdir").yaml"
+
+                echo "Rendering kustomization with Helm support..."
+
+                kubectl kustomize "$workdir" \
+                  --enable-helm \
+                  > "$rendered"
+
+                echo "Extracting images from rendered manifests..."
+
+                yq eval '.. | select(has("image")) | .image' "$rendered" \
+                  2>/dev/null \
+                  | sed '/^$/d' \
+                  >> /tmp/all-images.txt || true
+              fi
+            fi
+
           done < /tmp/changed-files.txt
 
-          # Extract images safely (no failure on empty)
-          yq eval '.. | select(has("image")) | .image' /tmp/changed.yaml \
-            2>/dev/null \
-            | sed '/^$/d' \
-            | sort -u \
-            > /tmp/images.txt || true
+          sort -u /tmp/all-images.txt > /tmp/images.txt
 
-          echo "Images detected in PR:"
+          echo "===================================="
+          echo "Images detected:"
+          echo "===================================="
 
           if [ ! -s /tmp/images.txt ]; then
-            echo "No images changed in this PR"
+            echo "No images found"
             exit 0
           fi
 
