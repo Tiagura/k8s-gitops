@@ -31,27 +31,30 @@ jobs:
             https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           sudo chmod +x /usr/local/bin/yq
 
-      - name: Install Trivy
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Install Trivy (latest)
         run: |
           set -euo pipefail
 
-          sudo apt-get update
-          sudo apt-get install -y gh jq
+          for i in {1..5}; do
+            echo "Fetching Trivy version (attempt $i/5)..."
+              TRIVY_VERSION=$(curl -s https://api.github.com/repos/aquasecurity/trivy/releases/latest \
+                | grep tag_name | cut -d '"' -f 4)
 
-          TRIVY_URL=$(gh release view aquasecurity/trivy --json assets \
-            | jq -r '.assets[] | select(.name | contains("Linux-64bit.deb")) | .url')
-
-          echo "Downloading: $TRIVY_URL"
-
-          curl -L \
-            -H "Accept: application/octet-stream" \
-            "$TRIVY_URL" \
-            -o /tmp/trivy.deb
+              # Check if we got a valid version string (e.g., v0.35.0)
+              if [[ "$TRIVY_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                echo "Latest Trivy version: $TRIVY_VERSION"
+                break
+              else
+                echo "Failed to fetch valid Trivy version. Retrying in 5 seconds..."
+                sleep 5
+              fi
+          done
+          
+          echo "Installing Trivy ${TRIVY_VERSION}"
+          wget -qO /tmp/trivy.deb \
+            https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION#v}_Linux-64bit.deb
 
           sudo dpkg -i /tmp/trivy.deb
-
           trivy version
 
       - name: Get changed YAML files
