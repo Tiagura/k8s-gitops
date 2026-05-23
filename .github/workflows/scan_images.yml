@@ -72,6 +72,21 @@ jobs:
         run: |
           set -euo pipefail
 
+          extract_images() {
+            local file="$1"
+
+            yq eval '
+              .spec.template.spec.containers[].image,
+              .spec.template.spec.initContainers[].image,
+              .spec.jobTemplate.spec.template.spec.containers[].image,
+              .spec.jobTemplate.spec.template.spec.initContainers[].image,
+              .spec.containers[].image,
+              .spec.initContainers[].image
+            ' "$file" 2>/dev/null \
+              | sed '/^null$/d' \
+              | sed '/^$/d'
+          }
+
           : > /tmp/all-images.txt
 
           while read -r file; do
@@ -84,14 +99,10 @@ jobs:
             #
             # 1. Extract images directly from YAML
             #
-            yq eval '.. | select(has("image")) | .image' "$file" \
-              2>/dev/null \
-              | sed '/^$/d' \
-              >> /tmp/all-images.txt || true
+            extract_images "$file" >> /tmp/all-images.txt || true
 
             #
-            # 2. If this is a kustomization file with helmCharts,
-            #    render it and extract images from rendered manifests
+            # 2. Render helm charts from kustomizations
             #
             filename="$(basename "$file")"
 
@@ -105,7 +116,6 @@ jobs:
                 echo "Helm charts detected in $file"
 
                 workdir="$(dirname "$file")"
-
                 rendered="/tmp/rendered-$(basename "$workdir").yaml"
 
                 echo "Rendering kustomization with Helm support..."
@@ -116,10 +126,7 @@ jobs:
 
                 echo "Extracting images from rendered manifests..."
 
-                yq eval '.. | select(has("image")) | .image' "$rendered" \
-                  2>/dev/null \
-                  | sed '/^$/d' \
-                  >> /tmp/all-images.txt || true
+                extract_images "$rendered" >> /tmp/all-images.txt || true
               fi
             fi
 
