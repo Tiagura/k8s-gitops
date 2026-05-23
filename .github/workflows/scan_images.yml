@@ -35,13 +35,9 @@ jobs:
         run: |
           set -euo pipefail
 
-          TRIVY_VERSION=$(curl -s https://api.github.com/repos/aquasecurity/trivy/releases/latest \
-            | grep tag_name | cut -d '"' -f 4)
-
-          echo "Installing Trivy ${TRIVY_VERSION}"
-
-          wget -qO /tmp/trivy.deb \
-            https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION#v}_Linux-64bit.deb
+          curl -sSL \
+            https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.deb \
+            -o /tmp/trivy.deb
 
           sudo dpkg -i /tmp/trivy.deb
 
