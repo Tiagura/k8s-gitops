@@ -35,8 +35,17 @@ jobs:
         run: |
           set -euo pipefail
 
-          curl -sSL \
-            https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.deb \
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+          TRIVY_URL=$(gh release view --repo aquasecurity/trivy --json assets \
+            | jq -r '.assets[] | select(.name | contains("Linux-64bit.deb")) | .url')
+
+          echo "Downloading: $TRIVY_URL"
+
+          curl -L \
+            -H "Accept: application/octet-stream" \
+            "$TRIVY_URL" \
             -o /tmp/trivy.deb
 
           sudo dpkg -i /tmp/trivy.deb
