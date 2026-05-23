@@ -16,13 +16,13 @@ jobs:
 
       - name: Setup kubectl
         uses: azure/setup-kubectl@v5
-        with:
-          version: 1.33    # Do not use kubectl version (1.34-35.*that has kustomize v5.7.1 Issue: https://github.com/kubernetes/kubectl/issues/1839
+        # with:
+        #   version: 1.33    # Do not use kubectl version (1.34-35.*that has kustomize v5.7.1 Issue: https://github.com/kubernetes/kubectl/issues/1839
 
       - name: Setup Helm
         uses: azure/setup-helm@v5
-        with:
-          version: v3.16.2
+        # with:
+        #   version: v3.16.2
 
       - name: Install yq
         run: |
@@ -35,16 +35,26 @@ jobs:
         run: |
           set -euo pipefail
 
-          TRIVY_VERSION=$(curl -s https://api.github.com/repos/aquasecurity/trivy/releases/latest \
-            | grep tag_name | cut -d '"' -f 4)
+          for i in {1..5}; do
+            echo "Fetching Trivy version (attempt $i/5)..."
+              TRIVY_VERSION=$(curl -s https://api.github.com/repos/aquasecurity/trivy/releases/latest \
+                | grep tag_name | cut -d '"' -f 4)
 
+              # Check if we got a valid version string (e.g., v0.35.0)
+              if [[ "$TRIVY_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                echo "Latest Trivy version: $TRIVY_VERSION"
+                break
+              else
+                echo "Failed to fetch valid Trivy version. Retrying in 5 seconds..."
+                sleep 5
+              fi
+          done
+          
           echo "Installing Trivy ${TRIVY_VERSION}"
-
           wget -qO /tmp/trivy.deb \
             https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION#v}_Linux-64bit.deb
 
           sudo dpkg -i /tmp/trivy.deb
-
           trivy version
 
       - name: Get changed YAML files
@@ -72,6 +82,22 @@ jobs:
         run: |
           set -euo pipefail
 
+          extract_images() {
+            local file="$1"
+
+            yq eval '
+              .spec.template.spec.containers[].image,
+              .spec.template.spec.initContainers[].image,
+              .spec.jobTemplate.spec.template.spec.containers[].image,
+              .spec.jobTemplate.spec.template.spec.initContainers[].image,
+              .spec.containers[].image,
+              .spec.initContainers[].image
+            ' "$file" 2>/dev/null \
+              | grep -v '^---$' \
+              | sed '/^null$/d' \
+              | sed '/^$/d'
+          }
+
           : > /tmp/all-images.txt
 
           while read -r file; do
@@ -84,14 +110,10 @@ jobs:
             #
             # 1. Extract images directly from YAML
             #
-            yq eval '.. | select(has("image")) | .image' "$file" \
-              2>/dev/null \
-              | sed '/^$/d' \
-              >> /tmp/all-images.txt || true
+            extract_images "$file" >> /tmp/all-images.txt || true
 
             #
-            # 2. If this is a kustomization file with helmCharts,
-            #    render it and extract images from rendered manifests
+            # 2. Render helm charts from kustomizations
             #
             filename="$(basename "$file")"
 
@@ -105,7 +127,6 @@ jobs:
                 echo "Helm charts detected in $file"
 
                 workdir="$(dirname "$file")"
-
                 rendered="/tmp/rendered-$(basename "$workdir").yaml"
 
                 echo "Rendering kustomization with Helm support..."
@@ -116,10 +137,7 @@ jobs:
 
                 echo "Extracting images from rendered manifests..."
 
-                yq eval '.. | select(has("image")) | .image' "$rendered" \
-                  2>/dev/null \
-                  | sed '/^$/d' \
-                  >> /tmp/all-images.txt || true
+                extract_images "$rendered" >> /tmp/all-images.txt || true
               fi
             fi
 
@@ -154,9 +172,10 @@ jobs:
 
             trivy image \
               --severity HIGH,CRITICAL \
-              --exit-code 1 \
+              --pkg-types os,library \
               --ignore-unfixed \
               --no-progress \
+              --exit-code 1 \
               "$image"
 
           done < /tmp/images.txt
