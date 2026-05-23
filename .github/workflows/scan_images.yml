@@ -21,8 +21,8 @@ jobs:
 
       - name: Setup Helm
         uses: azure/setup-helm@v5
-        with:
-          version: v3.16.2
+        # with:
+        #   version: v3.16.2
 
       - name: Install yq
         run: |
