@@ -172,7 +172,7 @@ jobs:
 
             trivy image \
               --severity HIGH,CRITICAL \
-              --pkg-types os,library
+              --pkg-types os,library \
               --ignore-unfixed \
               --no-progress \
               --exit-code 1 \
