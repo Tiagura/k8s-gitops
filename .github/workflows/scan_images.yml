@@ -171,10 +171,11 @@ jobs:
             echo "===================================="
 
             trivy image \
-              --severity CRITICAL \
-              --exit-code 1 \
+              --severity HIGH,CRITICAL \
+              --vuln-type os,library
               --ignore-unfixed \
               --no-progress \
+              --exit-code 1 \
               "$image"
 
           done < /tmp/images.txt
