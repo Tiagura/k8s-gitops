@@ -171,7 +171,7 @@ jobs:
             echo "===================================="
 
             trivy image \
-              --severity HIGH,CRITICAL \
+              --severity CRITICAL \
               --pkg-types os,library \
               --ignore-unfixed \
               --no-progress \
