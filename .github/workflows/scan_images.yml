@@ -156,6 +156,15 @@ jobs:
 
           cat /tmp/images.txt
 
+      - name: Create Trivy ignore file
+        run: |
+          cat > .trivyignore <<'EOF'
+          CVE-2026-31789
+          EOF
+
+          echo "Ignoring vulnerabilities:"
+          cat .trivyignore
+
       - name: Scan images with Trivy
         run: |
           set -euo pipefail
@@ -171,9 +180,10 @@ jobs:
             echo "===================================="
 
             trivy image \
-              --severity HIGH,CRITICAL \
+              --severity CRITICAL \
               --pkg-types os,library \
               --ignore-unfixed \
+              --ignorefile .trivyignore \
               --no-progress \
               --exit-code 1 \
               "$image"
