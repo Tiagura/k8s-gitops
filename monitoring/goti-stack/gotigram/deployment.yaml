@@ -99,7 +99,7 @@ spec:
 
       containers:
         - name: gotigram
-          image: tiagura/gotigram:1.1.1
+          image: tiagura/gotigram:1.1.2
           env:
             - name: GOTIFY_WS_URL
               value: "ws://gotify:80"
