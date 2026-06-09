@@ -9,9 +9,11 @@
 # Ignore Base Sealed Secrets
 infrastructure/controllers/sealed-secrets/sealed-secrets-key.yaml
 
-# Ignore all *-secret.yaml files
+# Ignore all non external *-secret.yaml files
 *-secret.yaml
 *-secrets.yaml
+!*-external-secret.yaml
+!*-external-secrets.yaml
 
 # Ignore other .yaml files
 sealed-secrets-controller.yaml

@@ -7,6 +7,7 @@ resources:
   - egress-to-cilium-hubble-metrics.yaml
   - egress-to-cnpg-db-metrics.yaml
   - egress-to-cnpg-operator-metrics.yaml
+  - egress-to-eso-metrics.yaml
   - egress-to-kube-dns-metrics.yaml
   - egress-to-longhorn-metrics.yaml
   - egress-to-prometheus.yaml

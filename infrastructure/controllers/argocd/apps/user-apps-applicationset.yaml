@@ -59,11 +59,17 @@ spec:
           kind: PersistentVolumeClaim
           jsonPointers:
             - /spec/storageClassName
-        - group: postgresql.cnpg.io
-          kind: Cluster
-          jsonPointers:
-            - /status
-            - /metadata/generation
+        - group: external-secrets.io
+          kind: ExternalSecret
+          jqPathExpressions:
+            - '.spec.dataFrom[].extract.conversionStrategy'
+            - '.spec.dataFrom[].extract.decodingStrategy'
+            - '.spec.dataFrom[].extract.metadataPolicy'
+            - '.spec.dataFrom[].extract.nullBytePolicy'
+            - '.spec.data[].remoteRef.conversionStrategy'
+            - '.spec.data[].remoteRef.decodingStrategy'
+            - '.spec.data[].remoteRef.metadataPolicy'
+            - '.spec.data[].remoteRef.nullBytePolicy'
       info:
         - name: Description
           value: 'User application: {{path.basename}}'

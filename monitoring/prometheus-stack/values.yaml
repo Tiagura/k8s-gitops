@@ -122,7 +122,7 @@ alertmanager:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 1Gi
+              storage: 128Mi
     # Resource allocation
     resources:
       requests:
@@ -300,6 +300,7 @@ prometheus:
         netpol.cilium.io/egress-to-cilium-hubble-metrics: "true"
         netpol.cilium.io/egress-to-cnpg-db-metrics: "true"
         netpol.cilium.io/egress-to-cnpg-operator-metrics: "true"
+        netpol.cilium.io/egress-to-eso-metrics: "true"
         netpol.cilium.io/egress-to-longhorn-metrics: "true"
         netpol.cilium.io/egress-to-redis-db-metrics: "true"
         netpol.cilium.io/egress-to-redis-operator-metrics: "true"

@@ -171,18 +171,6 @@
       "versioningTemplate": "semver"
     },
     {
-      "description": "Sealed Secrets CRD version (GitHub Releases)",
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/infrastructure/controllers/sealed-secrets/kustomization\\.yaml$/"
-      ],
-      "matchStrings": [
-        "https://raw\\.githubusercontent\\.com/bitnami-labs/sealed-secrets/v(?<currentValue>[^/]+)/helm/sealed-secrets/crds/bitnami\\.com_sealedsecrets\\.yaml"
-      ],
-      "depNameTemplate": "bitnami-labs/sealed-secrets",
-      "datasourceTemplate": "github-releases"
-    },
-    {
       "description": "Redis Operator CRD version (GitHub Releases)",
       "customType": "regex",
       "managerFilePatterns": [

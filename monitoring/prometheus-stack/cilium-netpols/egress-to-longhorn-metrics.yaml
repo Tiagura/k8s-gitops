@@ -14,7 +14,7 @@ spec:
         - k8sService:
             namespace: longhorn
             serviceName: longhorn-backend
-      toPorts:
-        - ports:
-            - port: "9500"
-              protocol: TCP
+      # toPorts:
+      #   - ports:
+      #       - port: "9500"
+      #         protocol: TCP

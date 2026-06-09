@@ -11,5 +11,5 @@ helmCharts:
 
 resources:
   - namespace.yaml
-  - renovate-secret-sealed.yaml
+  - renovate-external-secret.yaml
   - ../../../base/cilium-network-policies/

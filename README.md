@@ -18,12 +18,10 @@ This repository contains the configuration and manifests for a **GitOps-driven K
   - [Prerequisites](#prerequisites)
   - [Bootstrapping the Cluster](#bootstrapping-the-cluster)
     - [1. Install Cilium CNI and wait for it to be ready](#1-install-cilium-cni-and-wait-for-it-to-be-ready)
-    - [2. Create Encryption and Decryption Keys for Sealed Secrets](#2-create-encryption-and-decryption-keys-for-sealed-secrets)
-    - [3. Create the Kubernetes Secret Manifest](#3-create-the-kubernetes-secret-manifest)
-    - [4. Apply the Secret Manifest](#4-apply-the-secret-manifest)
-    - [5. Deploy ArgoCD Main Components and CRDs](#5-deploy-argocd-main-components-and-crds)
-    - [6. Bootstrap the GitOps Loop](#6-bootstrap-the-gitops-loop)
-    - [7. Optional: Access ArgoCD Web GUI](#7-optional-access-argocd-web-gui)
+    - [2. Configure External Secrets Operator authentication](#2-configure-external-secrets-operator-authentication)
+    - [3. Deploy ArgoCD Main Components and CRDs](#3-deploy-argocd-main-components-and-crds)
+    - [4. Bootstrap the GitOps Loop](#4-bootstrap-the-gitops-loop)
+    - [5. Optional: Access ArgoCD Web GUI](#5-optional-access-argocd-web-gui)
       - [Get the ArgoCD Initial Admin Password](#get-the-argocd-initial-admin-password)
       - [Access the Web GUI](#access-the-web-gui)
       - [Changing Login Credentials](#changing-login-credentials)
@@ -64,7 +62,8 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 | Logo | Name | Purpose |
 |------|------|---------|
 | <img src="https://argo-cd.readthedocs.io/en/stable/assets/logo.png" width="50"/> | [ArgoCD](https://argo-cd.readthedocs.io/) | GitOps continuous delivery controller |
-| <img src="https://digicactus.com/wp-content/uploads/2020/07/1_8Irsw8IlIHORa2eeFh0f0g.png" width="50"/> | [Reloader](https://github.com/stakater/Reloader) | Auto-reloads workloads on ConfigMap/Secret changes. |
+| <img src="https://avatars.githubusercontent.com/u/44036562?s=200&v=4" width="50"/> | [GitHub Actions](https://docs.github.com/en/actions) | Automated CI workflows |
+| <img src="https://digicactus.com/wp-content/uploads/2020/07/1_8Irsw8IlIHORa2eeFh0f0g.png" width="50"/> | [Reloader](https://github.com/stakater/Reloader) | Auto-reloads workloads on ConfigMap/Secret changes |
 | <img src="https://docs.renovatebot.com/assets/images/logo.png" width="50"/> | [Renovate](https://docs.renovatebot.com/) | Automated dependency updates |
 
 #### Networking
@@ -80,7 +79,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 | Logo | Name | Purpose |
 |------|------|---------|
 | <img src="https://raw.githubusercontent.com/cert-manager/cert-manager/refs/heads/master/logo/logo-small.png" width="50"/> | [Cert-Manager](https://cert-manager.io/) | Automated TLS certificate management |
-| <img src="https://avatars.githubusercontent.com/u/34656521?v=4" width="50"/> | [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) | Encrypt and manage secrets |
+| <img src="https://raw.githubusercontent.com/external-secrets/external-secrets/refs/heads/main/assets/eso-round-logo.svg" width="50"/> | [External Secrets](https://github.com/external-secrets/external-secrets) | Syncs secrets from external providers into Kubernetes |
 
 #### Storage and Databases
 
@@ -163,63 +162,28 @@ cilium status --wait
 kubectl get pods -n kube-system -l k8s-app=cilium
 ```
 
+### 2. Configure External Secrets Operator authentication
 
-### 2. Create Encryption and Decryption Keys for Sealed Secrets
+Create the Kubernetes Secret manifest, `auth-secret.yaml`, required for the `External Secrets Operator` to authenticate against your chosen external secrets backend/provider.
 
-Generate a private key:
+> Note: The exact contents of this secret depend on the external secret provider you use (e.g. AWS Secrets Manager, GCP Secret Manager, Azure Key Vault, HashiCorp Vault, etc.).
+Refer to the [official provider documentation](https://external-secrets.io/latest/provider/aws-secrets-manager/) to know the supported providers and the corresponding secret format and required fields.
 
-```bash
-openssl genrsa -out sealed-secrets.key 4096
-```
+In my case, I use [HashiCorp Vault](https://github.com/hashicorp/vault) as the backend. Authentication can be done in multiple ways (Kubernetes auth, AppRole, token-based auth), and each requires a different `secret` structure.
 
-Generate a self-signed certificate:
-
-```bash
-openssl req -x509 -new -nodes -key sealed-secrets.key -subj "/CN=sealed-secret" -days <DAYS_NUMBER> -out sealed-secrets.crt
-```
-
-Base64 encode the key and certificate:
+Create the namespace:
 
 ```bash
-base64 -w0 sealed-secrets.key > key.b64
-base64 -w0 sealed-secrets.crt > crt.b64
-```
-
-
-### 3. Create the Kubernetes Secret Manifest
-
-Edit `sealed-secrets-key.yaml` (for example with `nano sealed-secrets-key.yaml`) and paste the following, replacing `<contents-of-crt.b64>` and `<contents-of-key.b64>` with the base64-encoded contents from above:
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: sealed-secrets-key
-  namespace: sealed-secrets
-type: kubernetes.io/tls
-data:
-  tls.crt: <contents-of-crt.b64>
-  tls.key: <contents-of-key.b64>
-```
-
-  - **Note:** If you change the value of metadata.name, you must also update the `existingSecret` field in the [values file](infrastructure/controllers/sealed-secrets/values.yaml) to match. Otherwise, the controller won’t be able to find and use the correct key pair.
-
-### 4. Apply the Secret Manifest
-
-Create the namespace for sealed-secrets:
-
-```bash
-kubectl create namespace sealed-secrets
+kubectl create namespace eso
 ```
 
 Apply the secret to the cluster:
 
 ```bash
-kubectl apply -f infrastructure/controllers/sealed-secrets/sealed-secrets-key.yaml
+kubectl -n eso apply -f infrastructure/controllers/eso/auth-secret
 ```
 
-
-### 5. Deploy ArgoCD Main Components and CRDs
+### 3. Deploy ArgoCD Main Components and CRDs
 
 Apply ArgoCD manifests via `kustomize` with Helm enabled:
 
@@ -240,7 +204,7 @@ kubectl wait --for=condition=Available deployment/argocd-server -n argocd --time
 ```
 
 
-### 6. Bootstrap the GitOps Loop
+### 4. Bootstrap the GitOps Loop
 
 Now that ArgoCD is running and its CRDs are ready, apply the root application to start the self-managing GitOps workflow:
 
@@ -248,7 +212,7 @@ Now that ArgoCD is running and its CRDs are ready, apply the root application to
 kubectl apply -f infrastructure/controllers/argocd/root.yaml
 ```
 
-### 7. Optional: Access ArgoCD Web GUI
+### 5. Optional: Access ArgoCD Web GUI
 
 After ArgoCD is up and running, you can access its **Web GUI** for a visual overview of your cluster's current status.  
 The Web GUI provides insight into the synchronization state of applications, health status of resources, and allows you to perform certain operations directly from the interface.

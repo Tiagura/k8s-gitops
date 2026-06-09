@@ -5,7 +5,7 @@ metadata:
 data:
   # See the docs: https://docs.paperless-ngx.com/configuration/
   ## Paths and folders
-  PAPERLESS_FILENAME_FORMAT: "{owner_username}/{{ created }}/{{ title }}"
+  PAPERLESS_FILENAME_FORMAT: "{{ owner_username }}/{{ created }}/{{ title }}"
   ## Authentication and SSO
   PAPERLESS_ACCOUNT_ALLOW_SIGNUPS: "false"
   ## OCR

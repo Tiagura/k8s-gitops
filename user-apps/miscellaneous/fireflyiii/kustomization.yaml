@@ -7,7 +7,7 @@ labels:
     
 resources:
   - namespace.yaml
-  - fireflyiii-secrets-sealed.yaml
+  - fireflyiii-external-secret.yaml
   - core/
   - cron/
   - importer/

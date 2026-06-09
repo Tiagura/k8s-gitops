@@ -2,8 +2,8 @@ tunnel: k8s-tunnel
 metrics: 0.0.0.0:2000
 credentials-file: /etc/cloudflared/credentials/tunnel.json
 no-autoupdate: true
-loglevel: debug
-transport-loglevel: debug
+loglevel: info
+transport-loglevel: info
 ingress:
   - hostname: "*.tamhomelab.com"
     service: https://cilium-gateway-gateway-external.gateway.svc.cluster.local:443

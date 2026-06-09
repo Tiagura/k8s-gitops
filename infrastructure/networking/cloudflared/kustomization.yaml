@@ -18,7 +18,7 @@ configMapGenerator:
 
 resources:
   - namespace.yaml
-  - cloudflared-tunnel-creds-secret-sealed.yaml
+  - cloudflared-external-secret.yaml
   - deployment.yaml
   - service.yaml
   - cilium-netpol.yaml

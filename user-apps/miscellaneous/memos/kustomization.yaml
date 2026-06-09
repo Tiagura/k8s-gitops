@@ -11,7 +11,7 @@ labels:
 
 resources:
   - namespace.yaml
-  - memos-secrets-sealed.yaml
+  - memos-external-secret.yaml
   - deployment.yaml
   - service.yaml
   - configmap.yaml

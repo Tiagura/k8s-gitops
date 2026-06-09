@@ -1,0 +1,19 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-eso-metrics
+spec:
+  description: >
+    Allow egress to ESO namespace for monitoring ESO.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-eso-metrics: "true"
+
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: eso
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

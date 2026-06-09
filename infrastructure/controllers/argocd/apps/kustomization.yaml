@@ -6,14 +6,14 @@ resources:
   - projects.yaml
   # Wave 0: Essential components
   - cilium-app.yaml
-  - sealed-secrets-app.yaml
+  - cert-manager-app.yaml
+  - external-secrets-app.yaml
   # Wave 1: Storage components
   - longhorn-app.yaml
   - openebs-app.yaml
   # Wave 2: ArgoCD, gateway, and cert-manager
   - argocd-app.yaml
   - gateway-app.yaml
-  - cert-manager-app.yaml
   # Wave 3: Monitoring Stack
   - monitoring-applicationset.yaml
   # Wave 4: Rest of infrastructure components

@@ -51,9 +51,6 @@ spec:
 
             # policy flag to control lifecycle behaviour of DNS records
             - --policy=sync
-          env:
-            - name: CF_API_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: cloudflare-api-token-secret
-                  key: api-token
+          envFrom:
+            - secretRef:
+                name: external-dns-secret

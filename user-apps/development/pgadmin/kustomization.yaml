@@ -11,7 +11,7 @@ labels:
 resources:
   - namespace.yaml
   - pvc.yaml
-  - pg-admin-secret-sealed.yaml
+  - pgadmin-external-secret.yaml
   - deployment.yaml
   - service.yaml
   - http-route.yaml

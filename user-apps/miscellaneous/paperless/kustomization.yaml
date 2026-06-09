@@ -8,7 +8,7 @@ labels:
     
 resources:
   - namespace.yaml
-  - paperless-secrets-sealed.yaml
+  - paperless-external-secret.yaml
   - gotenberg/
   - redis/
   - tika/

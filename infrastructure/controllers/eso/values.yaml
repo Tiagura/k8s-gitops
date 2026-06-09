@@ -1,0 +1,73 @@
+nameOverride: external-secrets
+fullnameOverride: external-secrets
+namespaceOverride: eso
+installCRDs: true
+
+# global:
+#   podLabels: {}
+
+replicaCount: 1
+# If more than 1 replica use leader election
+leaderElect: false
+
+crds:
+  # Vault read only, no need to create and push secrets to the vault
+  createClusterPushSecret: false
+  createPushSecret: false
+
+processClusterPushSecret: false
+processPushSecret: false
+
+podLabels:
+  netpol.cilium.io/egress-to-kube-apiserver: "true"
+  netpol.cilium.io/egress-to-kube-dns: "true"
+  netpol.cilium.io/egress-to-vault: "true"
+  netpol.cilium.io/ingress-from-prometheus: "true"
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    cpu: 20m
+    memory: 64Mi
+
+serviceMonitor:
+  enabled: true
+  renderMode: "alwaysRender"  # Render with no check to CRDs, as prometheus-operator is installed after eso, and CRDs are not present at the time of rendering
+  namespace: prometheus-stack
+
+grafanaDashboard:
+  enabled: true
+
+# Webhook configuration
+webhook:
+  create: true
+  # Issue: https://github.com/external-secrets/external-secrets/issues/2519
+  lookaheadInterval: "210h"
+  certCheckInterval: "48h"
+  certManager:
+    enabled: true
+    cert:
+      create: true
+      issuerRef:
+        name: "internal-cluster-issuer"
+        kind: "ClusterIssuer"
+        group: cert-manager.io
+      renewBefore: "96h"
+  podLabels:
+    netpol.cilium.io/egress-deny: "true"
+    netpol.cilium.io/ingress-from-host: "true"
+    netpol.cilium.io/ingress-from-prometheus: "true"
+    netpol.cilium.io/ingress-from-remote-node: "true"
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      cpu: 20m
+      memory: 64Mi
+
+# Using cert-manager to manage certificates for the webhook server
+certController:
+  create: false

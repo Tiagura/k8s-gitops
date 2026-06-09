@@ -12,8 +12,7 @@ labels:
 
 resources:
   - namespace.yaml
-  - cloudflare-token-secret-sealed.yaml
-  - cluster-issuer.yaml
+  - cloudflare-external-secret.yaml
   - internal-cluster-issuer.yaml
   - ../../../base/cilium-network-policies/
 

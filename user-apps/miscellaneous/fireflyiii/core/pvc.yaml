@@ -5,6 +5,9 @@ metadata:
   labels:
     app: fireflyiii
     tier: core
+    recurring-job.longhorn.io/source: enabled
+    recurring-job-group.longhorn.io/important: enabled
+    recurring-job-group.longhorn.io/default: disabled
 spec:
   accessModes:
     - ReadWriteMany

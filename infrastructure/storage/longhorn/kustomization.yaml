@@ -4,7 +4,7 @@ namespace: longhorn
 
 resources:
   - namespace.yaml
-  - s3-remote-backup-secret-sealed.yaml
+  - s3-remote-backup-external-secret.yaml
   - backup-settings.yaml
   - recurring-backup-jobs.yaml
   - recurring-snapshot-jobs.yaml

@@ -39,9 +39,9 @@ To address this, Argo CD **sync-waves** are used to enforce an explicit deployme
 
 | Wave  | Layer               | Components                                                       |  Description |
 | ----- | ------------------- | -----------------------------------------------------------------|--------------|
-| **0** | Core Foundations    | [`cilium`](../../infrastructure/networking/cilium/), [`sealed-secrets`](../../infrastructure/controllers/sealed-secrets/) | Provides baseline networking and secret management required before any higher-level infrastructure can function. |
+| **0** | Core Foundations    | [`cilium`](../../infrastructure/networking/cilium/), [`cert-manager`](../../infrastructure/controllers/cert-manager/), [`external-secrets`](../../infrastructure/controllers/eso/) | Provides baseline networking, secret management and certificate automation, required before any higher-level infrastructure can function. |
 | **1** | Storage Services          | [`longhorn`](../../infrastructure/storage/longhorn/), [`openebs`](../../infrastructure/storage/openebs/)               | Delivers the persistent storage layer needed by controllers and applications that rely on PVCs. |
-| **2** | GitOps and Ingress  | [`argocd`](../../infrastructure/controllers/argocd/), [`cert-manager`](../../infrastructure/controllers/cert-manager/), [`gateway`](../../infrastructure/networking/gateway/) | GitOps orchestration, certificate automation, and cluster ingress/routing components. |
+| **2** | GitOps and Ingress  | [`argocd`](../../infrastructure/controllers/argocd/), [`gateway`](../../infrastructure/networking/gateway/) | GitOps orchestration, and cluster ingress/routing components. |
 | **3** | Monitoring          | Monitoring stack (manifests in [`monitoring/*`](../../monitoring/)) | Observability components.                                   |
 | **4** | General Infra       | Rest of infrastructure (manifests in [`infrastructure/*`](../../infrastructure/)) | Core system services. |
 | **5** | User Apps Databases | User Applications Databases (manifests in [`cloudnative-pg-apps-databases/*`](../../infrastructure/databases/cloudnative-pg-apps-databases)) | Databases used for storing user app data. |

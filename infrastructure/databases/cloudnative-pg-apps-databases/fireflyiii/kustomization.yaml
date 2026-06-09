@@ -4,7 +4,7 @@ namespace: cloudnative-pg
 
 resources:
   - cluster.yaml
-  - fireflyiii-db-secret-sealed.yaml
+  - fireflyiii-db-external-secret.yaml
   - ../../../../base/cnpg-db/
   
 patches:

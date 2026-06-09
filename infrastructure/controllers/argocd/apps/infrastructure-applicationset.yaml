@@ -66,6 +66,17 @@ spec:
           jqPathExpressions:
             - ".spec.volumeClaimTemplates[].apiVersion"
             - ".spec.volumeClaimTemplates[].kind"
+        - group: external-secrets.io
+          kind: ExternalSecret
+          jqPathExpressions:
+            - '.spec.dataFrom[].extract.conversionStrategy'
+            - '.spec.dataFrom[].extract.decodingStrategy'
+            - '.spec.dataFrom[].extract.metadataPolicy'
+            - '.spec.dataFrom[].extract.nullBytePolicy'
+            - '.spec.data[].remoteRef.conversionStrategy'
+            - '.spec.data[].remoteRef.decodingStrategy'
+            - '.spec.data[].remoteRef.metadataPolicy'
+            - '.spec.data[].remoteRef.nullBytePolicy'
       info:
         - name: Description
           value: 'Infrastructure component: {{path.basename}}'

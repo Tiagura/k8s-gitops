@@ -13,7 +13,7 @@ labels:
 resources:
   - https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v0.12.0/manifest.yaml
   - barmanObjectStore.yaml
-  - barman-s3-credentials-secret-sealed.yaml
+  - s3-credentials-external-secret.yaml
 
 patches:
   # Only patch the RoleBinding subject namespace, nothing else needed

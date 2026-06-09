@@ -4,7 +4,7 @@ namespace: cloudnative-pg
 
 resources:
   - cluster.yaml
-  - paperless-db-secret-sealed.yaml
+  - paperless-db-external-secret.yaml
   - ../../../../base/cnpg-db/
 
 patches:

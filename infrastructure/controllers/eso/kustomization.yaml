@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: eso
+
+resources:
+  - namespace.yaml
+  - egress-to-vault.yaml
+  - cluster-secret-store.yaml
+  - ../../../base/cilium-network-policies/
+
+helmCharts:
+  - name: external-secrets
+    repo: https://charts.external-secrets.io
+    version: 2.6.0
+    namespace: eso
+    releaseName: external-secrets
+    valuesFile: values.yaml

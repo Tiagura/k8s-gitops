@@ -4,11 +4,10 @@ namespace: karakeep
 labels:
   - pairs:
       app.kubernetes.io/managed-by: argocd
-    
 
 resources:
   - namespace.yaml
-  - karakeep-secret-sealed.yaml
+  - karakeep-external-secret.yaml
   - chrome/
   - meilisearch/
   - karakeep-web/

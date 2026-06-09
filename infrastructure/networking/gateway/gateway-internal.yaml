@@ -5,7 +5,7 @@ metadata:
   labels:
     app: gateway-internal
   annotations:
-    cert-manager.io/cluster-issuer: cloudflare-cluster-issuer
+    cert-manager.io/cluster-issuer: ingress-cluster-issuer
 spec:
   addresses:
   - type: IPAddress

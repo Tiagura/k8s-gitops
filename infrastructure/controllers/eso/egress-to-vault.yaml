@@ -1,0 +1,18 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-vault
+spec:
+  description: >
+    Allow egress traffic to secret vault from selected pods.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-vault: "true"
+
+  egress:
+    - toCIDR:
+      - 10.10.20.51/32
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP

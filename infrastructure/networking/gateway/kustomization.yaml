@@ -7,9 +7,9 @@ labels:
       app.kubernetes.io/part-of: infrastructure
       app.kubernetes.io/managed-by: argocd
     
-
 resources:
   - namespace.yaml
+  - ingress-cluster-issuer.yaml
   - gateway-internal.yaml
   - gateway-external.yaml
   - http-redirect-internal.yaml

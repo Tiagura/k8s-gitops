@@ -29,28 +29,28 @@ spec:
     pg_hba:
       - host paperless paperless 10.32.0.0/16 scram-sha-256   # Allow connections from the cluster network (i.e. Pod CIDR)
   # FIRST-TIME BOOTSTRAP (FROM INITDB)
-  bootstrap:
-    initdb:
-      database: paperless
-      owner: paperless
-      secret:
-        name: paperless-db-creds
-  # ---
-  # BOOTSTRAP FROM BACKUP
   # bootstrap:
-  #   recovery:
-  #     source: paperless-backup
+  #   initdb:
   #     database: paperless
   #     owner: paperless
   #     secret:
   #       name: paperless-db-creds
-  # externalClusters:
-  #   - name: paperless-backup
-  #     plugin:
-  #       name: barman-cloud.cloudnative-pg.io
-  #       parameters:
-  #         barmanObjectName: barman-object-store
-  #         serverName: paperless-database
+  # ---
+  # BOOTSTRAP FROM BACKUP
+  bootstrap:
+    recovery:
+      source: paperless-backup
+      database: paperless
+      owner: paperless
+      secret:
+        name: paperless-db-creds
+  externalClusters:
+    - name: paperless-backup
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: barman-object-store
+          serverName: paperless-database
   # ---
   storage:
     size: 10Gi

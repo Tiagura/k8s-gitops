@@ -12,6 +12,6 @@ labels:
 resources:
   - namespace.yaml
   - rbac.yaml
-  - cloudflare-api-token-secret-sealed.yaml
+  - external-dns-external-secret.yaml
   - deployment.yaml
   - ../../../base/cilium-network-policies/

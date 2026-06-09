@@ -11,7 +11,7 @@ labels:
 resources:
   - namespace.yaml
   - deployment.yaml
-  - homepage-vars-secret-sealed.yaml
+  - homepage-external-secret.yaml
   - http-route.yaml
   - rbac.yaml
   - service.yaml

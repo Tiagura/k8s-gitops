@@ -4,7 +4,7 @@ namespace: cloudnative-pg
 
 resources:
   - cluster.yaml
-  - memos-db-secret-sealed.yaml
+  - memos-db-external-secret.yaml
   - ../../../../base/cnpg-db/
 
 patches:

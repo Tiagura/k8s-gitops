@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/component: cert-manager
     app.kubernetes.io/managed-by: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "0"
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
@@ -32,6 +32,18 @@ spec:
         duration: 1m
         factor: 2
         maxDuration: 5m
+  ignoreDifferences:
+    - group: external-secrets.io
+      kind: ExternalSecret
+      jqPathExpressions:
+        - '.spec.dataFrom[].extract.conversionStrategy'
+        - '.spec.dataFrom[].extract.decodingStrategy'
+        - '.spec.dataFrom[].extract.metadataPolicy'
+        - '.spec.dataFrom[].extract.nullBytePolicy'
+        - '.spec.data[].remoteRef.conversionStrategy'
+        - '.spec.data[].remoteRef.decodingStrategy'
+        - '.spec.data[].remoteRef.metadataPolicy'
+        - '.spec.data[].remoteRef.nullBytePolicy'
   info:
     - name: Description
       value: 'Cert-Manager for managing TLS certificates'

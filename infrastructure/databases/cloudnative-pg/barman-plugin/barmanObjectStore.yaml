@@ -9,10 +9,10 @@ spec:
     endpointURL: "https://99147fe4acf1aced16d7c6633e368caa.r2.cloudflarestorage.com"
     s3Credentials:
       accessKeyId:
-        name: barman-s3-credentials
+        name: s3-credentials
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: barman-s3-credentials
+        name: s3-credentials
         key: ACCESS_SECRET_KEY
     wal:
       compression: gzip
