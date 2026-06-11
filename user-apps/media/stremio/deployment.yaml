@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: stremio
-          image: tsaridas/stremio-docker:v1.3.4
+          image: tsaridas/stremio-docker:v1.3.6
           ports:
             - name: webgui
               containerPort: 8080
