@@ -34,6 +34,7 @@ data:
   ## Audit Trail
   PAPERLESS_AUDIT_LOG_ENABLED: "true"
   ## Containers specific options
-  PAPERLESS_WEBSERVER_WORKERS: "2"
+  # More workers == faster web load == more RAM usage, default is 1
+  # PAPERLESS_WEBSERVER_WORKERS: "2"
   USERMAP_UID: "1000"
   USERMAP_GID: "1000"
