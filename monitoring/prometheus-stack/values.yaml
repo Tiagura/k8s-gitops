@@ -294,6 +294,7 @@ prometheus:
         netpol.cilium.io/egress-to-remote-node: "true"
         netpol.cilium.io/ingress-from-intra: "true"
         netpol.cilium.io/ingress-from-ingress: "true"
+        netpol.cilium.io/ingress-from-remote-node: "true"
         # Specific Cilium Network Policies labels
         netpol.cilium.io/egress-to-argocd-metrics: "true"
         netpol.cilium.io/egress-to-cert-manager-metrics: "true"
