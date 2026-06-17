@@ -11,6 +11,8 @@ spec:
         revision: main
         directories:
           - path: infrastructure/databases/cloudnative-pg-apps-databases/*
+          - path: infrastructure/databases/cloudnative-pg-apps-databases/base
+            exclude: true
   template:
     metadata:
       name: user-app-db-{{path.basename}}
