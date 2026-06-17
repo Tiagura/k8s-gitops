@@ -13,6 +13,7 @@
     "kubernetes",
     "argocd",
     "helm-values",
+    "github-actions",
     "custom.regex"
   ],
   "kustomize": {
@@ -75,12 +76,6 @@
     },
     {
       "matchFileNames": [
-        "infrastructure/controllers/sealed-secrets/**"
-      ],
-      "groupName": "Sealed Secrets"
-    },
-    {
-      "matchFileNames": [
         "infrastructure/databases/redis-operator/**"
       ],
       "groupName": "Redis Operator"
@@ -89,6 +84,16 @@
       "matchFileNames": [
         "infrastructure/controllers/renovate/kustomization.yaml"
       ],
+      "groupName": "Renovate",
+      "schedule": [
+        "* * * * 4"
+      ]
+    },
+    {
+      "matchFileNames": [
+        "monitoring/prometheus-stack/kustomization.yaml"
+      ],
+      "groupName": "Kube-Prometheus Helm Stack",
       "schedule": [
         "* * * * 4"
       ]
@@ -128,6 +133,10 @@
       "**/redis-*.yaml"
     ],
     "groupName": "Redis Deployments"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions"
     }
   ],
   "customManagers": [
