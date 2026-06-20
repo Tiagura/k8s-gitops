@@ -1,0 +1,8 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: data-critical
+value: 700000
+preemptionPolicy: PreemptLowerPriority
+globalDefault: false
+description: "Critical data services such as database and cache instances required for application state persistence and availability."

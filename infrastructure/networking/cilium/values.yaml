@@ -82,8 +82,10 @@ hubble:
   enabled: true
   relay:
     enabled: true
+    priorityClassName: observability-critical
   ui:
     enabled: true
+    priorityClassName: observability-critical
   metrics:
     enableOpenMetrics: true
     enabled:

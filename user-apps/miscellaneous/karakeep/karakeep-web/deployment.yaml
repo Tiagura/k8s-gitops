@@ -26,6 +26,7 @@ spec:
         netpol.cilium.io/ingress-from-intra: "true"
         netpol.cilium.io/ingress-from-ingress: "true"
     spec:
+      priorityClassName: application-critical
       containers:
         - name: karakeep
           image: ghcr.io/karakeep-app/karakeep:0.32.0

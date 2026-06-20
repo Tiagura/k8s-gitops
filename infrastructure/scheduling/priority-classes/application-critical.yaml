@@ -1,0 +1,8 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: application-critical
+value: 200000
+preemptionPolicy: Never
+globalDefault: false
+description: "Slightly important application services that should not preempt other critical workloads but still require higher priority for scheduling."

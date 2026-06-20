@@ -8,6 +8,8 @@ metadata:
   annotations:
     reloader.stakater.com/auto: "true"
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
@@ -23,6 +25,7 @@ spec:
         netpol.cilium.io/egress-to-intra: "true"
         netpol.cilium.io/ingress-from-ingress: "true"
     spec:
+      priorityClassName: application-critical
       # Paperless pods need to be scheduled on the same node to share the pvc
       # This prevents Multi-Attach errors if replicas are increased
       affinity:
@@ -61,7 +64,7 @@ spec:
           name: http 
         resources:
           requests:
-            cpu: 1000m
+            cpu: 500m
             memory: 512Mi
           limits:
             cpu: 2000m  # Consider PAPERLESS_TASK_WORKERS * PAPERLESS_THREADS_PER_WORKER to not exceed your CPU core count
@@ -128,7 +131,7 @@ spec:
           value: "true"
         - name: PAPERLESS_TIKA_ENDPOINT
           value: http://tika.paperless.svc.cluster.local:9998
-        - name: PAPERLESS_GOTENBERG_ENDPOINT
+        - name: PAPERLESS_TIKA_GOTENBERG_ENDPOINT
           value: http://gotenberg.paperless.svc.cluster.local:3000
         volumeMounts:
         - name: data
@@ -137,8 +140,8 @@ spec:
           mountPath: /usr/src/paperless/media
         - name: export
           mountPath: /usr/src/paperless/export
-        - name: consume
-          mountPath: /usr/src/paperless/consume
+        # - name: consume
+        #   mountPath: /usr/src/paperless/consume
       volumes:
       - name: data
         persistentVolumeClaim:
@@ -149,6 +152,6 @@ spec:
       - name: export
         persistentVolumeClaim:
           claimName: paperless-export-pvc
-      - name: consume
-        persistentVolumeClaim:
-          claimName: paperless-consume-pvc
+      # - name: consume
+      #   persistentVolumeClaim:
+      #     claimName: paperless-consume-pvc

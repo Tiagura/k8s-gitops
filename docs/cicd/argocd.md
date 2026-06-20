@@ -39,6 +39,7 @@ To address this, Argo CD **sync-waves** are used to enforce an explicit deployme
 
 | Wave  | Layer               | Components                                                       |  Description |
 | ----- | ------------------- | -----------------------------------------------------------------|--------------|
+| **-1** | Cluster Scheduling     | [`scheduling`](../../infrastructure/scheduling/)                 | Cluster-wide Kubernetes scheduling resources. No dependencies, but workloads depend on them for scheduling configuration. |
 | **0** | Core Foundations    | [`cilium`](../../infrastructure/networking/cilium/), [`cert-manager`](../../infrastructure/controllers/cert-manager/), [`external-secrets`](../../infrastructure/controllers/eso/) | Provides baseline networking, secret management and certificate automation, required before any higher-level infrastructure can function. |
 | **1** | Storage Services          | [`longhorn`](../../infrastructure/storage/longhorn/), [`openebs`](../../infrastructure/storage/openebs/)               | Delivers the persistent storage layer needed by controllers and applications that rely on PVCs. |
 | **2** | GitOps and Ingress  | [`argocd`](../../infrastructure/controllers/argocd/), [`gateway`](../../infrastructure/networking/gateway/) | GitOps orchestration, and cluster ingress/routing components. |

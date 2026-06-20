@@ -25,6 +25,8 @@ serviceAccount:
   create: true
   name: "cloudnative-pg-operator-sa"
 
+priorityClassName: "platform-critical"
+
 # Adjust them as necessary, and remove the curly braces after 'resources:'.
 resources:
   limits:

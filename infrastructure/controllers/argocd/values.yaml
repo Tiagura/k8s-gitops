@@ -42,6 +42,7 @@ crds:
   keep: false
 
 controller:
+  priorityClassName: gitops-critical
   metrics:
     enabled: true
   resources:
@@ -62,6 +63,7 @@ controller:
 
 # https://argo-cd.readthedocs.io/en/stable/developer-guide/architecture/components/#dex
 dex:
+  priorityClassName: gitops-critical
   metrics:
     enabled: true
   resources:
@@ -79,6 +81,7 @@ dex:
     netpol.cilium.io/ingress-deny: "true"
 
 redis:
+  priorityClassName: gitops-critical
   metrics:
     enabled: true
   resources:
@@ -94,6 +97,7 @@ redis:
     netpol.cilium.io/ingress-from-intra: "true"
 
 server:
+  priorityClassName: gitops-critical
   metrics:
     enabled: true
   resources:
@@ -112,6 +116,7 @@ server:
     netpol.cilium.io/ingress-from-remote-node: "true"
 
 repoServer:
+  priorityClassName: gitops-critical
   metrics:
     enabled: true
   containerSecurityContext:
@@ -136,6 +141,7 @@ repoServer:
     netpol.cilium.io/ingress-from-prometheus: "true"
 
 applicationSet:
+  priorityClassName: gitops-critical
   metrics:
     enabled: true
   resources:

@@ -25,6 +25,7 @@ data:
   PAPERLESS_ENABLE_NLTK: "1"
   PAPERLESS_DATE_PARSER_LANGUAGES: "pt-PT+en"
   ## Document Consumption
+  PAPERLESS_CONSUMER_DISABLE: "true"  # Disables directory-based consumer in docker
   PAPERLESS_CONSUMER_DELETE_DUPLICATES: "false"
   PAPERLESS_CONSUMER_RECURSIVE: "true"
   PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS: "true"
@@ -33,8 +34,10 @@ data:
   PAPERLESS_CONSUMER_POLLING: "0"
   ## Audit Trail
   PAPERLESS_AUDIT_LOG_ENABLED: "true"
-  ## Containers specific options
-  # More workers == faster web load == more RAM usage, default is 1
-  # PAPERLESS_WEBSERVER_WORKERS: "2"
+  ## Web Server
+  GRANIAN_WORKERS: "1"  # More workers == faster web load == more RAM usage, default is 1. Substitute for PAPERLESS_WEBSERVER_WORKERS
+  GRANIAN_WORKERS_LIFETIME: "3600"  # Restart workers after X to prevent long-lived processes from accumulating memory. Default: 0 (disabled).
+  GRANIAN_WORKERS_MAX_RSS: "1024"   # The maximum amount of memory (in MiB) a worker can consume before respawn. Default: 0 (disabled).
+  # Docker specific options
   USERMAP_UID: "1000"
   USERMAP_GID: "1000"

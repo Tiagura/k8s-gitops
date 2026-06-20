@@ -281,26 +281,27 @@ Instead of performing steps 5 to 7 manually, you can use the provided restore sc
 ### Full Cluster Recovery (RIP)
 
 There are two methods for performing a full cluster recovery from backups: using the [recovery script](../../scripts/restore_from_backups.sh) or using the Longhorn UI. However, regardless of the method, first complete the following initial setup steps to ensure the new cluster can properly restore all secrets and configurations:
-  1. [Install Cilium CNI and wait for it to be ready](../../README.md#1-install-cilium-cni-and-wait-for-it-to-be-ready)
-  2. [Configure External Secrets Operator authentication](../../README.md#2-configure-external-secrets-operator-authentication)
+  1. [Install Cluster Wide Scheduling Resources](../../README.md#1-install-cluster-wide-scheduling-resources)
+  2. [Install Cilium CNI and wait for it to be ready](../../README.md#2-install-cilium-cni-and-wait-for-it-to-be-ready)
+  3. [Configure External Secrets Operator authentication](../../README.md#3-configure-external-secrets-operator-authentication)
 
 Once these initial setup steps are complete, you can move on to installing the necessary controllers and storage solutions to prepare the cluster for backup restoration.
 
-  3. Install cert-manager
+  4. Install cert-manager
       ```bash
       kubectl kustomize --enable-helm infrastructure/controllers/cert-manager | kubectl apply --server-side -f -
       # Wait for pods in runing state (kubectl -n cert-manager get po)
       kubectl -n cert-manager apply -f infrastructure/controllers/cert-manager/internal-cluster-issuer.yaml
       ```
 
-  3. Install the External Secrets Operator
+  5. Install the External Secrets Operator
       ```bash
       kubectl kustomize --enable-helm infrastructure/controllers/eso/ | kubectl apply --server-side -f -
       # Wait for pods in runing state
       kubectl -n eso wait --for=condition=Ready pod --all --timeout=120s
       kubectl apply -f infrastructure/controllers/eso/cluster-secret-store.yaml
       ```
-  5. Install Longhorn:
+  6. Install Longhorn:
       ```bash
       kubectl kustomize --enable-helm infrastructure/storage/longhorn/ | kubectl apply --server-side -f -
       ```

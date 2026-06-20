@@ -3,6 +3,7 @@ kind: Redis
 metadata:
   name: firefly-redis
 spec:
+  priorityClassName: data-critical
   kubernetesConfig:
     image: quay.io/opstree/redis:v8.6.2
     imagePullPolicy: IfNotPresent

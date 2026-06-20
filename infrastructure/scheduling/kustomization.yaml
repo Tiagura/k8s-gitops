@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: scheduling
+      app.kubernetes.io/managed-by: argocd
+
+resources:
+  - priority-classes/

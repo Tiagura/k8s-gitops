@@ -4,7 +4,6 @@ namespace: cloudnative-pg
 
 labels:
   - pairs:
-      app.kubernetes.io/component: cloudnative-pg-operator
       app.kubernetes.io/part-of: infrastructure
 
 resources:

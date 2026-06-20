@@ -44,6 +44,8 @@ reloader:
         cpu: "10m"
         memory: "128Mi"
 
+    priorityClassName: "platform-critical"
+
   rbac:
     enabled: true
   serviceAccount:

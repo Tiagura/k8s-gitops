@@ -131,6 +131,8 @@ alertmanager:
       limits:
         cpu: 100m
         memory: 128Mi
+    # Priority class
+    priorityClassName: observability-critical
     # Security context
     securityContext:
       runAsNonRoot: true
@@ -271,6 +273,7 @@ prometheusOperator:
         argocd.argoproj.io/hook: PreSync
 
     patch:
+      priorityClassName: observability-critical
       annotations:
         argocd.argoproj.io/hook: PreSync
         argocd.argoproj.io/hook-delete-policy: HookSucceeded
@@ -332,6 +335,8 @@ prometheus:
       limits:
         cpu: 2000m
         memory: 1Gi
+    # Priority class
+    priorityClassName: observability-critical
     # Security context
     securityContext:
       runAsNonRoot: true

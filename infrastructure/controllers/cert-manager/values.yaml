@@ -1,4 +1,5 @@
 global:
+  priorityClassName: "platform-critical"
   leaderElection:
     namespace: cert-manager
 crds:

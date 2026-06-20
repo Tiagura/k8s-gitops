@@ -26,8 +26,16 @@ defaultSettings:
   # Current: Block node drain if it contains the last healthy replica, prevents accidental data loss when draining nodes
   nodeDrainPolicy: "block-if-contains-last-replica"
 
+  # Limits the number of concurrent automatic engine upgrades per node to prevent resource contention and ensure stability during upgrades.
+  # Advised is 3, however it depends on the size of the cluster and the workload.
+  # Setting this to "1" still allows for volume's engines to be upgraded, but it will do so one at a time per node, which can help reduce the risk of resource contention and improve stability during the upgrade process.
+  concurrentAutomaticEngineUpgradePerNodeLimit: "1"
+
   # Enables Longhorn to automatically delete orphaned resources and their associated data or processes (e.g., stale replicas). 
   orphanResourceAutoDeletion: "replica-data;instance"
+
+  # Priority class for Longhorn components. This ensures that critical storage controllers are scheduled and run with high priority.
+  priorityClassName: "storage-critical"
 
   # Automatically deletes pods when their associated volumes are unexpectedly detached.
   # Helps recover from node failures quickly

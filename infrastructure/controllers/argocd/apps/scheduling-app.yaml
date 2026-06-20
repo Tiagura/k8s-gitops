@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: scheduling
+  labels:
+    app.kubernetes.io/part-of: scheduling
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: infrastructure
+  source:
+    repoURL: https://github.com/Tiagura/k8s-gitops.git
+    targetRevision: main
+    path: infrastructure/scheduling
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 1m
+        factor: 2
+        maxDuration: 5m
+  info:
+    - name: Description
+      value: 'Scheduling components for cluster workload management'

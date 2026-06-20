@@ -18,6 +18,7 @@ spec:
         netpol.cilium.io/ingress-from-ingress: "true"
         netpol.cilium.io/ingress-from-intra: "true"
     spec:
+      priorityClassName: observability-critical
       securityContext:
         fsGroup: 1000
         runAsUser: 1000

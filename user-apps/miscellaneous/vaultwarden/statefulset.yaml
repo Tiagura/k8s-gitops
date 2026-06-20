@@ -17,6 +17,7 @@ spec:
         netpol.cilium.io/egress-deny: "true"
         netpol.cilium.io/ingress-from-ingress: "true"
     spec:
+      priorityClassName: application-critical
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000

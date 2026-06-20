@@ -1,0 +1,20 @@
+nameOverride: external-dns
+fullnameOverride: external-dns
+namespaceOverride: external-dns
+
+serviceAccount:
+  create: true
+  name: external-dns-sa
+
+rbac:
+  create: true
+
+deploymentStrategy:
+  type: Recreate
+
+# DNS records config
+policy: sync
+registry: txt
+txtOwnerId: my-cluster
+domainFilters:
+  - tamhomelab.com

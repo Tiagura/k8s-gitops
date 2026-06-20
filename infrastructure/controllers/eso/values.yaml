@@ -40,6 +40,8 @@ serviceMonitor:
 grafanaDashboard:
   enabled: true
 
+priorityClassName: "platform-critical"
+
 # Webhook configuration
 webhook:
   create: true
@@ -55,6 +57,7 @@ webhook:
         kind: "ClusterIssuer"
         group: cert-manager.io
       renewBefore: "96h"
+  priorityClassName: "platform-critical"
   podLabels:
     netpol.cilium.io/egress-deny: "true"
     netpol.cilium.io/ingress-from-host: "true"
@@ -71,3 +74,4 @@ webhook:
 # Using cert-manager to manage certificates for the webhook server
 certController:
   create: false
+  priorityClassName: "platform-critical"

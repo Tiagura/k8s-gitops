@@ -3,8 +3,10 @@ kind: Kustomization
 namespace: argocd
 
 resources:
-  - projects.yaml
+  # Wave -1: Cluster-level resources
+  - scheduling-app.yaml
   # Wave 0: Essential components
+  - projects.yaml
   - cilium-app.yaml
   - cert-manager-app.yaml
   - external-secrets-app.yaml

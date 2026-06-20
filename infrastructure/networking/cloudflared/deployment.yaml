@@ -18,6 +18,7 @@ spec:
         netpol.cilium.io/egress-to-cloudflare: "true"
         netpol.cilium.io/egress-to-kube-dns: "true"
     spec:
+      priorityClassName: platform-critical
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532        # nobody

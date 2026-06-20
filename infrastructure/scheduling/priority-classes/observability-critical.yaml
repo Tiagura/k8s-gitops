@@ -1,0 +1,8 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: observability-critical
+value: 600000
+preemptionPolicy: PreemptLowerPriority
+globalDefault: false
+description: "Critical observability services for visibility into cluster health and performance."

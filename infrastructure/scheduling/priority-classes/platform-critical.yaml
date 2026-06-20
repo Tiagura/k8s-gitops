@@ -1,0 +1,8 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: platform-critical
+value: 800000
+preemptionPolicy: PreemptLowerPriority
+globalDefault: false
+description: "Critical platform controllers required for cluster services, configuration management, and workload dependencies."

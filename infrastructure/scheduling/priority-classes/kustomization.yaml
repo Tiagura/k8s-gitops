@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - pairs:
+      app.kubernetes.io/component: priority-classes
+    
+resources:
+  - application-critical.yaml
+  - application-default.yaml
+  - batch-low.yaml
+  - data-critical.yaml
+  - gitops-critical.yaml
+  - observability-critical.yaml
+  - platform-critical.yaml
+  - storage-critical.yaml

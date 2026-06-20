@@ -42,16 +42,17 @@ spec:
     requests:
       storage: 5Gi
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: paperless-consume-pvc
-  labels:
-    recurring-job.longhorn.io/source: enabled
-    recurring-job-group.longhorn.io/default: disabled
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
+# Consumer directory is disabled, so this PVC is not needed. ENV_VAR: PAPERLESS_CONSUMER_DISABLE: "true"
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: paperless-consume-pvc
+#   labels:
+#     recurring-job.longhorn.io/source: enabled
+#     recurring-job-group.longhorn.io/default: disabled
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 5Gi

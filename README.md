@@ -17,11 +17,12 @@ This repository contains the configuration and manifests for a **GitOps-driven K
     - [Applications](#applications)
   - [Prerequisites](#prerequisites)
   - [Bootstrapping the Cluster](#bootstrapping-the-cluster)
-    - [1. Install Cilium CNI and wait for it to be ready](#1-install-cilium-cni-and-wait-for-it-to-be-ready)
-    - [2. Configure External Secrets Operator authentication](#2-configure-external-secrets-operator-authentication)
-    - [3. Deploy ArgoCD Main Components and CRDs](#3-deploy-argocd-main-components-and-crds)
-    - [4. Bootstrap the GitOps Loop](#4-bootstrap-the-gitops-loop)
-    - [5. Optional: Access ArgoCD Web GUI](#5-optional-access-argocd-web-gui)
+    - [1. Install cluster-wide scheduling resources](#1-install-cluster-wide-scheduling-resources)
+    - [2. Install Cilium CNI and wait for it to be ready](#2-install-cilium-cni-and-wait-for-it-to-be-ready)
+    - [3. Configure External Secrets Operator authentication](#3-configure-external-secrets-operator-authentication)
+    - [4. Deploy ArgoCD Main Components and CRDs](#4-deploy-argocd-main-components-and-crds)
+    - [5. Bootstrap the GitOps Loop](#5-bootstrap-the-gitops-loop)
+    - [6. Optional: Access ArgoCD Web GUI](#6-optional-access-argocd-web-gui)
       - [Get the ArgoCD Initial Admin Password](#get-the-argocd-initial-admin-password)
       - [Access the Web GUI](#access-the-web-gui)
       - [Changing Login Credentials](#changing-login-credentials)
@@ -52,6 +53,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
   - Tiered PV/PVC backup strategy for all volumes, with automated snapshots and retention policies
   - Database backups with point-in-time recovery support
 - **Network security enforcement** through `CiliumNetworkPolicy`, controlling and isolating service-to-service communication as well as ingress and egress traffic within the cluster.
+- **Workload scheduling management** through Kubernetes `PriorityClass` resources, defining workload priorities and preemption policies across system components, infrastructure services, data workloads, and applications.
 
 ## Cluster Components and Apps
 
@@ -126,31 +128,38 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 
 Before deploying this setup, make sure you have the following:
 
-1. **A Kubernetes cluster** with:
+1. **A Kubernetes cluster**:
+   - Without kube-proxy -> See [Cilium KubeProxy-Free Docs](https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/)
    - Gateway API enabled
-   - Without kube-proxy → See [Cilium KubeProxy-Free Docs](https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/)
-   - If Gateway API is **not installed**, run:
-     ```bash
-     kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml
-     # OR
-     kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/experimental-install.yaml
-     ```
+     - If Gateway API is **not installed**, run:
+        ```bash
+        kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml
+        # OR
+        kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/experimental-install.yaml
+        ```
    - **Tip:** If you don't already have a Kubernetes cluster but have access to a **Proxmox node/cluster**, you can use my other project, which I also use to create my own cluster: [Tiagura/proxmox-k8s-IaC](https://github.com/Tiagura/proxmox-k8s-IaC)
 
-2. **A domain configured on Cloudflare**
+2. **A domain configured on Cloudflare** (this project can possibly be adapted for use with domains from other providers)
 
 3. **Local CLI tools installed**:
    - [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl)
    - [`kustomize`](https://kubectl.docs.kubernetes.io/installation/kustomize/) (Normally installed when `kubectl` is installed)
-   - [`kubeseal`](https://github.com/bitnami-labs/sealed-secrets?tab=readme-ov-file#kubeseal)
-   - [`helm`](https://helm.sh/docs/intro/install/)
 
 ## Bootstrapping the Cluster
 
 Follow these steps to bootstrap your Kubernetes cluster with all the necessary components and start the GitOps workflow:
 
+### 1. Install cluster-wide scheduling resources
 
-### 1. Install Cilium CNI and wait for it to be ready
+`PriorityClasses` are cluster-scoped Kubernetes resources used to control pod scheduling priority across the entire cluster. They must exist before any workloads are deployed.
+
+Apply the scheduling resources:
+
+```bash
+kubectl kustomize infrastructure/scheduling | kubectl apply -f -
+```
+
+### 2. Install Cilium CNI and wait for it to be ready
 
 ```bash
 kubectl kustomize infrastructure/networking/cilium --enable-helm | kubectl apply -f -
@@ -162,7 +171,7 @@ cilium status --wait
 kubectl get pods -n kube-system -l k8s-app=cilium
 ```
 
-### 2. Configure External Secrets Operator authentication
+### 3. Configure External Secrets Operator authentication
 
 Create the Kubernetes Secret manifest, `auth-secret.yaml`, required for the `External Secrets Operator` to authenticate against your chosen external secrets backend/provider.
 
@@ -183,7 +192,7 @@ Apply the secret to the cluster:
 kubectl -n eso apply -f infrastructure/controllers/eso/auth-secret
 ```
 
-### 3. Deploy ArgoCD Main Components and CRDs
+### 4. Deploy ArgoCD Main Components and CRDs
 
 Apply ArgoCD manifests via `kustomize` with Helm enabled:
 
@@ -204,7 +213,7 @@ kubectl wait --for=condition=Available deployment/argocd-server -n argocd --time
 ```
 
 
-### 4. Bootstrap the GitOps Loop
+### 5. Bootstrap the GitOps Loop
 
 Now that ArgoCD is running and its CRDs are ready, apply the root application to start the self-managing GitOps workflow:
 
@@ -212,7 +221,7 @@ Now that ArgoCD is running and its CRDs are ready, apply the root application to
 kubectl apply -f infrastructure/controllers/argocd/root.yaml
 ```
 
-### 5. Optional: Access ArgoCD Web GUI
+### 6. Optional: Access ArgoCD Web GUI
 
 After ArgoCD is up and running, you can access its **Web GUI** for a visual overview of your cluster's current status.  
 The Web GUI provides insight into the synchronization state of applications, health status of resources, and allows you to perform certain operations directly from the interface.

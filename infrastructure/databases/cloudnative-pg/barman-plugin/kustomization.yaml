@@ -4,9 +4,6 @@ namespace: cloudnative-pg
 
 labels:
   - pairs:
-      app.kubernetes.io/name: cloudnative-pg-barman-plugin
-      app.kubernetes.io/component: barman-plugin
-      app.kubernetes.io/managed-by: argocd
       app.kubernetes.io/part-of: infrastructure
       
 
@@ -42,3 +39,10 @@ patches:
       - op: add
         path: /metadata/annotations/reloader.stakater.com~1auto
         value: "true"
+  # Add priority class to pods
+  - target:
+      kind: Deployment
+    patch: |-
+      - op: add
+        path: /spec/template/spec/priorityClassName
+        value: platform-critical

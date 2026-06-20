@@ -1,0 +1,8 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: batch-low
+value: 1000
+preemptionPolicy: Never
+globalDefault: false
+description: "Low priority class for batch workloads, scheduled jobs, backups, and maintenance tasks that can be delayed or rescheduled."

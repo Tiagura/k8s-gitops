@@ -24,6 +24,7 @@ spec:
             netpol.cilium.io/egress-to-kube-dns: "true"
             netpol.cilium.io/ingress-deny: "true"
         spec:
+          priorityClassName: batch-low
           containers:
             - name: cron
               image: busybox

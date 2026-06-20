@@ -38,6 +38,7 @@ localpv-provisioner:
       limits:
         cpu: 200m
         memory: 256Mi
+    priorityClassName: "storage-critical"
 
   hostpathClass:
     name: openebs-hostpath
