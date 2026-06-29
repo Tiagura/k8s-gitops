@@ -23,7 +23,7 @@ spec:
         fsGroup: 101
       containers:
         - name: bentopdf
-          image: ghcr.io/alam00000/bentopdf-simple:2.8.5
+          image: ghcr.io/alam00000/bentopdf-simple:2.8.6
           env:
             - name: LOG_LEVEL
               value: "info"
