@@ -1,26 +1,45 @@
+name: Validate shell scripts
+
 on:
-  workflow_dispatch:
-  workflow_call:
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
 
 jobs:
-  validate-shell-scripts:
-    name: Validate shell scripts with ShellCheck
+  validate:
     runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
 
-      - name: Install shellcheck
+    steps:
+      - name: Compute checkout depth
+        id: depth
         run: |
-          set -euo pipefail
+          echo "depth=$((${{ github.event.pull_request.commits }} + 2))" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+          fetch-depth: ${{ steps.depth.outputs.depth }}
+          fetch-tags: false
+          filter: blob:none
+
+      - name: Check for changes
+        id: check-changes
+        uses: ./.github/actions/changed-paths
+        with:
+          paths: scripts/
+          checkout-depth: ${{ steps.depth.outputs.depth }}
+
+      - name: Install ShellCheck
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
           sudo apt-get update
           sudo apt-get install -y shellcheck
 
-      - name: Run shellcheck on scripts
+      - name: Run ShellCheck
+        if: steps.check-changes.outputs.changed == 'true'
         run: |
-          set -euo pipefail
           shellcheck -S warning scripts/*.sh

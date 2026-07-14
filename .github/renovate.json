@@ -7,7 +7,7 @@
   "rebaseWhen": "behind-base-branch",
   "prHourlyLimit": 5,
   "platformAutomerge": true,
-  "extends": ["config:recommended", "mergeConfidence:all-badges"],
+  "extends": ["config:recommended", "mergeConfidence:all-badges", "helpers:pinGitHubActionDigests"],
   "enabledManagers": [
     "kustomize",
     "kubernetes",
@@ -30,7 +30,6 @@
     "managerFilePatterns": ["/^infrastructure\\/controllers\\/argocd\\/apps\\/.*\\.ya?ml$/"]
   },
   "helm-values": {
-    "enabled": true,
     "managerFilePatterns": [
       "/^infrastructure/.+/values\\.yaml$/",
       "/^user-apps/.+/values\\.yaml$/",
@@ -136,7 +135,8 @@
     },
     {
       "matchManagers": ["github-actions"],
-      "groupName": "GitHub Actions"
+      "groupName": "GitHub Actions",
+      "automerge": true
     }
   ],
   "customManagers": [
