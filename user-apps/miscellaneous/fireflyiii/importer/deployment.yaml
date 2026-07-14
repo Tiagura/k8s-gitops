@@ -23,7 +23,7 @@ spec:
         netpol.cilium.io/ingress-from-ingress: "true"
     spec:
       containers:
-      - image: fireflyiii/data-importer:version-2.3.3
+      - image: fireflyiii/data-importer:version-2.3.4
         name: fireflyiii-importer
         env:
         - name: FIREFLY_III_URL
