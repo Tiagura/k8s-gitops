@@ -133,9 +133,9 @@ Before deploying this setup, make sure you have the following:
    - Gateway API enabled
      - If Gateway API is **not installed**, run:
         ```bash
-        kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.0/standard-install.yaml
+        kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.1/standard-install.yaml
         # OR
-        kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.0/experimental-install.yaml
+        kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.1/experimental-install.yaml
         ```
    - **Tip:** If you don't already have a Kubernetes cluster but have access to a **Proxmox node/cluster**, you can use my other project, which I also use to create my own cluster: [Tiagura/proxmox-k8s-IaC](https://github.com/Tiagura/proxmox-k8s-IaC)
 
