@@ -68,7 +68,7 @@ spec:
             memory: 512Mi
           limits:
             cpu: 2000m  # Consider PAPERLESS_TASK_WORKERS * PAPERLESS_THREADS_PER_WORKER to not exceed your CPU core count
-            memory: 2Gi
+            memory: 3Gi
         envFrom:
           - configMapRef:
               name: paperless-config
