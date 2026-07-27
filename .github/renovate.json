@@ -128,13 +128,17 @@
       "groupName": "Paperless"
     },
     {
-    "matchFileNames": [
-      "**/redis-*.yaml"
-    ],
-    "groupName": "Redis Deployments"
+      "matchFileNames": [
+        "**/redis-*.yaml"
+      ],
+      "groupName": "Redis Deployments"
     },
     {
-      "matchManagers": ["github-actions"],
+      "matchManagers": ["github-actions", "regex"],
+      "matchFileNames": [
+        ".github/workflows/**",
+        ".github/actions/**"
+      ],
       "groupName": "GitHub Actions",
       "automerge": true
     }
@@ -201,6 +205,32 @@
       ],
       "depNameTemplate": "kubernetes-sigs/gateway-api",
       "datasourceTemplate": "github-releases"
+    },
+    {
+      "description": "Kubeconform GitHub release (Actions)",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/\\.github/workflows/[^/]+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "KUBECONFORM_VERSION=\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+      ],
+      "depNameTemplate": "yannh/kubeconform",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "description": "Trivy GitHub release (Actions)",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/\\.github/workflows/[^/]+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "TRIVY_VERSION=\"v(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+      ],
+      "depNameTemplate": "aquasecurity/trivy",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
     }
   ]
 }

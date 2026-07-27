@@ -36,7 +36,7 @@ renovate:
   # See https://docs.renovatebot.com/self-hosted-configuration
   config: |
     {
-      "autodiscover": "false",
+      "autodiscover": false,
       "printConfig": true,
       "repositories": ["Tiagura/k8s-gitops"]
     }
