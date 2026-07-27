@@ -95,7 +95,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          KUBECONFORM_VERSION="0.7.0"
+          KUBECONFORM_VERSION="0.8.0"
 
           echo "Installing kubeconform version: ${KUBECONFORM_VERSION}"
 
