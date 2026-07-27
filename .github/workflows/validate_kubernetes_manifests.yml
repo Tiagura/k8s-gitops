@@ -41,19 +41,39 @@ jobs:
         if: steps.check-changes.outputs.changed == 'true'
         uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
 
-      - name: Render all Kustomize manifests
+      - name: Render changed Kustomize manifests
         if: steps.check-changes.outputs.changed == 'true'
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.sha }}
+          HEAD_REF: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
 
+          mapfile -t changed_files < <(
+            git diff --name-only \
+              "$BASE_REF" \
+              "$HEAD_REF" \
+              -- infrastructure monitoring user-apps
+          )
+
           mapfile -t dirs < <(
-            find infrastructure monitoring user-apps \
-              -type f -name kustomization.yaml \
-              -exec dirname {} \; | sort -u
+            for file in "${changed_files[@]}"; do
+              dir=$(dirname "$file")
+
+              # Walk up from each changed file until the nearest kustomization
+              # directory is found. This keeps rendering scoped to altered dirs.
+              while [ "$dir" != "." ] && [ "$dir" != "/" ]; do
+                if [ -f "$dir/kustomization.yaml" ] || [ -f "$dir/kustomization.yml" ]; then
+                  printf '%s\\n' "$dir"
+                  break
+                fi
+                dir=$(dirname "$dir")
+              done
+            done | sort -u
           )
 
           if [ "${#dirs[@]}" -eq 0 ]; then
-            echo "No kustomization directories found."
+            echo "No altered Kustomize directories found."
             exit 1
           fi
 
@@ -70,32 +90,16 @@ jobs:
             exit 1
           fi
 
-          echo "Splitting manifests..."
-
-          csplit -z -f /tmp/doc- /tmp/all-manifests.yaml '/^---$/' '{*}' >/dev/null || true
-
-          # ALWAYS reset output file
-          : > /tmp/filtered-manifests.yaml
-
-          for f in /tmp/doc-*; do
-            [ -f "$f" ] || continue
-            cat "$f" >> /tmp/filtered-manifests.yaml
-          done
-
       - name: Install kubeconform
         if: steps.check-changes.outputs.changed == 'true'
         run: |
           set -euo pipefail
 
-          echo "Fetching latest kubeconform version..."
+          KUBECONFORM_VERSION="0.7.0"
 
-          VERSION=$(curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest \
-            | grep '"tag_name":' \
-            | cut -d '"' -f 4)
+          echo "Installing kubeconform version: ${KUBECONFORM_VERSION}"
 
-          echo "Latest version: $VERSION"
-
-          URL="https://github.com/yannh/kubeconform/releases/download/${VERSION}/kubeconform-linux-amd64.tar.gz"
+          URL="https://github.com/yannh/kubeconform/releases/download/v${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz"
 
           curl -sSL -o /tmp/kubeconform.tar.gz "$URL"
 
@@ -116,4 +120,4 @@ jobs:
             -ignore-missing-schemas \
             -schema-location default \
             -schema-location https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json \
-            /tmp/filtered-manifests.yaml
+            /tmp/all-manifests.yaml

@@ -117,7 +117,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 | <img src="https://raw.githubusercontent.com/karakeep-app/karakeep/refs/heads/main/apps/web/app/icon.png" width="50"/> | [Karakeep](https://karakeep.app/) | Bookmark App |
 | <img src="https://raw.githubusercontent.com/usememos/memos/refs/heads/main/web/public/logo.webp" width="50"/> | [Memos](https://usememos.com/)| Note Taking |
 | <img src="https://raw.githubusercontent.com/technomancer702/nodecast-tv/main/public/favicon.svg" width="50"/> | [NodeCast TV](https://github.com/technomancer702/nodecast-tv) | Web IPTV Player |
-| <img src="https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/master/resources/logo/web/svg/square.svg" width="50"/> | [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) | Document Management |
+| <img src="https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/refs/heads/dev/src-ui/src/favicon.ico" width="50"/> | [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) | Document Management |
 | <img src="https://github.com/schlagmichdoch/PairDrop/raw/master/public/images/android-chrome-512x512.png" width="50"/> | [PairDrop](https://github.com/schlagmichdoch/pairdrop) | Local File Sharing |
 | <img src="https://raw.githubusercontent.com/pgadmin-org/pgadmin4/refs/heads/master/docs/en_US/images/logo-128.png" width="50"/> | [pgAdmin](https://github.com/pgadmin-org/pgadmin4) | PostgreSQL Admin Tool |
 | <img src="https://raw.githubusercontent.com/Stremio/stremio-brand/refs/heads/master/logos/SVG/stremio-logo-icon-only-fullcolor.svg" width="50"/> | [Stremio](https://www.stremio.com/) | Media Streaming |
