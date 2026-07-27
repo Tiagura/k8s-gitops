@@ -64,7 +64,7 @@ jobs:
               # directory is found. This keeps rendering scoped to altered dirs.
               while [ "$dir" != "." ] && [ "$dir" != "/" ]; do
                 if [ -f "$dir/kustomization.yaml" ] || [ -f "$dir/kustomization.yml" ]; then
-                  printf '%s\\n' "$dir"
+                  printf '%s\n' "$dir"
                   break
                 fi
                 dir=$(dirname "$dir")
@@ -95,7 +95,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          KUBECONFORM_VERSION="0.7.0"
+          KUBECONFORM_VERSION="0.8.0"
 
           echo "Installing kubeconform version: ${KUBECONFORM_VERSION}"
 
