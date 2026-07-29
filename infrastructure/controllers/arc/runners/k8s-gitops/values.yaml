@@ -94,6 +94,10 @@ template:
             value: "120"
         securityContext:
           capabilities:
+            add:
+              - SETUID
+              - SETGID
+              - AUDIT_WRITE
             drop:
               - ALL
         resources:
