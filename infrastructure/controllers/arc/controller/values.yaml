@@ -1,11 +1,17 @@
 nameOverride: "arc-controller"
 fullnameOverride: "arc-controller"
 
+replicaCount: 1
+
 serviceAccount:
   create: true
   name: "arc-controller-sa"
 
-podLabels: {}
+podLabels:
+  netpol.cilium.io/egress-to-kube-apiserver: "true"
+  netpol.cilium.io/egress-to-kube-dns: "true"
+  netpol.cilium.io/egress-to-public-ips: "true"
+  netpol.cilium.io/ingress-from-prometheus: "true"
 
 podSecurityContext:
   fsGroup: 2000
@@ -27,6 +33,12 @@ resources:
     memory: 32Mi
 
 priorityClassName: "gitops-critical" 
+
+# https://docs.github.com/en/actions/how-tos/manage-runners/use-actions-runner-controller/deploy-runner-scale-sets#enabling-metrics
+metrics:
+  controllerManagerAddr: ":8080"
+  listenerAddr: ":8080"
+  listenerEndpoint: "/metrics"
 
 flags:
   ## Log level can be set here with one of the following values: "debug", "info", "warn", "error".
