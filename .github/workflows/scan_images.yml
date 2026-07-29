@@ -55,10 +55,14 @@ jobs:
         if: steps.check-changes.outputs.changed == 'true'
         uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
 
-      - name: Install yq
+      - name: Install packages
         if: steps.check-changes.outputs.changed == 'true'
         run: |
           set -euo pipefail
+
+          sudo apt-get update 
+          sudo apt-get install -y --no-install-recommends wget
+
           sudo wget -qO /usr/local/bin/yq \
             https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           sudo chmod +x /usr/local/bin/yq

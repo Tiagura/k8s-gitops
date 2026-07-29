@@ -33,26 +33,7 @@ jobs:
           paths: scripts/
           checkout-depth: ${{ steps.depth.outputs.depth }}
 
-      - name: Debug permissions
-        run: |
-          echo "=== identity ==="
-          id
-          whoami
-
-          echo "=== capabilities ==="
-          grep Cap /proc/self/status
-          grep NoNewPrivs /proc/self/status
-
-          echo "=== apt directories ==="
-          ls -ld /var/cache/apt
-          ls -ld /var/cache/apt/archives
-          ls -ld /var/cache/apt/archives/partial
-          ls -ld /var/lib/apt/lists
-
-          echo "=== filesystem ==="
-          mount | grep -E '/var/cache|/var/lib/apt|overlay'
-
-      - name: Install ShellCheck
+      - name: Install packages
         if: steps.check-changes.outputs.changed == 'true'
         run: |
           sudo apt-get update
