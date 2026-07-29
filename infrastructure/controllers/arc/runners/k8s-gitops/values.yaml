@@ -110,7 +110,7 @@ template:
             memory: 128Mi
           limits:
             cpu: "2"
-            memory: 512Mi
+            memory: 1Gi
         volumeMounts:
           - name: work
             mountPath: /home/runner/_work
