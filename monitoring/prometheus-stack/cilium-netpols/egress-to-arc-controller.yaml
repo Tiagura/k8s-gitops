@@ -1,0 +1,21 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-arc-controller
+spec:
+  description: >
+    Allow egress to ARC namespace for monitoring ARC controller.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-arc-controller: "true"
+
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: arc
+            app.kubernetes.io/instance: arc
+            app.kubernetes.io/name: arc-controller
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

@@ -1,4 +1,5 @@
 githubConfigUrl: "https://github.com/Tiagura/k8s-gitops"
+# Docs: https://docs.github.com/en/actions/how-tos/manage-runners/use-actions-runner-controller/authenticate-to-the-api
 githubConfigSecret: arc-runner-secret
 
 maxRunners: 2
