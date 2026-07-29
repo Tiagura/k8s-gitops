@@ -8,6 +8,7 @@ runnerScaleSetName: arc-runner
 scaleSetLabels:
   - self-hosted
   - linux
+  - x64
 
 ## Note: if your controller is installed to only watch a single namespace, you have to pass these values explicitly.
 controllerServiceAccount:
@@ -15,15 +16,13 @@ controllerServiceAccount:
   name: arc-controller-sa
 
 template:
-  # metadata:
-  #   labels:
-  #     netpol.cilium.io/egress-to-kube-dns: "true"
-  #     netpol.cilium.io/egress-to-public-ips: "true"
-  #     netpol.cilium.io/ingress-deny: "true"
+  metadata:
+    labels:
+      netpol.cilium.io/egress-to-kube-dns: "true"
+      netpol.cilium.io/egress-to-public-ips: "true"
+      netpol.cilium.io/ingress-deny: "true"
   spec:
     priorityClassName: batch-low
-    # serviceAccountName: arc-runner
-    # automountServiceAccountToken: false
     securityContext:
       seccompProfile:
         type: RuntimeDefault
