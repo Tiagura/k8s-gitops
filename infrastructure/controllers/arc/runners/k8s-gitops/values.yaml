@@ -93,7 +93,7 @@ template:
           - name: RUNNER_WAIT_FOR_DOCKER_IN_SECONDS
             value: "120"
         securityContext:
-          allowPrivilegeEscalation: false
+          allowPrivilegeEscalation: true
           capabilities:
             drop:
               - ALL
