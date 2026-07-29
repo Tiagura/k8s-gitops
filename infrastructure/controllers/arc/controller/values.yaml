@@ -1,0 +1,46 @@
+nameOverride: "arc-controller"
+fullnameOverride: "arc-controller"
+
+serviceAccount:
+  create: true
+  name: "arc-controller-sa"
+
+podLabels: {}
+
+podSecurityContext:
+  fsGroup: 2000
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 32Mi
+
+priorityClassName: "gitops-critical" 
+
+flags:
+  ## Log level can be set here with one of the following values: "debug", "info", "warn", "error".
+  ## Defaults to "debug".
+  logLevel: "debug"
+  ## Log format can be set with one of the following values: "text", "json"
+  ## Defaults to "text"
+  logFormat: "text"
+
+  ## Restricts the controller to only watch resources in the desired namespace.
+  ## Defaults to watch all namespaces when unset.
+  watchSingleNamespace: "arc-runners"
+
+  ## The maximum number of concurrent reconciles which can be run by the EphemeralRunner controller.
+  # Increase this value to improve the throughput of the controller.
+  # It may also increase the load on the API server and the external service (e.g. GitHub API).
+  runnerMaxConcurrentReconciles: 2
