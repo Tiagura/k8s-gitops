@@ -1,0 +1,25 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-arc-controller
+spec:
+  description: >
+    Allow egress to ARC namespace for monitoring ARC controller and listeners.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-arc-controller: "true"
+
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: arc
+            app.kubernetes.io/component: controller-manager
+            app.kubernetes.io/part-of: gha-rs-controller
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: arc
+            app.kubernetes.io/component: runner-scale-set-listener
+            app.kubernetes.io/part-of: gha-runner-scale-set
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

@@ -1,0 +1,109 @@
+# Metrics: https://docs.github.com/en/actions/how-tos/manage-runners/use-actions-runner-controller/deploy-runner-scale-sets#enabling-metrics
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: arc-alerts
+  labels:
+    app.kubernetes.io/name: kube-prometheus-stack
+    app.kubernetes.io/instance: kube-prometheus-stack
+    app.kubernetes.io/managed-by: Helm
+    prometheus: kube-prometheus-stack-prometheus
+    role: alert-rules
+spec:
+  groups:
+    - name: arc.jobs
+      rules:
+        - alert: ARCJobStartupLatencyHigh
+          expr: histogram_quantile(0.95, sum by (le) (rate(gha_job_startup_duration_seconds_bucket[10m]))) > 300
+          for: 20m
+          labels:
+            severity: warning
+          annotations:
+            summary: "ARC job startup latency is high"
+            description: >
+              The p95 time for jobs to start on an ARC runner has been
+              above 5 minutes for 20 minutes.
+
+        - alert: ARCJobStartupLatencyCritical
+          expr: histogram_quantile(0.95, sum by (le) (rate(gha_job_startup_duration_seconds_bucket[10m]))) > 300
+          for: 30m
+          labels:
+            severity: critical
+          annotations:
+            summary: "ARC job startup latency is critically high"
+            description: >
+              The p95 time for jobs to start on an ARC runner has been
+              above 5 minutes for 30 minutes.
+
+        - alert: ARCJobExecutionDurationHigh
+          expr: ( rate(gha_job_execution_duration_seconds_sum[15m]) / rate(gha_job_execution_duration_seconds_count[15m]) ) > 1800
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "ARC job execution duration is high"
+            description: >
+              The average ARC job execution duration has been above
+              30 minutes for 15 minutes.
+
+        - alert: ARCJobExecutionDurationCritical
+          expr: ( rate(gha_job_execution_duration_seconds_sum[15m]) / rate(gha_job_execution_duration_seconds_count[15m]) ) > 3600
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: "ARC job execution duration is critically high"
+            description: >
+              The average ARC job execution duration has been above
+              60 minutes for 15 minutes.
+
+    - name: arc.health
+      rules:
+        - alert: ARCJobsNotStarting
+          expr: (gha_assigned_jobs > 0) and (increase(gha_started_jobs_total[10m]) == 0)
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "ARC jobs are not starting"
+            description: >
+              ARC has jobs assigned to the runner scale set, but no jobs
+              have started during the last 10 minutes. This may indicate
+              a problem provisioning or registering runners.
+
+        - alert: ARCControllerMetricsMissing
+          expr: absent(gha_controller_running_listeners)
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "ARC controller metrics are missing"
+            description: >
+              Prometheus has not received ARC controller metrics for
+              10 minutes. The ARC controller or metrics endpoint may
+              be unavailable.
+
+    - name: arc.runners.resources
+      rules:
+        - alert: ARCRunnerContainerOOMKilled
+          expr: (kube_pod_container_status_last_terminated_reason{namespace=~"arc-.*", reason="OOMKilled"} == 1) and (increase(kube_pod_container_status_restarts_total{namespace=~"arc-.*"}[15m]) > 0)
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "ARC runner container was OOMKilled"
+            description: >
+              Container {{ $labels.container }} in pod {{ $labels.pod }} in namespace
+              {{ $labels.namespace }} restarted due to an OOM kill in the last 15 minutes.
+              Review the container memory limit and workload requirements.
+
+        - alert: ARCRunnerHighCPU
+          expr: ( rate(container_cpu_usage_seconds_total{namespace=~"arc-.*",container!="",container!="POD"}[3m]) / on(namespace, pod, container) kube_pod_container_resource_limits{namespace=~"arc-.*",resource="cpu",unit="core"} ) > 0.90
+          for: 3m
+          labels:
+            severity: warning
+          annotations:
+            summary: "ARC container CPU usage is high"
+            description: >
+              Container {{ $labels.container }} in pod {{ $labels.pod }} has been using
+              more than 90% of its CPU limit for 3 minutes.

@@ -65,6 +65,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 |------|------|---------|
 | <img src="https://argo-cd.readthedocs.io/en/stable/assets/logo.png" width="50"/> | [ArgoCD](https://argo-cd.readthedocs.io/) | GitOps continuous delivery controller |
 | <img src="https://avatars.githubusercontent.com/u/44036562?s=200&v=4" width="50"/> | [GitHub Actions](https://docs.github.com/en/actions) | Automated CI workflows |
+| <img src="https://avatars.githubusercontent.com/u/44036562?s=200&v=4" width="50"/> | [GitHub Actions Runner Contoller](https://github.com/actions/actions-runner-controller/tree/master) | GitHub Actions self-hosted runners |
 | <img src="https://digicactus.com/wp-content/uploads/2020/07/1_8Irsw8IlIHORa2eeFh0f0g.png" width="50"/> | [Reloader](https://github.com/stakater/Reloader) | Auto-reloads workloads on ConfigMap/Secret changes |
 | <img src="https://docs.renovatebot.com/assets/images/logo.png" width="50"/> | [Renovate](https://docs.renovatebot.com/) | Automated dependency updates |
 

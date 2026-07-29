@@ -26,7 +26,7 @@ for f in "$APPS_DIR"/*-app.yaml; do
 done
 
 # Extract AppSet generator paths and their template name patterns
-for appset in "$APPS_DIR"/*-appset.yaml; do
+for appset in "$APPS_DIR"/*-*set.yaml; do
   [ -f "$appset" ] || continue
   appset_name=$(basename "$appset")
 

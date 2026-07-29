@@ -35,4 +35,4 @@ for bv in "${backupvols[@]}"; do
   fi
 done
 
-info "All namespaces from backupVolumes have been processed."
+info "All namespaces from backupVolumes have been processed." 

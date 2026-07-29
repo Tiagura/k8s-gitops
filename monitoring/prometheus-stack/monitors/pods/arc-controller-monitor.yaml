@@ -1,0 +1,45 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: arc-controller-manager
+  labels:
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+spec:
+  namespaceSelector:
+    matchNames:
+      - arc
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: controller-manager
+      app.kubernetes.io/part-of: gha-rs-controller
+  podMetricsEndpoints:
+    - port: metrics
+      path: /metrics
+      relabelings:
+        - action: replace
+          targetLabel: job
+          replacement: arc-controller
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: arc-runner-scale-set-listener
+  labels:
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+spec:
+  namespaceSelector:
+    matchNames:
+      - arc
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: runner-scale-set-listener
+      app.kubernetes.io/part-of: gha-runner-scale-set
+  podMetricsEndpoints:
+    - port: metrics
+      path: /metrics
+      relabelings:
+        - action: replace
+          targetLabel: job
+          replacement: arc-listeners
