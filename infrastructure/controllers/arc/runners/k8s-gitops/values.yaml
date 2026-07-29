@@ -1,0 +1,124 @@
+githubConfigUrl: "https://github.com/Tiagura/k8s-gitops"
+githubConfigSecret: arc-runner-secret
+
+maxRunners: 2
+minRunners: 0
+
+runnerScaleSetName: arc-runner
+scaleSetLabels:
+  - self-hosted
+  - linux
+  - x64
+
+## Note: if your controller is installed to only watch a single namespace, you have to pass these values explicitly.
+controllerServiceAccount:
+  namespace: arc
+  name: arc-controller-sa
+
+template:
+  metadata:
+    labels:
+      netpol.cilium.io/egress-to-kube-dns: "true"
+      netpol.cilium.io/egress-to-public-ips: "true"
+      netpol.cilium.io/ingress-deny: "true"
+  spec:
+    priorityClassName: batch-low
+    securityContext:
+      seccompProfile:
+        type: RuntimeDefault
+    initContainers:
+      - name: init-dind-externals
+        image: ghcr.io/actions/actions-runner:2.336.0
+        imagePullPolicy: IfNotPresent
+        command: ["cp", "-r", "/home/runner/externals/.", "/home/runner/tmpDir/"]
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        resources:
+          requests:
+            cpu: 100m
+            memory: 32Mi
+          limits:
+            cpu: 500m
+            memory: 64Mi
+        volumeMounts:
+          - name: dind-externals
+            mountPath: /home/runner/tmpDir
+    containers:
+      - name: dind
+        image: docker:29.6.1-dind
+        imagePullPolicy: IfNotPresent
+        args:
+          - dockerd
+          - --host=unix:///var/run/docker.sock
+          - --group=$(DOCKER_GROUP_GID)
+        env:
+          - name: DOCKER_GROUP_GID
+            value: "123"
+        # Required by standard Docker-in-Docker. For workflows that build Docker images, this is required to allow the runner to run Docker commands.
+        securityContext:
+          privileged: true
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: "2"
+            memory: 512Mi
+        startupProbe:
+          exec:
+            command:
+              - docker
+              - info
+          initialDelaySeconds: 0
+          failureThreshold: 24
+          periodSeconds: 5
+        volumeMounts:
+          - name: work
+            mountPath: /home/runner/_work
+          - name: dind-sock
+            mountPath: /var/run
+          - name: dind-externals
+            mountPath: /home/runner/externals
+      - name: runner
+        image: ghcr.io/actions/actions-runner:2.336.0
+        imagePullPolicy: IfNotPresent
+        command: ["/home/runner/run.sh"]
+        env:
+          - name: DOCKER_HOST
+            value: unix:///var/run/docker.sock
+          - name: RUNNER_WAIT_FOR_DOCKER_IN_SECONDS
+            value: "120"
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            drop:
+              - ALL
+            add:
+              - CHOWN
+              - DAC_OVERRIDE
+              - FOWNER
+              - SETUID
+              - SETGID
+              - AUDIT_WRITE
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: "2"
+            memory: 1Gi
+        volumeMounts:
+          - name: work
+            mountPath: /home/runner/_work
+          - name: dind-sock
+            mountPath: /var/run
+    volumes:
+      - name: work
+        emptyDir: {}
+      - name: dind-sock
+        emptyDir: {}
+      - name: dind-externals
+        emptyDir: {}

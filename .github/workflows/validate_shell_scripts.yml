@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Compute checkout depth
@@ -33,7 +33,7 @@ jobs:
           paths: scripts/
           checkout-depth: ${{ steps.depth.outputs.depth }}
 
-      - name: Install ShellCheck
+      - name: Install packages
         if: steps.check-changes.outputs.changed == 'true'
         run: |
           sudo apt-get update
