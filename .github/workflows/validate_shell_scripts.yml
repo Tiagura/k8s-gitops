@@ -48,7 +48,6 @@ jobs:
           ls -ld /var/cache/apt/archives
           ls -ld /var/cache/apt/archives/partial
           ls -ld /var/lib/apt/lists
-          ls -ld /var/lib/apt/lists/partial
 
           echo "=== filesystem ==="
           mount | grep -E '/var/cache|/var/lib/apt|overlay'

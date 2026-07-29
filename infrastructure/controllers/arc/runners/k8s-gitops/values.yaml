@@ -93,14 +93,17 @@ template:
           - name: RUNNER_WAIT_FOR_DOCKER_IN_SECONDS
             value: "120"
         securityContext:
-          allowPrivilegeEscalation: true
+          allowPrivilegeEscalation: false
           capabilities:
+            drop:
+              - ALL
             add:
+              - CHOWN
+              - DAC_OVERRIDE
+              - FOWNER
               - SETUID
               - SETGID
               - AUDIT_WRITE
-            drop:
-              - ALL
         resources:
           requests:
             cpu: 100m
