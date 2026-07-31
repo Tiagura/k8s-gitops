@@ -134,7 +134,7 @@
       "groupName": "Redis Deployments"
     },
     {
-      "matchManagers": ["github-actions", "regex"],
+      "matchManagers": ["github-actions","custom.regex"],
       "matchFileNames": [
         ".github/workflows/**",
         ".github/actions/**"
