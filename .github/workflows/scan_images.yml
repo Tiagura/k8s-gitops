@@ -72,7 +72,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          TRIVY_VERSION="v0.72.0"
+          TRIVY_VERSION="v0.73.0"
           echo "Installing Trivy ${TRIVY_VERSION}"
           wget -qO /tmp/trivy.deb \
             "https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION#v}_Linux-64bit.deb"
