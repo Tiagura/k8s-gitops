@@ -29,7 +29,7 @@ spec:
       priorityClassName: application-critical
       containers:
         - name: karakeep
-          image: ghcr.io/karakeep-app/karakeep:0.33.1
+          image: ghcr.io/karakeep-app/karakeep:0.33.2
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
