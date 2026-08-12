@@ -6,7 +6,7 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Miscellaneous
     gethomepage.dev/name: Karakeep
-    gethomepage.dev/icon: https://raw.githubusercontent.com/karakeep-app/karakeep/refs/heads/main/apps/web/app/icon.png
+    gethomepage.dev/icon: https://raw.githubusercontent.com/karakeep-app/karakeep/refs/heads/main/apps/landing/public/favicon.ico
     gethomepage.dev/href: https://bookmarks.tamhomelab.com
     gethomepage.dev/description: Bookmark Manager
     gethomepage.dev/pod-selector: ""

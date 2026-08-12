@@ -115,7 +115,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 | <img src="https://raw.githubusercontent.com/firefly-iii/firefly-iii/develop/.github/assets/img/logo-small.png" width="50"/> | [Firefly III](https://www.firefly-iii.org/) | Personal Finance Manager |
 | <img src="https://raw.githubusercontent.com/gethomepage/homepage/refs/heads/dev/public/android-chrome-192x192.png" width="50"/> | [Homepage](https://gethomepage.dev/) | Dashboard  |
 | <img src="https://raw.githubusercontent.com/CorentinTh/it-tools/refs/heads/main/public/android-chrome-192x192.png" width="50"/> | [IT Tools](https://github.com/CorentinTh/it-tools/tree/main) | Developer Tools |
-| <img src="https://raw.githubusercontent.com/karakeep-app/karakeep/refs/heads/main/apps/web/app/icon.png" width="50"/> | [Karakeep](https://karakeep.app/) | Bookmark App |
+| <img src="https://raw.githubusercontent.com/karakeep-app/karakeep/refs/heads/main/apps/landing/public/favicon.ico" width="50"/> | [Karakeep](https://karakeep.app/) | Bookmark App |
 | <img src="https://raw.githubusercontent.com/usememos/memos/refs/heads/main/web/public/logo.webp" width="50"/> | [Memos](https://usememos.com/)| Note Taking |
 | <img src="https://raw.githubusercontent.com/technomancer702/nodecast-tv/main/public/favicon.svg" width="50"/> | [NodeCast TV](https://github.com/technomancer702/nodecast-tv) | Web IPTV Player |
 | <img src="https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/refs/heads/dev/src-ui/src/favicon.ico" width="50"/> | [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) | Document Management |
