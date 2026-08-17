@@ -11,4 +11,3 @@ resources:
   - goti-stack-external-secret.yaml
   - gotify/
   - gotigram/
-  - ../../base/cilium-network-policies/

@@ -5,7 +5,6 @@ namespace: argocd
 resources:
   - namespace.yaml
   - http-route.yaml
-  - ../../../base/cilium-network-policies/
 
 helmCharts:
   - name: argo-cd

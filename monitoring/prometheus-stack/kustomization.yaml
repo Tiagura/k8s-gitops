@@ -11,7 +11,6 @@ resources:
   - http-routes/
   - monitors/
   - secrets/
-  - ../../base/cilium-network-policies/
 
 helmCharts:
   - name: kube-prometheus-stack

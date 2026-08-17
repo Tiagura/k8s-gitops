@@ -14,4 +14,3 @@ resources:
   - rbac.yaml
   - external-dns-external-secret.yaml
   - deployment.yaml
-  - ../../../base/cilium-network-policies/

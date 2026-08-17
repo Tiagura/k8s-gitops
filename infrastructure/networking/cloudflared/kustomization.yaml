@@ -22,4 +22,3 @@ resources:
   - deployment.yaml
   - service.yaml
   - cilium-netpol.yaml
-  - ../../../base/cilium-network-policies/

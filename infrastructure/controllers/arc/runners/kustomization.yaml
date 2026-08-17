@@ -11,4 +11,3 @@ resources:
   - namespace.yaml
   - arc-runner-external-secret.yaml
   - k8s-gitops/
-  - ../../../../base/cilium-network-policies/

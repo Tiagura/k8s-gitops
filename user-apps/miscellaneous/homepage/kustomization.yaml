@@ -16,7 +16,7 @@ resources:
   - rbac.yaml
   - service.yaml
   - cilium-netpol.yaml
-  - ../../../base/cilium-network-policies/
+
 
 configMapGenerator:
   - name: homepage-config

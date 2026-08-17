@@ -6,7 +6,6 @@ resources:
   - namespace.yaml
   - egress-to-vault.yaml
   - cluster-secret-store.yaml
-  - ../../../base/cilium-network-policies/
 
 helmCharts:
   - name: external-secrets

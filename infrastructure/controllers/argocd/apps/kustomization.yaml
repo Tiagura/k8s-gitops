@@ -4,7 +4,7 @@ namespace: argocd
 
 resources:
   # Wave -1: Cluster-level resources
-  - scheduling-app.yaml
+  - resources-app.yaml
   # Wave 0: Essential components
   - projects.yaml
   - cilium-app.yaml

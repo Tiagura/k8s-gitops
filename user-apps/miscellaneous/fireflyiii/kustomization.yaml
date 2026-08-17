@@ -12,4 +12,3 @@ resources:
   - cron/
   - importer/
   - redis/
-  - ../../../base/cilium-network-policies/

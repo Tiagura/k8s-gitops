@@ -7,4 +7,3 @@ resources:
   - barman-plugin/
   - cloudnative-pg-operator/
   - ../db-cilium-netpols/
-  - ../../../base/cilium-network-policies/

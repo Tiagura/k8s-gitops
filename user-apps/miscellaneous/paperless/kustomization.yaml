@@ -13,4 +13,3 @@ resources:
   - redis/
   - tika/
   - web/
-  - ../../../base/cilium-network-policies/

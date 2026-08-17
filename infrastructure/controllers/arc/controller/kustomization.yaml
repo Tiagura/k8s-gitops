@@ -8,7 +8,6 @@ labels:
 
 resources:
   - namespace.yaml
-  - ../../../../base/cilium-network-policies/
 
 helmCharts:
   - name: gha-runner-scale-set-controller

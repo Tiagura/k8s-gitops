@@ -15,7 +15,6 @@ Cilium Network Policies provide fine-grained network control for pods in Kuberne
     - [How to use them](#how-to-use-them)
     - [How to "import"](#how-to-import)
   - [Caveats for Enforcing Policies on CloudNativePG Cluster Pods](#caveats-for-enforcing-policies-on-cloudnativepg-cluster-pods)
-    - [Egress from Application Pods to Database Pods (i.e. policies applied to application `pods`)](#egress-from-application-pods-to-database-pods-ie-policies-applied-to-application-pods)
     - [Applying policies to `pods` created from CloudNativePG `Cluster` resources](#applying-policies-to-pods-created-from-cloudnativepg-cluster-resources)
       - [Possible Approaches](#possible-approaches)
       - [Chosen Approach](#chosen-approach)
@@ -23,7 +22,7 @@ Cilium Network Policies provide fine-grained network control for pods in Kuberne
 
 ## Base Network Policies
 
-The policies in [`base/cilium-network-policies/`](../../base/cilium-network-policies/) are the most basic and reusable ones. They are meant to be imported as needed, depending on which pods or namespaces require them.
+The policies in [`resources/cilium-network-policies/`](../../resources/cilium-network-policies/) are the most basic and reusable ones and are available cluster wide, trough `CiliumClusterwideNetworkPolicy`.
 
 There are also **dedicated policies for specific apps/workloads**, which are found in their respective folders. These should be used only for the apps they are designed for.  
 
@@ -31,7 +30,7 @@ There are also **dedicated policies for specific apps/workloads**, which are fou
 
 Each "base" policy can be applied to pods via **labels**. This allows the policy to selectively target only the pods that need it, without affecting other workloads.  
 
-The following base policies are available in [`base/cilium-network-policies/`](../../base/cilium-network-policies/):
+The following base policies are available in [`resources/cilium-network-policies/`](../../resources/cilium-network-policies/):
 
 | Policy Name                 | Label to Apply                                        | Description                                                               |
 | --------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------- |
@@ -56,47 +55,9 @@ The following base policies are available in [`base/cilium-network-policies/`](.
 | ingress-from-remote-node    | `netpol.cilium.io/ingress-from-remote-node="true"`    | Allows ingress traffic from other nodes' local network.                   |
 | ingress-from-world          | `netpol.cilium.io/ingress-from-world="true"`          | Allows ingress traffic from any external source.                          |
 
-### How to "import"
-
-These policies can be included in your apps/workloads manifests using **Kustomize** (`kustomization.yaml` files) in several ways:"
-
-```yaml
-resources:
-  - path/to/base/cilium-network-policies/
-```
-
 ## Caveats for Enforcing Policies on CloudNativePG Cluster Pods
 
 When enforcing network policies for traffic to/from `pods` created from CloudNativePG `Cluster` resources (i.e., the database `pods` and any `pods` accessing them), there are some important caveats to consider.
-
-### Egress from Application Pods to Database Pods (i.e. policies applied to application `pods`)
-
-Using **service-based policies** like the example below may not work as expected:
-```yaml
-egress:
-  - toServices:
-      - k8sService:
-          serviceName: <cluster-name>-rw
-          namespace: <cluster-namespace>
-    toPorts:
-      - ports:
-          - port: "<cluster-database-port>"
-            protocol: TCP
-  ...
-```
-
-Instead, **endpoint-based** policies reliably work because they target `pods` directly based on their labels and namespace:
-```yaml
-egress:
-  - toEndpoints:
-      - matchLabels:
-          io.cilium.k8s.namespace.labels.kubernetes.io/metadata.name: <cluster-namespace>
-          cnpg.io/cluster: <cluster-name>
-    toPorts:
-      - ports:
-          - port: "<cluster-database-port>"
-            protocol: TCP
-```
 
 ### Applying policies to `pods` created from CloudNativePG `Cluster` resources
 
@@ -118,7 +79,7 @@ The chosen approach to solve this problem is to create a bigger `CiliumNetworkPo
   - All `pods` from `cluster1` receive the same policy `policy1`.
   - All `pods` from `cluster2` receive the same policy `policy2`.
 
-The base `CiliumNetworkPolicy` [`default-database-netpol`](../../base/cnpg-db/db-cilium-netpol.yaml) serves as an example that can be customized per `Cluster` resource to define ingress and egress rules that enforce the required security while maintaining compatibility with GitOps workflows.
+The base `CiliumNetworkPolicy` [`default-database-netpol`](../../infrastructure/databases/cloudnative-pg-apps-databases/base/db-cilium-netpol.yaml) serves as an example that can be customized per `Cluster` resource to define ingress and egress rules that enforce the required security while maintaining compatibility with GitOps workflows.
 
 ## Resources
 

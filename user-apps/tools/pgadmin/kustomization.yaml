@@ -16,4 +16,3 @@ resources:
   - service.yaml
   - http-route.yaml
   - egress-to-cnpg-db.yaml
-  - ../../../base/cilium-network-policies/

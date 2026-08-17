@@ -11,4 +11,3 @@ resources:
   - chrome/
   - meilisearch/
   - karakeep-web/
-  - ../../../base/cilium-network-policies/
