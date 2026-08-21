@@ -5,7 +5,7 @@ metadata:
 spec:
   priorityClassName: data-critical
   kubernetesConfig:
-    image: quay.io/opstree/redis:v8.6.2
+    image: quay.io/opstree/redis:v8.10.1
     imagePullPolicy: IfNotPresent
     redisSecret:
       name: fireflyiii-secrets
@@ -20,7 +20,7 @@ spec:
             storage: 1Gi
   redisExporter:
     enabled: true
-    image: quay.io/opstree/redis-exporter:v1.84.0
+    image: quay.io/opstree/redis-exporter:v1.89.0
     imagePullPolicy: IfNotPresent
     # env:
     # - name: REDIS_EXPORTER_INCL_SYSTEM_METRICS
