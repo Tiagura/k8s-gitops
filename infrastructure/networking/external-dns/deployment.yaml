@@ -25,7 +25,7 @@ spec:
       priorityClassName: platform-critical
       containers:
         - name: external-dns
-          image: registry.k8s.io/external-dns/external-dns:v0.21.0
+          image: registry.k8s.io/external-dns/external-dns:v0.22.0
           args:
             # Gateway API sources
             - --source=gateway-httproute
