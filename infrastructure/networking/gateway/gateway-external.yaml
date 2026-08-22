@@ -6,7 +6,7 @@ metadata:
     app: gateway-external
   annotations:
     cert-manager.io/cluster-issuer: ingress-cluster-issuer
-    external-dns.alpha.kubernetes.io/target: tunnel.tamhomelab.com
+    external-dns.kubernetes.io/target: tunnel.tamhomelab.com
 spec:
   addresses:
   - type: IPAddress
