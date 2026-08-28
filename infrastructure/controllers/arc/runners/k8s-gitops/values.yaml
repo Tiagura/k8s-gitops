@@ -29,7 +29,7 @@ template:
         type: RuntimeDefault
     initContainers:
       - name: init-dind-externals
-        image: ghcr.io/actions/actions-runner:2.336.0
+        image: ghcr.io/actions/actions-runner:2.337.0
         imagePullPolicy: IfNotPresent
         command: ["cp", "-r", "/home/runner/externals/.", "/home/runner/tmpDir/"]
         securityContext:
@@ -84,7 +84,7 @@ template:
           - name: dind-externals
             mountPath: /home/runner/externals
       - name: runner
-        image: ghcr.io/actions/actions-runner:2.336.0
+        image: ghcr.io/actions/actions-runner:2.337.0
         imagePullPolicy: IfNotPresent
         command: ["/home/runner/run.sh"]
         env:
