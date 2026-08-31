@@ -171,7 +171,10 @@ spec:
 
 #### Cluster Monitoring
 
-Each PostgreSQL `Cluster` exposes metrics on the metrics port. To collect these, we create a manual `PodMonitor` per cluster:
+Each PostgreSQL `Cluster` exposes metrics on the metrics port. These can be collected using a `PodMonitor`.
+
+A `PodMonitor` can be created per cluster, using the cluster name to target the desired PostgreSQL pods:
+
 ```yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
@@ -180,11 +183,10 @@ metadata:
   labels:
     release: kube-prometheus-stack
     prometheus: kube-prometheus-stack-prometheus
-    #...
 spec:
   namespaceSelector:
     matchNames:
-      - cloudnative-pg  # Namespace where database is deployed
+      - cloudnative-pg
   selector:
     matchLabels:
       cnpg.io/cluster: <cluster name>
@@ -192,6 +194,30 @@ spec:
   podMetricsEndpoints:
     - port: metrics
 ```
+
+Alternatively, a single `PodMonitor` can monitor all CloudNativePG clusters in the namespace by matching pods that have the `cnpg.io/cluster` label:
+
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: cnpg-db-metrics-monitor
+  labels:
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+spec:
+  namespaceSelector:
+    matchNames:
+      - cloudnative-pg
+  podMetricsEndpoints:
+    - port: metrics
+  selector:
+    matchExpressions:
+      - key: cnpg.io/cluster
+        operator: Exists
+```
+
+The single `PodMonitor` approach is used in this setup, as it automatically covers new CloudNativePG clusters without requiring an additional `PodMonitor` for each cluster.
 
 #### Plugin / Backup Monitoring
 

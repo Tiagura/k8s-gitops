@@ -19,7 +19,7 @@
   - [Validate Setup](#validate-setup)
     - [Cilium Status](#cilium-status)
     - [Gateway Routing](#gateway-routing)
-    - [Cloudfalre Tunnel](#cloudfalre-tunnel)
+    - [Cloudflared Tunnel](#Cloudflared-tunnel)
     - [ExternalDNS](#externaldns-1)
 
 ## Declarative Setup
@@ -155,7 +155,7 @@ kubectl get gateway -A
 kubectl get httproute -A
 ```
 
-### Cloudfalre Tunnel
+### Cloudflared Tunnel
 
 ```bash
 # Check tunnel pods

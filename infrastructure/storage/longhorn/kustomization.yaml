@@ -17,3 +17,14 @@ helmCharts:
     namespace: longhorn
     valuesFile: values.yaml
     includeCRDs: true
+
+# Patch DaemonSet longhorn-manager to add annotation of cilium netpols
+# Allow egress to Longhorn namespace for monitoring Longhorn components.
+patches:
+  - target:
+      kind: DaemonSet
+      name: longhorn-manager
+    patch: |-
+      - op: add
+        path: /spec/template/metadata/labels/netpol.cilium.io~1ingress-from-prometheus
+        value: "true"

@@ -28,25 +28,16 @@ Next, create the tunnel:
 cloudflared tunnel create <tunnel-name>
 ```
 
+### 3. Create the Kubernetes secret
 
-### 3. Create the sealed secret for Kubernetes
+Create a Kubernetes `Secret` containing the tunnel credentials from the credentials JSON file, using your secret management solution of choice.
 
-To allow ArgoCD to access the tunnel credentials and create the tunnel successfully, create a Kubernetes secret from the credentials JSON file:
+The secret must:
 
-```bash
-kubectl create secret generic cloudflared-credentials-secret \
-  --from-file=credentials.json=<path-to-credentials-json-file> \
-  --type=Opaque \
-  --namespace=cloudflared \
-  --dry-run=client -o yaml > cloudflared-tunnel-creds-secret.yaml
-```
-
-Then seal the secret with `kubeseal`:
-
-```bash
-kubeseal --format=yaml --scope=cluster-wide --cert=<your-sealed-secrets-public-key.crt> < cloudflared-tunnel-creds-secret.yaml > infrastructure/networking/cloudflared/cloudflared-tunnel-creds-secret-sealed.yaml
-```
-
+* Be named `cloudflared-credentials-secret`
+* Be created in the `cloudflared` namespace
+* Have the key `credentials.json`
+* Contain the credentials JSON file as `credentials.json`
 
 ### 4. Configure DNS
 
