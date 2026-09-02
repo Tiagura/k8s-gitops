@@ -75,6 +75,12 @@
     },
     {
       "matchFileNames": [
+        "infrastructure/databases/cloudnative-pg-apps-databases/**"
+      ],
+      "groupName": "CNPG Databases"
+    },
+    {
+      "matchFileNames": [
         "infrastructure/databases/redis-operator/**"
       ],
       "groupName": "Redis Operator"
@@ -156,6 +162,19 @@
       "depNameTemplate": "cloudnative-pg/plugin-barman-cloud",
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "semver"
+    },
+    {
+      "description": "CloudNative PG Cluster imageName",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/infrastructure/databases/cloudnative-pg-apps-databases/.*/cluster\\.ya?ml$"
+      ],
+      "matchStrings": [
+        "imageName:\\s+(?<depName>ghcr.io/cloudnative-pg/postgresql):(?<currentValue>[^\\s]+)"
+      ],
+      "depNameTemplate": "ghcr.io/cloudnative-pg/postgresql",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
     },
     {
       "description": "FireflyIII core image via GitHub releases",
