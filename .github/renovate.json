@@ -74,9 +74,9 @@
       "groupName": "CNPG Stack"
     },
     {
-      "matchFileNames": [
-        "infrastructure/databases/cloudnative-pg-apps-databases/**"
-      ],
+      "matchPackageNames": ["ghcr.io/cloudnative-pg/postgresql"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true,
       "groupName": "CNPG Databases"
     },
     {
@@ -167,14 +167,14 @@
       "description": "CloudNative PG Cluster imageName",
       "customType": "regex",
       "managerFilePatterns": [
-        "/infrastructure/databases/cloudnative-pg-apps-databases/.*/cluster\\.ya?ml$"
+        "/infrastructure/databases/cloudnative-pg-apps-databases/.*/cluster\\.ya?ml$/"
       ],
       "matchStrings": [
-        "imageName:\\s+(?<depName>ghcr.io/cloudnative-pg/postgresql):(?<currentValue>[^\\s]+)"
+        "imageName: (?<depName>[^\\s:]+):(?<currentValue>[^\\s@]+)(?:@(?<currentDigest>sha256:[a-f0-9]{64}))?"
       ],
-      "depNameTemplate": "ghcr.io/cloudnative-pg/postgresql",
       "datasourceTemplate": "docker",
-      "versioningTemplate": "docker"
+      "versioningTemplate": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)-(?<patch>\\d+)-(?<compatibility>\\S+)$",
+      "autoReplaceStringTemplate": "imageName: {{{depName}}}:{{{newValue}}}{{#if newDigest}}@{{{newDigest}}}{{/if}}"
     },
     {
       "description": "FireflyIII core image via GitHub releases",
