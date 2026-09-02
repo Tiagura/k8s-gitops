@@ -9,4 +9,5 @@ labels:
     
 resources:
   - deployment.yaml
+  - pvc.yaml
   - rbac.yaml

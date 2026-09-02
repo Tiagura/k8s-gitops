@@ -34,7 +34,6 @@ spec:
             - /bin/sh
             - -c
             - |
-
               echo "Waiting for Gotify service..."
               until curl -sS http://gotify:80 >/dev/null 2>&1; do
                 echo "Gotify not ready, sleeping 2s..."
@@ -45,41 +44,71 @@ spec:
 
               echo "GET /client..."
               RESP=$(curl -sS $AUTH http://gotify:80/client || echo "[]")
-              echo "GET response (first 1024 chars):"
-              echo "$RESP" | head -c 1024
-              echo ""
 
-              TOKEN=$(echo "$RESP" | jq -r '.[] | select(.name=="Gotigram Client") | .token' | head -n1 || true)
+              CLIENT_ID=$(echo "$RESP" | jq -r \
+                '.[] | select(.name=="Gotigram Client") | .id' | head -n1 || true)
+
+              if [ -n "$CLIENT_ID" ]; then
+                echo "Found existing Gotigram Client (id: $CLIENT_ID)"
+
+                echo "Checking secret gotigram-token..."
+                if kubectl get secret gotigram-token -n goti-stack >/dev/null 2>&1; then
+                  SECRET_TOKEN=$(kubectl get secret gotigram-token \
+                    -n goti-stack \
+                    -o jsonpath='{.data.GOTIFY_CLIENT_TOKEN}' 2>/dev/null || true)
+
+                  if [ -n "$SECRET_TOKEN" ]; then
+                    echo "Secret gotigram-token exists and GOTIFY_CLIENT_TOKEN is populated"
+                    echo "Existing client and secret are valid - doing nothing"
+                    exit 0
+                  else
+                    echo "WARNING: Secret gotigram-token exists but GOTIFY_CLIENT_TOKEN is missing or empty"
+                  fi
+                else
+                  echo "WARNING: Secret gotigram-token does not exist"
+                fi
+
+                echo "Deleting existing Gotigram Client (id: $CLIENT_ID)..."
+                DELETE_CODE=$(curl -sS -o /dev/null -w "%{http_code}" \
+                  $AUTH \
+                  -X DELETE \
+                  "http://gotify:80/client/${CLIENT_ID}")
+
+                echo "DELETE HTTP code: $DELETE_CODE"
+
+                if [ "$DELETE_CODE" != "200" ]; then
+                  echo "Failed to delete Gotigram Client"
+                  exit 1
+                fi
+
+                echo "Existing Gotigram Client deleted"
+              fi
+
+              echo "Creating Gotigram Client..."
+
+              POSTRESP=$(curl -sS $AUTH -X POST \
+                -H "accept: application/json" \
+                -H "Content-Type: application/json" \
+                -d '{"name":"Gotigram Client"}' \
+                -w '\n%{http_code}' \
+                http://gotify:80/client)
+
+              HTTP_CODE=$(echo "$POSTRESP" | tail -n1)
+              POSTRESP=$(echo "$POSTRESP" | sed '$d')
+
+              echo "POST HTTP code: $HTTP_CODE"
+
+              TOKEN=$(echo "$POSTRESP" | jq -r '.token // empty')
+
               if [ -n "$TOKEN" ]; then
-                echo "Found existing Gotigram Client token"
-                
-                # Create or update the secret
+                echo "Successfully created new Gotigram Client token"
+
                 kubectl create secret generic gotigram-token \
                   -n goti-stack \
                   --from-literal=GOTIFY_CLIENT_TOKEN="$TOKEN" \
                   --dry-run=client -o yaml | kubectl apply -f -
-                
-                echo "Secret gotigram-token updated!"
-                exit 0
-              fi
 
-              echo "Creating Gotigram Client..."
-              POSTRESP=$(curl -sS $AUTH -X POST -H "accept: application/json" -H "Content-Type: application/json" \
-                -d '{"name":"Gotigram Client"}' http://gotify:80/client)
-              echo "POST response (first 1024 chars):"
-              echo "$POSTRESP" | head -c 1024
-              echo ""
-
-              TOKEN=$(echo "$POSTRESP" | jq -r '.token // empty')
-              if [ -n "$TOKEN" ]; then
-                echo "Successfully created token"
-                
-                # Create or update the secret
-                kubectl create secret generic gotigram-token \
-                  --from-literal=GOTIFY_CLIENT_TOKEN="$TOKEN" \
-                  --dry-run=client -o yaml | kubectl apply -f -
-                
-                echo "Secret gotigram-token created!"
+                echo "Secret gotigram-token created/updated!"
                 exit 0
               fi
 
@@ -96,10 +125,9 @@ spec:
                 secretKeyRef:
                   name: goti-stack-config-secrets
                   key: password
-
       containers:
         - name: gotigram
-          image: tiagura/gotigram:1.1.2
+          image: tiagura/gotigram:1.2.0
           env:
             - name: GOTIFY_WS_URL
               value: "ws://gotify:80"
@@ -115,12 +143,19 @@ spec:
                 secretKeyRef:
                   name: goti-stack-config-secrets
                   key: telegram-chat-id
+            - name: PARSE_MODE
+              value: "Plain"
+            - name: SUBSCRIPTIONS_FILE
+              value: "/subscriptions/subscriptions.json"
             # Created by init container, contains the token for Gotify API access
             - name: GOTIFY_CLIENT_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: gotigram-token
                   key: GOTIFY_CLIENT_TOKEN
+          volumeMounts:
+            - name: gotigram-subs
+              mountPath: /subscriptions
           resources:
             requests:
               cpu: "10m"
@@ -132,3 +167,7 @@ spec:
             allowPrivilegeEscalation: false
             capabilities:
               drop: ["ALL"]
+      volumes:
+        - name: gotigram-subs
+          persistentVolumeClaim:
+            claimName: gotigram-subs-pvc
