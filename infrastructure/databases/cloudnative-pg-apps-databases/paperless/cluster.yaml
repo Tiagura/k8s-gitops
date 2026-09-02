@@ -13,7 +13,7 @@ metadata:
     cnpg.io/skipEmptyWalArchiveCheck: "enabled" 
 spec:
   instances: 2
-  imageName: ghcr.io/cloudnative-pg/postgresql:18.3
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.3-standard-trixie
   priorityClassName: data-critical
   affinity:
     podAntiAffinityType: required
