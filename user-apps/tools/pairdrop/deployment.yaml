@@ -31,8 +31,8 @@ spec:
         # Rate limiting settings
         - name: RATE_LIMIT
           value: "false"
-        # WebSocket keep-alive
-        - name: WS_FALLBACK
+        # WebSocket settings
+        - name: WS_SERVER
           value: "false"
         ports:
         - name: http
