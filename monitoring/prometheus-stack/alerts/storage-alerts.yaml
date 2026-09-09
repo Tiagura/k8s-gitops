@@ -25,7 +25,7 @@ spec:
             issue: There are {{$value}} Longhorn nodes are offline
             severity: critical
         - alert: LonghornVolumeUnhealthy
-          expr: longhorn_volume_robustness{state!="healthy"} == 1
+          expr: longhorn_volume_robustness{state=~"degraded|faulted"} == 1
           for: 5m
           labels:
             severity: '{{ if eq $labels.state "faulted" }}critical{{ else }}warning{{ end }}'
