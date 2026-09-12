@@ -6,43 +6,24 @@ labels:
   - pairs:
       app.kubernetes.io/part-of: infrastructure
       
-
 resources:
-  - https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v0.15.0/manifest.yaml
   - barmanObjectStore.yaml
   - s3-credentials-external-secret.yaml
 
+helmCharts:
+  - name: plugin-barman-cloud
+    repo: https://cloudnative-pg.github.io/charts
+    version: 0.8.0
+    releaseName: barman-cloud
+    namespace: cloudnative-pg
+    valuesFile: values.yaml
+    includeCRDs: true
+
 patches:
-  # Only patch the RoleBinding subject namespace, nothing else needed
-  - target:
-      kind: RoleBinding
-    patch: |-
-      - op: replace
-        path: /subjects/0/namespace
-        value: cloudnative-pg
-  # Add labels to pods created by the barman-cloud plugin
-  # These labels are needed for Cilium Network Policies
-  - target:
-      kind: Deployment
-      name: barman-cloud
-    patch: |-
-      - op: add
-        path: /spec/template/metadata/labels/netpol.cilium.io~1egress-to-kube-apiserver
-        value: "true"
-      - op: add
-        path: /spec/template/metadata/labels/netpol.cilium.io~1ingress-from-cnpg-operator
-        value: "true"
-  # Enable Stakater Reloader for automatic reloads on ConfigMap/Secret changes# Enable Stakater Reloader for automatic reloads on ConfigMap/Secret changes
+  # Enable Stakater Reloader for automatic reloads on ConfigMap/Secret changes
   - target:
       kind: Deployment
     patch: |-
       - op: add
         path: /metadata/annotations/reloader.stakater.com~1auto
         value: "true"
-  # Add priority class to pods
-  - target:
-      kind: Deployment
-    patch: |-
-      - op: add
-        path: /spec/template/spec/priorityClassName
-        value: platform-critical

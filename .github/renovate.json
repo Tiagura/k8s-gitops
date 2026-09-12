@@ -87,6 +87,14 @@
     },
     {
       "matchFileNames": [
+        "infrastructure/controllers/argocd/kustomization.yaml"
+      ],
+      "schedule": [
+        "* * * * 4"
+      ]
+    },
+    {
+      "matchFileNames": [
         "infrastructure/controllers/renovate/kustomization.yaml"
       ],
       "groupName": "Renovate",
@@ -150,19 +158,6 @@
     }
   ],
   "customManagers": [
-    {
-      "description": "CloudNative PG Barman plugin manifest",
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/infrastructure/databases/cloudnative-pg/barman-plugin/kustomization\\.yaml$/"
-      ],
-      "matchStrings": [
-        "https://github\\.com/cloudnative-pg/plugin-barman-cloud/releases/download/v(?<currentValue>[^/]+)/manifest\\.yaml"
-      ],
-      "depNameTemplate": "cloudnative-pg/plugin-barman-cloud",
-      "datasourceTemplate": "github-releases",
-      "versioningTemplate": "semver"
-    },
     {
       "description": "CloudNative PG Cluster imageName",
       "customType": "regex",

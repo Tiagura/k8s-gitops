@@ -1,0 +1,16 @@
+# nameOverride: "barman-plugin"
+fullnameOverride: "barman-plugin"
+
+replicaCount: 1
+
+logLevel: "info"
+
+podLabels:
+  netpol.cilium.io/egress-to-kube-apiserver: "true"
+  netpol.cilium.io/ingress-from-cnpg-operator: "true"
+
+priorityClassName: "platform-critical"
+
+serviceAccount:
+  create: true
+  name: plugin-barman-cloud-sa
