@@ -3,6 +3,8 @@ cluster:
   name: kubernetes
   id: 1
 
+rollOutCiliumPods: true
+
 # Entry point for the Cilium service
 k8sServiceHost: cluster.tamhomelab.com
 k8sServicePort: 6443
@@ -10,11 +12,17 @@ k8sServicePort: 6443
 # Gateway API support
 gatewayAPI:
   enabled: true
-  externalTrafficPolicy: Local
+  externalTrafficPolicy: Cluster
+  useRemoteAddress: true
   # Needed for ALPN support in Gateway API
   # and also services/app who wish to use http/2
   enableAppProtocol: true
   enableAlpn: true
+
+# encryption:
+#   enabled: true
+#   type: wireguard
+#   nodeEncryption: true
 
 # KubeProxy replacement
 kubeProxyReplacement: true
@@ -83,9 +91,11 @@ hubble:
   relay:
     enabled: true
     priorityClassName: observability-critical
+    rollOutPods: true
   ui:
     enabled: true
     priorityClassName: observability-critical
+    rollOutPods: true
   metrics:
     enableOpenMetrics: true
     enabled:
@@ -101,9 +111,15 @@ hubble:
 debug:
   enabled: true
 
+operator:
+  rollOutPods: true
+
 # Enable Prometheus integration
 prometheus:
   enabled: true
+
+envoy:
+  rollOutPods: true
 
 # mTLS configuration
 authentication:
