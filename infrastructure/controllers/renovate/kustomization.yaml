@@ -5,7 +5,7 @@ namespace: renovate
 helmCharts:
   - name: renovate
     repo: oci://ghcr.io/renovatebot/charts/
-    version: 46.317.2
+    version: 46.336.2
     releaseName: renovate
     valuesFile: values.yaml
 
