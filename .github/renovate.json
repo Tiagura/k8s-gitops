@@ -69,6 +69,12 @@
     },
     {
       "matchFileNames": [
+        "infrastructure/controllers/arc/**"
+      ],
+      "groupName": "Github Actions Runner Controller"
+    },
+    {
+      "matchFileNames": [
         "infrastructure/databases/cloudnative-pg/**"
       ],
       "groupName": "CNPG Stack"
