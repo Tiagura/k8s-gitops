@@ -13,7 +13,7 @@ resources:
 helmCharts:
   - name: plugin-barman-cloud
     repo: https://cloudnative-pg.github.io/charts
-    version: 0.8.0
+    version: 0.8.1
     releaseName: barman-cloud
     namespace: cloudnative-pg
     valuesFile: values.yaml
