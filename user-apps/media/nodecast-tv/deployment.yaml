@@ -23,7 +23,7 @@ spec:
         fsGroup: 1000
         runAsNonRoot: true
       containers:
-      - image: ghcr.io/technomancer702/nodecast-tv:2.1.1
+      - image: ghcr.io/technomancer702/nodecast-tv:2.2.1
         name: nodecast-tv
         env:
           - name: NODE_ENV
