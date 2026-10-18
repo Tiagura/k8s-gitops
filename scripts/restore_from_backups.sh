@@ -119,12 +119,14 @@ wait_for_pvc_bind() {
 # Build Volume, PV, PVC YAML
 # -------------------------
 build_manifests() {
-  local pvc_name="$1" ns="$2" size_bytes="$3" backup_url="$4" volume_name="$5" access_mode="$6"
+  local pvc_name="$1" ns="$2" size_bytes="$3" backup_url="$4" volume_name="$5" access_mode="$6" labels_json="$7"
 
   local size
   size=$(bytes_to_size "$size_bytes")
   local access_mode_translated
   access_mode_translated=$(translate_access_mode "$access_mode")
+  local labels_yaml
+  labels_yaml=$(jq -r 'to_entries | sort_by(.key) | .[] | "    " + (.key | @json) + ": " + (.value | @json)' <<<"$labels_json")
 
   cat <<EOF
 # Longhorn Volume
@@ -165,6 +167,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: ${pvc_name}
   namespace: ${ns}
+$(if [[ -n "$labels_yaml" ]]; then printf '  labels:\n%s\n' "$labels_yaml"; fi)
 spec:
   accessModes:
     - ${access_mode_translated}
@@ -182,7 +185,7 @@ restore_backupvolume() {
   local bv="$1"
   info "Processing backupVolume: $bv"
 
-  local raw pvc ns last_backup volume_name size_bytes access_mode backup_url
+  local raw pvc ns last_backup volume_name size_bytes access_mode backup_url pvc_json pvc_labels
   raw=$(kubectl get backupvolumes.longhorn.io "$bv" -n "$LONGHORN_NS" -o json)
   pvc=$(echo "$raw" | jq -r '(.status.labels.KubernetesStatus // "{}") | fromjson | .pvcName // empty')
   ns=$(echo "$raw" | jq -r '(.status.labels.KubernetesStatus // "{}") | fromjson | .namespace // empty')
@@ -194,9 +197,15 @@ restore_backupvolume() {
 
   [[ -z "$pvc" || -z "$last_backup" || -z "$volume_name" ]] && { warn "Skipping $bv: missing pvc, backup, or volume name"; return; }
 
+  if pvc_json=$(kubectl get pvc "$pvc" -n "$ns" -o json 2>/dev/null); then
+    pvc_labels=$(jq -c '.metadata.labels // {}' <<<"$pvc_json")
+  else
+    pvc_labels=$(echo "$raw" | jq -c '.status.labels // {} | del(.KubernetesStatus, .["longhorn.io/volume-access-mode"])')
+  fi
+
   ensure_namespace "$ns"
   local manifest
-  manifest=$(build_manifests "$pvc" "$ns" "$size_bytes" "$backup_url" "$volume_name" "$access_mode")
+  manifest=$(build_manifests "$pvc" "$ns" "$size_bytes" "$backup_url" "$volume_name" "$access_mode" "$pvc_labels")
 
   # Create Volume
   if ! kubectl get volumes.longhorn.io "$volume_name" -n "$LONGHORN_NS" >/dev/null 2>&1; then
