@@ -29,7 +29,7 @@ spec:
       priorityClassName: application-critical
       containers:
         - name: karakeep
-          image: ghcr.io/karakeep-app/karakeep:0.33.2
+          image: ghcr.io/karakeep-app/karakeep:0.34.0
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
@@ -54,6 +54,8 @@ spec:
             - configMapRef:
                 name: karakeep-configuration
           securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
             allowPrivilegeEscalation: false
             capabilities:
               drop:
