@@ -42,7 +42,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:2026.10.3
+          image: cloudflare/cloudflared:2026.10.4
           args:
             - tunnel
             - --config
