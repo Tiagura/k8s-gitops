@@ -17,6 +17,7 @@ spec:
         app: memos
         netpol.cilium.io/egress-to-kube-dns: "true"
         netpol.cilium.io/ingress-from-ingress: "true"
+        netpol.cilium.io/egress-to-sso: "true"
     spec:
       priorityClassName: application-critical
       securityContext:
