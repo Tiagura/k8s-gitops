@@ -1,0 +1,16 @@
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: egress-to-sso
+spec:
+  description: >
+    Allow egress to Pocket ID for single sign-on.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-sso: "true"
+
+  egress:
+    - toServices:
+        - k8sService:
+            serviceName: pocket-id
+            namespace: pocket-id
