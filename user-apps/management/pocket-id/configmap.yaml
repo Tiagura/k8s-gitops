@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pocket-id-config
+data:
+  # Network settings
+  HOST: "0.0.0.0"
+  PORT: "1411"
+  # Reverse proxy settings
+  TRUST_PROXY: "true" # Essential for proper handling of HTTPS behind a reverse proxy (this case gateway api)
+  # INTERNAL_APP_URL: "http://pocket-id.pocket-id.svc.cluster.local:1411"
+  # Disable analytics and version check to avoid sending data to Pocket ID servers
+  VERSION_CHECK_DISABLED: "true"
+  ANALYTICS_DISABLED: "true"
+  ICON_LIBRARY_URL: "disabled"
+  # Database and file storage
+  DB_CONNECTION_STRING: "data/pocket-id.db"
+  FILE_BACKEND: "filesystem"
+  UPLOAD_PATH: "data/uploads"
+  # Security
+  ALLOW_INSECURE_CALLBACK_URLS: "false"
+  DISABLE_RATE_LIMITING: "false"
+  AUDIT_LOG_RETENTION_DAYS: "90"
+  # Outbound requests
+  OUTBOUND_ALLOWED_HOSTS_SCIM: "none"
+  OUTBOUND_ALLOWED_HOSTS_BACKCHANNEL_LOGOUT: "none"
+  OUTBOUND_ALLOWED_HOSTS_FEDERATED_JWKS: "none"
+  OUTBOUND_ALLOWED_HOSTS_CLIENT_LOGO: "none"
+  OUTBOUND_ALLOWED_HOSTS_CLIENT_METADATA: "none"
+  OUTBOUND_ALLOWED_HOSTS_LDAP_PICTURE: "none"
+  # Locations (disabled, no internet access given)
+  # MAXMIND_LICENSE_KEY
+  # GEOLITE_DB_PATH
+  # GEOLITE_DB_URL
+  # CLOUDFLARE_LOCATION_HEADERS
+  # Logging settings
+  LOG_LEVEL: "info"
+  LOG_JSON: "false"
+  LOG_QUERY_ARGS: "false"
+  # Overriding the UI configuration
+  UI_CONFIG_DISABLED: "false"
+  # Email
+  EMAIL_VERIFICATION_ENABLED: "false"
+  # LDAP
+  LDAP_ENABLED: "false"
+  # Observability
+  OTEL_METRICS_EXPORTER: "prometheus"
+  OTEL_EXPORTER_PROMETHEUS_HOST: "0.0.0.0"
+  OTEL_EXPORTER_PROMETHEUS_PORT: "9464"
+  # OTEL_LOGS_EXPORTER: "otlp"
+  # OTEL_TRACES_EXPORTER: "otlp"
+  # OTEL_EXPORTER_OTLP_ENDPOINT: "http://localhost:4318"
+  # Other settings
+  TZ: "Europe/Lisbon"
+  PUID: "1000"
+  PGID: "1000"

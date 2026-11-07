@@ -23,6 +23,7 @@ spec:
         netpol.cilium.io/egress-to-intra: "true"
         netpol.cilium.io/egress-to-kube-dns: "true"
         netpol.cilium.io/egress-to-public-ips: "true"
+        netpol.cilium.io/egress-to-sso: "true"
         netpol.cilium.io/ingress-from-intra: "true"
         netpol.cilium.io/ingress-from-ingress: "true"
     spec:
@@ -51,6 +52,8 @@ spec:
           envFrom:
             - secretRef:
                 name: karakeep-secret
+            - secretRef:
+                name: karakeep-oauth-secret
             - configMapRef:
                 name: karakeep-configuration
           securityContext:

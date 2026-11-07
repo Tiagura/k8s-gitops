@@ -17,6 +17,7 @@ spec:
         app: memos
         netpol.cilium.io/egress-to-kube-dns: "true"
         netpol.cilium.io/ingress-from-ingress: "true"
+        netpol.cilium.io/egress-to-sso: "true"
     spec:
       priorityClassName: application-critical
       securityContext:
@@ -61,6 +62,12 @@ spec:
           value: postgres
         - name: MEMOS_DSN
           value: postgresql://$(DB_USERNAME):$(DB_PASSWORD)@memos-database-rw.cloudnative-pg.svc.cluster.local:5432/memos?sslmode=disable
+        volumeMounts:
+        - name: memos-auth-config
+          mountPath: /etc/secrets
+          readOnly: true
+        - name: memos-data
+          mountPath: /var/opt/memos
         resources:
           requests:
             memory: 32Mi
@@ -71,3 +78,9 @@ spec:
           capabilities:
             drop:
             - ALL
+      volumes:
+      - name: memos-auth-config
+        configMap:
+          name: memos-auth-config
+      - name: memos-data
+        emptyDir: {}

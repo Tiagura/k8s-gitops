@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: pocket-id
+  labels:
+    app.kubernetes.io/name: pocket-id
+    release: kube-prometheus-stack
+    prometheus: kube-prometheus-stack-prometheus
+spec:
+  selector:
+    matchLabels:
+      app: pocket-id
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s

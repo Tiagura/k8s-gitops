@@ -12,6 +12,7 @@ resources:
   - egress-to-outside-dns.yaml
   - egress-to-public-ips.yaml
   - egress-to-remote-node.yaml
+  - egress-to-sso.yaml
   - egress-to-world.yaml
   - ingress-deny.yaml
   - ingress-from-host.yaml

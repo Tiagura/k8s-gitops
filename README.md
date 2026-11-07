@@ -120,6 +120,7 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 | <img src="https://raw.githubusercontent.com/technomancer702/nodecast-tv/main/public/favicon.svg" width="50"/> | [NodeCast TV](https://github.com/technomancer702/nodecast-tv) | Web IPTV Player |
 | <img src="https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/refs/heads/dev/src-ui/src/icon-192.png" width="50"/> | [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) | Document Management |
 | <img src="https://raw.githubusercontent.com/pgadmin-org/pgadmin4/refs/heads/master/docs/en_US/images/logo-128.png" width="50"/> | [pgAdmin](https://github.com/pgadmin-org/pgadmin4) | PostgreSQL Admin Tool |
+| <img src="https://raw.githubusercontent.com/pocket-id/pocket-id/refs/heads/main/frontend/static/img/static-logo-rounded-512.png" width="50"/> | [Pocket ID](https://pocket-id.org/) | OpenID Connect and OAuth 2.0 provider |
 | <img src="https://raw.githubusercontent.com/Stremio/stremio-brand/refs/heads/master/logos/SVG/stremio-logo-icon-only-fullcolor.svg" width="50"/> | [Stremio](https://www.stremio.com/) | Media Streaming |
 | <img src="https://raw.githubusercontent.com/dani-garcia/vaultwarden/refs/heads/main/src/static/images/vaultwarden-icon.png" width="50"/> | [Vaultwarden](https://github.com/dani-garcia/vaultwarden) | Password Manager |
 

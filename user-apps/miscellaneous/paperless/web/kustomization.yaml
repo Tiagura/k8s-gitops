@@ -9,6 +9,7 @@ labels:
 
 resources:
   - configmap.yaml
+  - auth-external-secret.yaml
   - pvc.yaml
   - deployment.yaml
   - service.yaml

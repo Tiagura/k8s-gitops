@@ -23,6 +23,7 @@ spec:
         netpol.cilium.io/egress-to-kube-dns: "true"
         netpol.cilium.io/egress-to-world: "true"
         netpol.cilium.io/egress-to-intra: "true"
+        netpol.cilium.io/egress-to-sso: "true"
         netpol.cilium.io/ingress-from-ingress: "true"
     spec:
       priorityClassName: application-critical
@@ -99,6 +100,11 @@ spec:
             secretKeyRef:
               name: paperless-secrets
               key: admin_email
+        - name: PAPERLESS_SOCIALACCOUNT_PROVIDERS
+          valueFrom:
+            secretKeyRef:
+              name: auth-secret
+              key: PAPERLESS_SOCIALACCOUNT_PROVIDERS
         ### Redis
         - name: REDIS_PASSWORD
           valueFrom:

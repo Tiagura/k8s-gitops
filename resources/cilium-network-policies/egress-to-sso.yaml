@@ -1,0 +1,58 @@
+
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: egress-to-sso
+spec:
+  description: >
+    Allow egress to Pocket ID for single sign-on.
+  endpointSelector:
+    matchLabels:
+      netpol.cilium.io/egress-to-sso: "true"
+
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app: pocket-id
+            k8s:io.kubernetes.pod.namespace: pocket-id
+      toPorts:
+        - ports:
+            - port: "1411"
+              protocol: TCP
+          rules:
+            http:
+              # OpenID Connect discovery
+              - method: GET
+                path: "^/.well-known/openid-configuration$"
+
+              # JSON Web Key Set
+              - method: GET
+                path: "^/.well-known/jwks.json$"
+
+              # Authorization endpoint
+              - method: GET
+                path: "^/authorize$"
+
+              # User information
+              - method: GET
+                path: "^/api/oidc/userinfo$"
+
+              # Token endpoint
+              - method: POST
+                path: "^/api/oidc/token$"
+
+              # Logout endpoint
+              - method: POST
+                path: "^/api/oidc/end-session$"
+
+              # Token introspection
+              - method: POST
+                path: "^/api/oidc/introspect$"
+
+              # Device authorization
+              - method: POST
+                path: "^/api/oidc/device/authorize$"
+
+              # Pushed authorization requests
+              - method: POST
+                path: "^/api/oidc/par$"

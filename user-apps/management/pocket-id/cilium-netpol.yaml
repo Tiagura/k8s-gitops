@@ -1,0 +1,34 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ingress-to-pocket-id
+spec:
+  description: >
+    Allow apps/services to access Pocket ID for authentication.
+  endpointSelector:
+    matchLabels:
+      app: pocket-id
+      k8s:io.kubernetes.pod.namespace: pocket-id
+
+  ingress:
+    - fromEndpoints:
+        # Memos
+        - matchLabels:
+            app: memos
+            k8s:io.kubernetes.pod.namespace: memos
+
+        # Paperless
+        - matchLabels:
+            app: paperless
+            tier: web
+            k8s:io.kubernetes.pod.namespace: paperless
+
+        # Karakeep
+        - matchLabels:
+            app: karakeep
+            tier: web
+            k8s:io.kubernetes.pod.namespace: karakeep
+      toPorts:
+        - ports:
+            - port: "1411"
+              protocol: TCP

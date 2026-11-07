@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pocket-id
+  labels:
+    app: pocket-id
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  serviceName: pocket-id
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pocket-id
+  template:
+    metadata:
+      labels:
+        app: pocket-id
+        netpol.cilium.io/egress-deny: "true"
+        netpol.cilium.io/ingress-from-ingress: "true"
+        netpol.cilium.io/ingress-from-prometheus: "true"
+    spec:
+      priorityClassName: application-critical
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: pocket-id
+          image: ghcr.io/pocket-id/pocket-id:v2.16.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 1411
+              name: http
+              protocol: TCP
+            - containerPort: 9464
+              name: metrics
+              protocol: TCP
+          env:
+            - name: APP_URL
+              value: "https://sso.tamhomelab.com"
+            - name: INTERNAL_APP_URL
+              value: "http://pocket-id.pocket-id.svc.cluster.local:1411"
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: pocket-id-key
+                  key: ENCRYPTION_KEY
+          envFrom:
+            - configMapRef:
+                name: pocket-id-config
+          volumeMounts:
+            - name: pocket-id-data
+              mountPath: /app/data
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 90
+            timeoutSeconds: 5
+            failureThreshold: 2
+            initialDelaySeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /app/pocket-id
+                - healthcheck
+            periodSeconds: 90
+            timeoutSeconds: 5
+            failureThreshold: 2
+            initialDelaySeconds: 10
+          resources: 
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+  volumeClaimTemplates:
+    - metadata:
+        name: pocket-id-data
+        labels:
+          recurring-job.longhorn.io/source: enabled
+          recurring-job-group.longhorn.io/critical: enabled
+          recurring-job-group.longhorn.io/default: disabled
+      spec:
+        accessModes: 
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 128Mi

@@ -8,6 +8,9 @@ data:
   PAPERLESS_FILENAME_FORMAT: "{{ owner_username }}/{{ created }}/{{ title }}"
   ## Authentication and SSO
   PAPERLESS_ACCOUNT_ALLOW_SIGNUPS: "false"
+  PAPERLESS_APPS: "allauth.socialaccount.providers.openid_connect"
+  PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: "true"
+  PAPERLESS_SOCIAL_AUTO_SIGNUP: "true"
   ## OCR
   PAPERLESS_OCR_LANGUAGE: "por"
   PAPERLESS_OCR_LANGUAGES: "eng por"  # Belongs to Container specific options

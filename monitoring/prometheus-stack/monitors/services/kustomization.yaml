@@ -4,5 +4,6 @@ kind: Kustomization
 resources:
   - argocd-monitor.yaml
   - longhorn-monitor.yaml
+  - pocket-id-monitor.yaml
   - redis-standalone-monitor.yaml
   - redis-cluster-monitor.yaml
