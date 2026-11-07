@@ -10,7 +10,25 @@ spec:
       netpol.cilium.io/egress-to-sso: "true"
 
   egress:
-    - toServices:
-        - k8sService:
-            serviceName: pocket-id
-            namespace: pocket-id
+    # - toServices:
+    #     - k8sService:
+    #         serviceName: pocket-id
+    #         namespace: pocket-id
+    - toEndpoints:
+        - matchLabels:
+            app: pocket-id
+            k8s:io.kubernetes.pod.namespace: pocket-id
+      toPorts:
+        - ports:
+            - port: "1411"
+              protocol: TCP
+          rules:
+            http:
+              - method: GET
+                path: "^/.well-known/openid-configuration$"
+              - method: GET
+                path: "^/.well-known/jwks.json$"
+              - method: GET
+                path: "^/api/oidc/userinfo$"
+              - method: POST
+                path: "^/api/oidc/token$"
