@@ -11,6 +11,7 @@ labels:
 resources:
   - namespace.yaml
   - pvc.yaml
+  - auth-external-secret.yaml
   - deployment.yaml
   - service.yaml
   - http-route.yaml

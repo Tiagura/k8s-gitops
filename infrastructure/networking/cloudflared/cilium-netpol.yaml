@@ -98,3 +98,82 @@ spec:
         - ports:
             - port: "80"
               protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: egress-to-sso
+spec:
+  description: >
+    Allow Cloudflared egress traffic to Pocket ID
+    for authentication and application access.
+
+  endpointSelector:
+    matchLabels:
+      app: cloudflared
+
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app: pocket-id
+            k8s:io.kubernetes.pod.namespace: pocket-id
+      toPorts:
+        - ports:
+            - port: "1411"
+              protocol: TCP
+          rules:
+            http:
+              # Application entry point
+              - method: GET
+                path: "^/$"
+
+              # OIDC authorization and interaction
+              - method: GET
+                path: "^/authorize(\\?.*)?$"
+
+              - method: GET
+                path: "^/interaction(\\?.*)?$"
+
+              - method: GET
+                path: "^/api/oidc/interactions/.*$"
+
+              - method: POST
+                path: "^/api/oidc/interactions/[^/]+/complete$"
+
+              # User information and application configuration
+              - method: GET
+                path: "^/api/users/me$"
+
+              - method: GET
+                path: "^/api/users/[^/]+/profile-picture\\.png$"
+
+              - method: GET
+                path: "^/api/application-configuration$"
+
+              - method: GET
+                path: "^/_app/version\\.json$"
+
+              # WebAuthn login
+              - method: GET
+                path: "^/api/webauthn/login/start$"
+
+              - method: POST
+                path: "^/api/webauthn/login/finish$"
+
+              # Application images
+              - method: GET
+                path: "^/api/application-images/(logo|favicon|background)(\\?.*)?$"
+
+              - method: HEAD
+                path: "^/api/application-images/(logo|favicon|background)(\\?.*)?$"
+
+              # Static application assets
+              - method: GET
+                path: "^/_app/immutable/.*$"
+
+              # Fonts and images
+              - method: GET
+                path: "^/fonts/.*$"
+
+              - method: GET
+                path: "^/img/.*$"
