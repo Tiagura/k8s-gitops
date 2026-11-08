@@ -28,6 +28,11 @@ spec:
             app: karakeep
             tier: web
             k8s:io.kubernetes.pod.namespace: karakeep
+
+        # Nodecast TV
+        - matchLabels:
+            app: nodecast-tv
+            k8s:io.kubernetes.pod.namespace: nodecast-tv
       toPorts:
         - ports:
             - port: "1411"

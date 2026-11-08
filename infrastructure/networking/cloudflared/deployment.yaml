@@ -17,7 +17,6 @@ spec:
         app: cloudflared
         netpol.cilium.io/egress-to-cloudflare: "true"
         netpol.cilium.io/egress-to-kube-dns: "true"
-        netpol.cilium.io/egress-to-sso: "true"
     spec:
       priorityClassName: platform-critical
       securityContext:

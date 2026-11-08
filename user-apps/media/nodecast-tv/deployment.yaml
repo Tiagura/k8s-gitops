@@ -4,7 +4,11 @@ metadata:
   name: nodecast-tv
   labels:
     app: nodecast-tv
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
@@ -15,6 +19,7 @@ spec:
         app: nodecast-tv
         netpol.cilium.io/egress-to-kube-dns: "true"
         netpol.cilium.io/egress-to-public-ips: "true"
+        netpol.cilium.io/egress-to-sso: "true"
         netpol.cilium.io/ingress-from-ingress: "true"
     spec:
       securityContext:
@@ -34,6 +39,14 @@ spec:
           # Make sure it is always a little less than the pod memory limit
           - name: NODE_OPTIONS
             value: "--max-old-space-size=900" # in MB
+          # OIDC 
+          - name: OIDC_ISSUER_URL
+            value: "https://sso.tamhomelab.com"
+          - name: OIDC_CALLBACK_URL
+            value: "https://tv.tamhomelab.com/api/auth/oidc/callback"
+        envFrom:
+          - secretRef:
+              name: auth-secret
         resources:
           requests:
             memory: 128Mi
