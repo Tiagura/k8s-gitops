@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: declarative-config
+data:
+  instance.json: |
+    {
+      "instanceSettings": [
+        {
+          "name": "instance/settings/GENERAL",
+          "generalSetting": {
+            "disallowUserRegistration": false,
+            "disallowPasswordAuth": true,
+            "additionalScript": "",
+            "additionalStyle": "",
+            "weekStartDayOffset": 1,
+            "disallowChangeUsername": false,
+            "disallowChangeNickname": false,
+            "customProfile": {
+              "title": "Memos",
+              "description": "",
+              "logoUrl": ""
+            }
+          }
+        }
+      ],
+      "identityProviders": [
+        {
+          "name": "identity-providers/primary-sso",
+          "type": "OAUTH2",
+          "title": "Pocket-Id",
+          "identifierFilter": "",
+          "config": {
+            "oauth2Config": {
+              "clientId": "${env:OIDC_CLIENT_ID}",
+              "clientSecret": "${env:OIDC_CLIENT_SECRET}",
+              "authUrl": "https://sso.tamhomelab.com/authorize",
+              "tokenUrl": "http://pocket-id.pocket-id.svc.cluster.local:1411/api/oidc/token",
+              "userInfoUrl": "http://pocket-id.pocket-id.svc.cluster.local:1411/api/oidc/userinfo",
+              "scopes": ["openid", "profile", "email"],
+              "fieldMapping": {
+                "identifier": "preferred_username",
+                "displayName": "name",
+                "email": "email",
+                "avatarUrl": ""
+              }
+            }
+          }
+        } 
+      ]
+    }

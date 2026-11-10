@@ -12,7 +12,8 @@ labels:
 resources:
   - namespace.yaml
   - memos-external-secret.yaml
-  - auth-config.yaml
+  - auth-external-secret.yaml
+  - declarative-cm.yaml
   - deployment.yaml
   - service.yaml
   - configmap.yaml
