@@ -123,10 +123,6 @@ spec:
               protocol: TCP
           rules:
             http:
-              # Application entry point
-              - method: GET
-                path: "^/$"
-
               # OIDC authorization and interaction
               - method: GET
                 path: "^/authorize(\\?.*)?$"
