@@ -2,12 +2,12 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: kubernetes-cluster-health
-  labels:
-    app.kubernetes.io/name: kube-prometheus-stack
-    app.kubernetes.io/instance: kube-prometheus-stack
-    app.kubernetes.io/managed-by: Helm
-    prometheus: kube-prometheus-stack-prometheus
-    role: alert-rules
+  # labels:
+  #   app.kubernetes.io/name: kube-prometheus-stack
+  #   app.kubernetes.io/instance: kube-prometheus-stack
+  #   app.kubernetes.io/managed-by: Helm
+  #   prometheus: kube-prometheus-stack-prometheus
+  #   role: alert-rules
 spec:
   groups:
     # Kubernetes Cluster Health

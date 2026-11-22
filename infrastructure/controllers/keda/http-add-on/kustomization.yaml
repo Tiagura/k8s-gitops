@@ -1,0 +1,104 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+helmCharts:
+  - name: keda-add-ons-http
+    repo: https://kedacore.github.io/charts
+    version: 0.16.0
+    namespace: keda
+    releaseName: http-add-on
+    includeCRDs: true
+    valuesFile: values.yaml
+
+resources:
+  - cilium-netpol.yaml
+  - reference-grant.yaml
+
+patches:
+  # Deployment annotations for Stakater Reloader
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: keda-add-ons-http-controller-manager
+    patch: |-
+      - op: add
+        path: /metadata/annotations/reloader.stakater.com~1auto
+        value: "true"
+
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: keda-add-ons-http-external-scaler
+    patch: |-
+      - op: add
+        path: /metadata/annotations/reloader.stakater.com~1auto
+        value: "true"
+
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: keda-add-ons-http-interceptor
+    patch: |-
+      - op: add
+        path: /metadata/annotations/reloader.stakater.com~1auto
+        value: "true"
+
+  # Pod labels for Cilium Network Policies
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: keda-add-ons-http-controller-manager
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: keda-add-ons-http-controller-manager
+      spec:
+        template:
+          metadata:
+            labels:
+              netpol.cilium.io/egress-to-kube-apiserver: "true"
+              netpol.cilium.io/ingress-from-host: "true"
+
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: keda-add-ons-http-external-scaler
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: keda-add-ons-http-external-scaler
+      spec:
+        template:
+          metadata:
+            labels:
+              netpol.cilium.io/egress-to-intra: "true"
+              netpol.cilium.io/egress-to-kube-apiserver: "true"
+              netpol.cilium.io/ingress-from-host: "true"
+              netpol.cilium.io/ingress-from-intra: "true"
+
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: keda-add-ons-http-interceptor
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: keda-add-ons-http-interceptor
+      spec:
+        template:
+          metadata:
+            labels:
+              netpol.cilium.io/egress-to-kube-apiserver: "true"
+              netpol.cilium.io/egress-to-kube-dns: "true"
+              netpol.cilium.io/ingress-from-intra: "true"
+              netpol.cilium.io/ingress-from-host: "true"
+              netpol.cilium.io/ingress-from-ingress: "true"

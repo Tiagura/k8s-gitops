@@ -4,8 +4,12 @@ metadata:
   name: it-tools
   labels:
     app: it-tools
+  annotations:
+    argocd.argoproj.io/ignore-differences: |-
+      jsonPointers:
+      - /spec/replicas
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: it-tools
@@ -14,7 +18,7 @@ spec:
       labels:
         app: it-tools
         netpol.cilium.io/egress-deny: "true"
-        netpol.cilium.io/ingress-from-ingress: "true"
+        netpol.cilium.io/ingress-from-keda-http: "true"
     spec:
       securityContext:
         runAsNonRoot: true

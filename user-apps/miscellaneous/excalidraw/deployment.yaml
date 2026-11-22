@@ -4,19 +4,21 @@ metadata:
   name: excalidraw
   labels:
     app: excalidraw
+  annotations:
+    argocd.argoproj.io/ignore-differences: |-
+      jsonPointers:
+      - /spec/replicas
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: excalidraw
-      netpol.cilium.io/egress-deny: "true"
-      netpol.cilium.io/ingress-from-ingress: "true"
   template:
     metadata:
       labels:
         app: excalidraw
         netpol.cilium.io/egress-deny: "true"
-        netpol.cilium.io/ingress-from-ingress: "true"
+        netpol.cilium.io/ingress-from-keda-http: "true"
     spec:
       containers:
         - name: excalidraw

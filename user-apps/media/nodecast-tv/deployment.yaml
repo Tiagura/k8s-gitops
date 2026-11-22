@@ -44,6 +44,12 @@ spec:
             value: "https://sso.tamhomelab.com"
           - name: OIDC_CALLBACK_URL
             value: "https://tv.tamhomelab.com/api/auth/oidc/callback"
+          - name: OIDC_AUTH_URL
+            value: "https://sso.tamhomelab.com/authorize"
+          - name: OIDC_TOKEN_URL
+            value: "https://sso.tamhomelab.com/api/oidc/token"
+          - name: OIDC_USERINFO_URL
+            value: "https://sso.tamhomelab.com/api/oidc/userinfo"
         envFrom:
           - secretRef:
               name: auth-secret

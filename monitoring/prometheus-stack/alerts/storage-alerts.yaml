@@ -3,12 +3,12 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: storage-alerts
-  labels:
-    app.kubernetes.io/name: kube-prometheus-stack
-    app.kubernetes.io/instance: kube-prometheus-stack
-    app.kubernetes.io/managed-by: Helm
-    prometheus: kube-prometheus-stack-prometheus
-    role: alert-rules
+  # labels:
+  #   app.kubernetes.io/name: kube-prometheus-stack
+  #   app.kubernetes.io/instance: kube-prometheus-stack
+  #   app.kubernetes.io/managed-by: Helm
+  #   prometheus: kube-prometheus-stack-prometheus
+  #   role: alert-rules
 spec:
   groups:
     # Storage Alerts (Longhorn)

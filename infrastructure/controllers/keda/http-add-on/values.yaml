@@ -1,0 +1,28 @@
+# In this chart the components resources are set by default
+crds:
+  install: true
+
+operator:
+  replicas: 1
+
+scaler:
+  replicas: 1
+
+interceptor:
+  replicas:
+    min: 1
+    max: 5
+
+  scaledObject:
+    # -- The interval (in milliseconds) that KEDA should poll the external scaler to fetch scaling metrics about the interceptor
+    pollingInterval: 500
+
+  # -- Route requests directly to a ready pod IP instead of the Service ClusterIP, bypassing kube-proxy and other Service-layer features (NetworkPolicy, session affinity, topology-aware routing). Set to false to keep Service-based routing.
+  directPodRouting: false
+
+  coldStart:
+    # -- Default limit on requests held per route while its backend has no ready endpoints, e.g. during scale-from-zero. Routes override it via coldStart.maxPendingRequests. 0 means unlimited. The limit applies per interceptor replica.
+    maxPendingRequests: 100
+
+  pdb:
+    enabled: false

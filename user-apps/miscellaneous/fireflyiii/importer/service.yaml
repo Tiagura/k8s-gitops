@@ -6,7 +6,6 @@ metadata:
     app: fireflyiii
     tier: importer
 spec:
-  clusterIP: None
   ports:
     - port: 8080
   selector:

@@ -6,6 +6,9 @@ metadata:
     app: pgadmin
   annotations:
     reloader.stakater.com/auto: "true"
+    argocd.argoproj.io/ignore-differences: |-
+      jsonPointers:
+      - /spec/replicas
 spec:
   replicas: 0
   selector:
@@ -18,7 +21,7 @@ spec:
         # Added for Cilium network policies
         netpol.cilium.io/egress-to-cnpg-db: "true"
         netpol.cilium.io/egress-to-kube-dns: "true"
-        netpol.cilium.io/ingress-from-ingress: "true"
+        netpol.cilium.io/ingress-from-keda-http: "true"
     spec:
       priorityClassName: application-critical
       securityContext:

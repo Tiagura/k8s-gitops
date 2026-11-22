@@ -1,4 +1,12 @@
 ---
+- Development:
+    - k8s-gitops:
+        - icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/kubernetes.svg
+          href: https://github.com/Tiagura/k8s-gitops
+    - proxmox-k8s-IaC:
+        - icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/terraform.svg
+          href: https://github.com/Tiagura/proxmox-k8s-IaC
+
 - Social:
     - Instagram:
         - icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/instagram.svg
@@ -19,7 +27,7 @@
           href: https://youtube.com/
     - Manga:
         - icon: https://www.natomanga.com/images/logo-manganato.webp
-          href: https://www.natomanga.com/
+          href: https://www.natumanga.com/
     - 9GAG:
         - icon: https://upload.wikimedia.org/wikipedia/commons/4/42/9gag_logo.svg
           href: https://9gag.com/

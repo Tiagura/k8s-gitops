@@ -4,6 +4,10 @@ metadata:
   name: stremio
   labels:
     app: stremio
+  annotations:
+    argocd.argoproj.io/ignore-differences: |-
+      jsonPointers:
+      - /spec/replicas
 spec:
   replicas: 0
   selector:
@@ -15,7 +19,7 @@ spec:
         app: stremio
         netpol.cilium.io/egress-to-kube-dns: "true"
         netpol.cilium.io/egress-to-world: "true"
-        netpol.cilium.io/ingress-from-ingress: "true"
+        netpol.cilium.io/ingress-from-keda-http: "true"
     spec:
       containers:
         - name: stremio

@@ -94,8 +94,11 @@ hubble:
     rollOutPods: true
   ui:
     enabled: true
+    replicas: 0
     priorityClassName: observability-critical
     rollOutPods: true
+    podLabels:
+      netpol.cilium.io/ingress-from-keda-http: "true"
   metrics:
     enableOpenMetrics: true
     enabled:

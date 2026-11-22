@@ -44,6 +44,8 @@ This repository contains the configuration and manifests for a **GitOps-driven K
   - Renovate for automated dependency updates
   - Argo CD for continuous deployment
   - Reloader for live config updates
+- **Automated workload autoscaling** powered by KEDA, enabling event-driven and metric-based scaling of Kubernetes workloads, including scale-to-zero capabilities where supported.
+  - KEDA HTTP Add-on for traffic-aware scaling of HTTP-based workloads.
 - **Full observability stack** covering cluster health, applications, and infrastructure with dashboards and alerts.
 - **Unified service exposure**  
   - Internal access via home network  
@@ -76,6 +78,13 @@ This repository contains the configuration and manifests for a **GitOps-driven K
 | <img src="https://raw.githubusercontent.com/cilium/cilium/main/Documentation/images/logo-solo.svg" width="50"/> | [Cilium](https://cilium.io/) | Super CNI with advanced networking. Uses eBPF and has observability and security. Also acts as a kube-proxy replacement in this case |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/cloudflare.svg" width="50"/> | [Cloudflare Tunnel](https://github.com/cloudflare/cloudflared) | External secure access and tunneling |
 | <img src="https://kubernetes-sigs.github.io/external-dns/latest/docs/img/external-dns.png" width="50"/> | [External DNS](https://kubernetes-sigs.github.io/external-dns/latest/) | DNS synchronisation and automation |
+
+#### Autoscaling
+
+| Logo | Name | Purpose |
+|------|------|---------|
+| <img src="https://github.com/kedacore/keda/raw/refs/heads/main/images/logos/keda-icon.svg" width="50"/> | [KEDA](https://keda.sh/) | Event-driven autoscaling for Kubernetes workloads based on external metrics and event sources |
+| <img src="https://github.com/kedacore/keda/raw/refs/heads/main/images/logos/keda-icon.svg" width="50"/> | [KEDA HTTP Add-on](https://keda.sh/http-add-on/latest/) | HTTP traffic-aware scaling, enabling request-based scaling and scale-to-zero for HTTP workloads |
 
 #### Policies and Security
 

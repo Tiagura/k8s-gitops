@@ -19,3 +19,20 @@ helmCharts:
     releaseName: cilium
     namespace: kube-system
     valuesFile: values.yaml
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: hubble-ui
+      namespace: kube-system
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: hubble-ui
+        annotations:
+          argocd.argoproj.io/ignore-differences: |-
+            jsonPointers:
+            - /spec/replicas

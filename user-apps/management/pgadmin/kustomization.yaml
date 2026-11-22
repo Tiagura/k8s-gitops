@@ -14,5 +14,6 @@ resources:
   - pgadmin-external-secret.yaml
   - deployment.yaml
   - service.yaml
+  - keda.yaml
   - http-route.yaml
   - egress-to-cnpg-db.yaml

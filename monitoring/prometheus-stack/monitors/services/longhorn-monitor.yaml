@@ -5,8 +5,6 @@ metadata:
   name: longhorn-svc-metrics
   labels:
     app.kubernetes.io/name: longhorn
-    release: kube-prometheus-stack
-    prometheus: kube-prometheus-stack-prometheus
 spec:
   selector:
     matchLabels:

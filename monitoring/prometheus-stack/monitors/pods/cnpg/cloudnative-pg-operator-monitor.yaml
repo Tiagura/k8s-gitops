@@ -4,8 +4,6 @@ metadata:
   name: cloudnative-pg-operator-monitor
   labels:
     app.kubernetes.io/name: cloudnative-pg
-    release: kube-prometheus-stack
-    prometheus: kube-prometheus-stack-prometheus
 spec:
   namespaceSelector:
     matchNames:

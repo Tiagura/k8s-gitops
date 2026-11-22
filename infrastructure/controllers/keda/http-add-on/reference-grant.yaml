@@ -1,0 +1,38 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: allow-httproute-to-interceptor
+  namespace: keda
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: kube-system
+
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: pgadmin
+
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: excalidraw
+
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: fireflyiii
+
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: stremio
+      
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: bentopdf
+
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: it-tools
+  to:
+    - group: ""
+      kind: Service
+      name: keda-add-ons-http-interceptor-proxy

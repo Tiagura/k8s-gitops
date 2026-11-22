@@ -11,3 +11,4 @@ labels:
     
 resources:
   - http-route.yaml
+  - keda.yaml

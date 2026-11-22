@@ -6,8 +6,6 @@ metadata:
   name: argocd-metrics
   labels:
     app.kubernetes.io/name: argocd
-    release: kube-prometheus-stack
-    prometheus: kube-prometheus-stack-prometheus
 spec:
   selector:
     matchLabels:
@@ -27,8 +25,6 @@ metadata:
   name: argocd-applicationset-controller-metrics
   labels:
     app.kubernetes.io/name: argocd-applicationset-controller
-    release: kube-prometheus-stack
-    prometheus: kube-prometheus-stack-prometheus
 spec:
   selector:
     matchLabels:
@@ -48,8 +44,6 @@ metadata:
   name: argocd-redis-metrics
   labels:
     app.kubernetes.io/name: argocd-redis
-    release: kube-prometheus-stack
-    prometheus: kube-prometheus-stack-prometheus
 spec:
   selector:
     matchLabels: 
@@ -69,8 +63,6 @@ metadata:
   name: argocd-repo-server-metrics
   labels:
     app.kubernetes.io/name: argocd-repo-server
-    release: kube-prometheus-stack
-    prometheus: kube-prometheus-stack-prometheus
 spec:
   selector:
     matchLabels:
@@ -90,8 +82,6 @@ metadata:
   name: argocd-server-metrics
   labels:
     app.kubernetes.io/name: argocd-server
-    release: kube-prometheus-stack
-    prometheus: kube-prometheus-stack-prometheus
 spec:
   selector:
     matchLabels:

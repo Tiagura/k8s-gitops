@@ -4,8 +4,6 @@ metadata:
   name: pocket-id
   labels:
     app.kubernetes.io/name: pocket-id
-    release: kube-prometheus-stack
-    prometheus: kube-prometheus-stack-prometheus
 spec:
   selector:
     matchLabels:

@@ -123,6 +123,10 @@ spec:
               protocol: TCP
           rules:
             http:
+              # JSON Web Key Set
+              - method: GET
+                path: "^/.well-known/jwks.json$"
+
               # OIDC authorization and interaction
               - method: GET
                 path: "^/authorize(\\?.*)?$"
@@ -135,6 +139,9 @@ spec:
 
               - method: POST
                 path: "^/api/oidc/interactions/[^/]+/complete$"
+
+              - method: POST
+                path: "^/api/oidc/token$"
 
               # User information and application configuration
               - method: GET

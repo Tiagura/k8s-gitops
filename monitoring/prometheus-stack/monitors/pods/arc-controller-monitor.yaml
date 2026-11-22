@@ -3,8 +3,7 @@ kind: PodMonitor
 metadata:
   name: arc-controller-manager
   labels:
-    release: kube-prometheus-stack
-    prometheus: kube-prometheus-stack-prometheus
+    app.kubernetes.io/name: arc-controller-manager
 spec:
   namespaceSelector:
     matchNames:
@@ -26,8 +25,7 @@ kind: PodMonitor
 metadata:
   name: arc-runner-scale-set-listener
   labels:
-    release: kube-prometheus-stack
-    prometheus: kube-prometheus-stack-prometheus
+    app.kubernetes.io/name: arc-runner-scale-set-listener
 spec:
   namespaceSelector:
     matchNames:

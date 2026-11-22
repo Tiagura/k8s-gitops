@@ -4,8 +4,6 @@ metadata:
   name: redis-cluster
   labels:
     redis-operator: "true"
-    release: kube-prometheus-stack
-    prometheus: kube-prometheus-stack-prometheus
 spec:
   selector:
     matchLabels:

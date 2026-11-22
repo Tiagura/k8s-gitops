@@ -18,6 +18,7 @@ spec:
       backendRefs:
         - group: ""
           kind: Service
-          name: fireflyiii-importer
+          name: keda-add-ons-http-interceptor-proxy
+          namespace: keda
           port: 8080
           weight: 1

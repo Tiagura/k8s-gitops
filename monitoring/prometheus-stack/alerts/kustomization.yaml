@@ -9,6 +9,7 @@ resources:
   - cnpg-backup-alerts.yaml
   - cnpg-db-alerts.yaml
   - kubernetes-alerts.yaml
+  - keda-alerts.yaml
   - prometheus-stack-alerts.yaml
   - storage-alerts.yaml
   - storage-backup-alerts.yaml

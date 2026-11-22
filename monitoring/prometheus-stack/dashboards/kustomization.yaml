@@ -6,6 +6,7 @@ resources:
   - argocd-dashboard.yaml
   - cilium-dashboard.yaml
   - cilium-hubble-dashboard.yaml
+  - keda-dashboard.yaml
   - longhorn-dashboard.yaml
   # - proxmox-dashboard.yaml  # Dashboard for Proxmox without OTEL, using Proxmox VE via HTTP API
   - proxmox-otel-dashboard.yaml

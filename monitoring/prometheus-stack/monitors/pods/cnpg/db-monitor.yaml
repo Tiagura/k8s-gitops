@@ -2,8 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   labels:
-    release: kube-prometheus-stack
-    prometheus: kube-prometheus-stack-prometheus
+    app.kubernetes.io/name: cloudnative-pg-db-metrics
   name: cnpg-db-metrics-monitor
 spec:
   namespaceSelector:

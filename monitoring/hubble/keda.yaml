@@ -1,0 +1,40 @@
+apiVersion: http.keda.sh/v1beta1
+kind: InterceptorRoute
+metadata:
+  name: hubble-ui-interceptorroute
+spec:
+  target:
+    service: hubble-ui
+    port: 80
+  rules:
+    - hosts:
+        - hubble.tamhomelab.com
+  scalingMetric:
+    requestRate:
+      targetValue: 1
+      window: 1m
+      granularity: 1s
+  coldStart:
+    placeholder:
+      response:
+        statusCode: 503
+        headers:
+          Content-Type: text/html
+          Refresh: "30"
+        body: "<h1>Loading... / A carregar...</h1><p>The service is starting up. Please wait a moment and try again.</p>"
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: hubble-ui-scaledobject
+spec:
+  scaleTargetRef:
+    name: hubble-ui
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  cooldownPeriod: 600
+  triggers:
+    - type: external-push
+      metadata:
+        scalerAddress: keda-add-ons-http-external-scaler.keda:9090
+        interceptorRoute: hubble-ui-interceptorroute

@@ -10,6 +10,7 @@ spec:
         repoURL: https://github.com/Tiagura/k8s-gitops.git
         revision: main
         directories:
+          - path: infrastructure/controllers/keda
           - path: infrastructure/controllers/metrics-server
           - path: infrastructure/controllers/reloader
           - path: infrastructure/controllers/renovate

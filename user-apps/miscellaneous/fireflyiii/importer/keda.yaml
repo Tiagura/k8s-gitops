@@ -1,0 +1,40 @@
+apiVersion: http.keda.sh/v1beta1
+kind: InterceptorRoute
+metadata:
+  name: fireflyiii-importer-interceptorroute
+spec:
+  target:
+    service: fireflyiii-importer
+    port: 8080
+  rules:
+    - hosts:
+        - budget-importer.tamhomelab.com
+  scalingMetric:
+    requestRate:
+      targetValue: 1
+      window: 10m
+      granularity: 1s
+  coldStart:
+    placeholder:
+      response:
+        statusCode: 503
+        headers:
+          Content-Type: text/html
+          Refresh: "5"
+        body: "<h1>Loading... / A carregar...</h1><p>The service is starting up. Please wait a moment and try again.</p>"
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: fireflyiii-importer-scaledobject
+spec:
+  scaleTargetRef:
+    name: fireflyiii-importer
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  cooldownPeriod: 300
+  triggers:
+    - type: external-push
+      metadata:
+        scalerAddress: keda-add-ons-http-external-scaler.keda:9090
+        interceptorRoute: fireflyiii-importer-interceptorroute

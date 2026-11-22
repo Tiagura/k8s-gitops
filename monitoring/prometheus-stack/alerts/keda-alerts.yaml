@@ -1,0 +1,85 @@
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: keda-alerts
+spec:
+  groups:
+    - name: keda.scaling
+      rules:
+        - alert: KedaScaledobjectErrors
+          expr: |
+            increase(keda_scaled_object_errors_total[5m]) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: KEDA ScaledObject errors
+            description: >-
+              ScaledObject {{ $labels.namespace }}/{{ $labels.scaledObject }}
+              is reporting scaler errors.
+
+        - alert: KedaScaledjobErrors
+          expr: |
+            increase(keda_scaled_job_errors_total[5m]) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: KEDA ScaledJob errors
+            description: >-
+              ScaledJob {{ $labels.namespace }}/{{ $labels.scaledJob }}
+              is reporting scaler errors.
+
+        - alert: KedaScaledobjectPaused
+          expr: |
+            keda_scaled_object_paused > 0
+          for: 24h
+          labels:
+            severity: info
+          annotations:
+            summary: KEDA ScaledObject paused
+            description: >-
+              ScaledObject {{ $labels.namespace }}/{{ $labels.scaledObject }}
+              has remained paused for 24 hours.
+
+    - name: keda.performance
+      rules:
+        - alert: KedaScalerMetricsLatencyHigh
+          expr: |
+            keda_scaler_metrics_latency_seconds > 5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: KEDA scaler metrics latency is high
+            description: >-
+              Scaler {{ $labels.scaler }} for
+              {{ $labels.namespace }}/{{ $labels.scaledObject }}
+              is taking {{ $value }} seconds to return metrics.
+
+        - alert: KedaScalingLoopDelayed
+          expr: |
+            keda_internal_scale_loop_latency_seconds > 30
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: KEDA scaling loop delayed
+            description: >-
+              KEDA scaling loop for {{ $labels.type }}
+              {{ $labels.namespace }}/{{ $labels.resource }}
+              is delayed.
+
+    - name: keda.cloudevents
+      rules:
+        - alert: KedaCloudeventsEmissionFailing
+          expr: |
+            increase(keda_cloudeventsource_events_emitted_total{state="failed"}[5m]) > 0
+          for: 0m
+          labels:
+            severity: warning
+          annotations:
+            summary: KEDA CloudEvents emission failing
+            description: >-
+              CloudEvents delivery to {{ $labels.eventsink }} is failing.

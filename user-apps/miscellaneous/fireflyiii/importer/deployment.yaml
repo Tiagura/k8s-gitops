@@ -5,7 +5,12 @@ metadata:
   labels:
     app: fireflyiii
     tier: importer
+  annotations:
+    argocd.argoproj.io/ignore-differences: |-
+      jsonPointers:
+      - /spec/replicas
 spec:
+  replicas: 0
   selector:
     matchLabels:
       app: fireflyiii
@@ -20,7 +25,7 @@ spec:
         # Added for Cilium network policies
         netpol.cilium.io/egress-to-intra: "true"
         netpol.cilium.io/egress-to-kube-dns: "true"
-        netpol.cilium.io/ingress-from-ingress: "true"
+        netpol.cilium.io/ingress-from-keda-http: "true"
     spec:
       containers:
       - image: fireflyiii/data-importer:version-2.3.5

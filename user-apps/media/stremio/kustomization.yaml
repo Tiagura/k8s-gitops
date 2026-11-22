@@ -19,3 +19,4 @@ resources:
   - http-route-gui-external.yaml
   - http-route-gui.yaml
   - http-route-server.yaml
+  - keda.yaml

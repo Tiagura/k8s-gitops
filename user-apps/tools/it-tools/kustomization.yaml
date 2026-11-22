@@ -14,3 +14,4 @@ resources:
   - service.yaml
   - http-route.yaml
   - http-route-external.yaml
+  - keda.yaml
