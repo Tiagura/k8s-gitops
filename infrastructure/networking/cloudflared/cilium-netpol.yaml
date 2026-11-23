@@ -8,17 +8,20 @@ spec:
       Ingress from:
         - homepage
       Egress to:
-        - access to the externally exposed apps:
+        - access trough the KEDA interceptor:
             misc:
               - excalidraw
-              - karakeep
-              - memos
             media:
-              - nodecast-tv
               - stremio
             tools:
               - bentopdf
               - it-tools
+        - access to the externally exposed apps:
+            misc:
+              - karakeep
+              - memos
+            media:
+              - nodecast-tv
 
   endpointSelector:
     matchLabels:
@@ -36,12 +39,12 @@ spec:
 
   egress:
     - toEndpoints:
-      - matchLabels:
-          app: excalidraw
-          k8s:io.kubernetes.pod.namespace: excalidraw
+        - matchLabels:
+            app.kubernetes.io/component: interceptor
+            k8s:io.kubernetes.pod.namespace: keda
       toPorts:
         - ports:
-            - port: "80"
+            - port: '8080'
               protocol: TCP
 
     - toEndpoints:
@@ -70,33 +73,6 @@ spec:
       toPorts:
         - ports:
             - port: "3000"
-              protocol: TCP
-
-    - toEndpoints:
-      - matchLabels:
-          app: stremio
-          k8s:io.kubernetes.pod.namespace: stremio
-      toPorts:
-        - ports:
-            - port: "8080"
-              protocol: TCP
-
-    - toEndpoints:
-      - matchLabels:
-          app: bentopdf
-          k8s:io.kubernetes.pod.namespace: bentopdf
-      toPorts:
-        - ports:
-            - port: "8080"
-              protocol: TCP
-    
-    - toEndpoints:
-      - matchLabels:
-          app: it-tools
-          k8s:io.kubernetes.pod.namespace: it-tools
-      toPorts:
-        - ports:
-            - port: "80"
               protocol: TCP
 ---
 apiVersion: cilium.io/v2

@@ -10,3 +10,4 @@ labels:
 resources:
   - service.yaml
   - deployment.yaml
+  - keda.yaml

@@ -5,7 +5,8 @@ image:
   repository: apache/tika
   pullPolicy: IfNotPresent
 
-replicaCount: 1
+# Keda HTTP will scale up/down
+replicaCount: 0
 
 config:
   base_url: "http://tika/"
@@ -48,6 +49,7 @@ resources:
     cpu: "100m"
     memory: 150Mi
 
+# Using KEDA HTTP
 autoscaling:
   enabled: false
 

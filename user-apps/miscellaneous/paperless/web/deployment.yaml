@@ -136,9 +136,11 @@ spec:
         - name: PAPERLESS_TIKA_ENABLED
           value: "true"
         - name: PAPERLESS_TIKA_ENDPOINT
-          value: http://tika.paperless.svc.cluster.local:9998
+          # value: http://tika.paperless.svc.cluster.local:9998
+          value: http://tika-proxy.paperless.svc.cluster.local:8080
         - name: PAPERLESS_TIKA_GOTENBERG_ENDPOINT
-          value: http://gotenberg.paperless.svc.cluster.local:3000
+          # value: http://gotenberg.paperless.svc.cluster.local:3000
+          value: http://gotenberg-proxy.paperless.svc.cluster.local:8080
         volumeMounts:
         - name: data
           mountPath: /usr/src/paperless/data

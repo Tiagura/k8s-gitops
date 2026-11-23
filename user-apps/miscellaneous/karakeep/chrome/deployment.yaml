@@ -47,6 +47,12 @@ spec:
           volumeMounts:
             - name: cache
               mountPath: /.cache
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "200Mi"
+            limits:
+              memory: "768Mi"
       volumes:
         - name: cache
           emptyDir: {}

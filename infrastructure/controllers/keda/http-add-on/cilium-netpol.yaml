@@ -11,8 +11,16 @@ spec:
         management:
           - pgadmin
         misc:
+          - changedetection:
+            - sockpuppet
           - excalidraw
-          - fireflyiii-importer
+          - karakeep:
+            - chrome
+          - fireflyiii:
+            - importer
+          - paperless:
+            - gotenberg
+            - tika
         media:
           - stremio
         tools:
@@ -46,12 +54,31 @@ spec:
 
     - toEndpoints:
       - matchLabels:
+          app: sockpuppet
+          k8s:io.kubernetes.pod.namespace: changedetection
+      toPorts:
+        - ports:
+            - port: "3000"  
+              protocol: TCP
+
+    - toEndpoints:
+      - matchLabels:
           app: excalidraw
           k8s:io.kubernetes.pod.namespace: excalidraw
       toPorts:
         - ports:
             - port: "80"
               protocol: TCP
+
+    # - toEndpoints:
+    #   - matchLabels:
+    #       app: chrome
+    #       tier: crawler
+    #       k8s:io.kubernetes.pod.namespace: karakeep
+    #   toPorts:
+    #     - ports:
+    #         - port: "9222"
+    #           protocol: TCP
 
     - toEndpoints:
       - matchLabels:
@@ -61,6 +88,26 @@ spec:
       toPorts:
         - ports:
             - port: "8080"
+              protocol: TCP
+
+    - toEndpoints:
+      - matchLabels:
+          app.kubernetes.io/instance: gotenberg
+          app.kubernetes.io/name: gotenberg
+          k8s:io.kubernetes.pod.namespace: paperless
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP
+
+    - toEndpoints:
+      - matchLabels:
+          app.kubernetes.io/instance: tika
+          app.kubernetes.io/name: tika
+          k8s:io.kubernetes.pod.namespace: paperless
+      toPorts:
+        - ports:
+            - port: "9998"
               protocol: TCP
 
     - toEndpoints:

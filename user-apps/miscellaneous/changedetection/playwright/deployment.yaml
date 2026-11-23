@@ -4,8 +4,12 @@ metadata:
   name: sockpuppet
   labels:
     app: sockpuppet
+  annotations:
+    argocd.argoproj.io/ignore-differences: |-
+      jsonPointers:
+      - /spec/replicas
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: sockpuppet
@@ -15,7 +19,7 @@ spec:
         app: sockpuppet
         netpol.cilium.io/egress-to-kube-dns: "true"
         netpol.cilium.io/egress-to-public-ips: "true"
-        netpol.cilium.io/ingress-from-intra: "true"
+        netpol.cilium.io/ingress-from-keda-http: "true"
     spec:
       securityContext:
         runAsNonRoot: true
@@ -35,12 +39,32 @@ spec:
             - name: SCREEN_DEPTH
               value: "16"
             - name: MAX_CONCURRENT_CHROME_PROCESSES
-              value: "5"  # 10
-            - name: FETCH_WORKERS   # https://github.com/dgtlmoon/changedetection.io/discussions/2821
-              value: "5"        
+              value: "1"
           securityContext:
             allowPrivilegeEscalation: false
             privileged: false
             capabilities:
               add:
                 - SYS_ADMIN
+          livenessProbe:
+            exec:
+              command:
+                - python3
+                - /usr/src/app/docker-health-check.py
+                - --host
+                - http://localhost
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - python3
+                - /usr/src/app/docker-health-check.py
+                - --host
+                - http://localhost
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3

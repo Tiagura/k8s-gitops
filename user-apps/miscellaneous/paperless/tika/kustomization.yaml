@@ -15,12 +15,22 @@ helmCharts:
     namespace: paperless
     valuesFile: values.yaml
 
-# Patches to add Cilium network policy labels to the tika deployment, as the helm chart doesn't support adding custom labels to the pod template.
+resources:
+  - service.yaml
+  - keda.yaml
+
 patches:
   - target:
       kind: Deployment
       name: tika
     patch: |-
+      # Add ArgoCD ignore differences annotation to the tika deployment
+      - op: add
+        path: /metadata/annotations/argocd.argoproj.io~1ignore-differences
+        value: |-
+          jsonPointers:
+          - /spec/replicas
+      # Add Cilium network policy labels to the tika deployment pod template
       - op: add
         path: /spec/template/metadata/labels/netpol.cilium.io~1egress-to-intra
         value: "true"
@@ -28,5 +38,5 @@ patches:
         path: /spec/template/metadata/labels/netpol.cilium.io~1egress-to-kube-dns
         value: "true"
       - op: add
-        path: /spec/template/metadata/labels/netpol.cilium.io~1ingress-from-intra
+        path: /spec/template/metadata/labels/netpol.cilium.io~1ingress-from-keda-http
         value: "true"

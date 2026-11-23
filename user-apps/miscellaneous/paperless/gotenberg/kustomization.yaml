@@ -15,6 +15,10 @@ helmCharts:
     namespace: paperless
     valuesFile: values.yaml
 
+resources:
+  - service.yaml
+  - keda.yaml
+
 patches:
   - patch: |
       $patch: delete
@@ -22,3 +26,13 @@ patches:
       kind: Pod
       metadata:
         name: gotenberg-test-connection
+  - target:
+      kind: Deployment
+      name: gotenberg
+    patch: |-
+      # Add ArgoCD ignore differences annotation to the gotenberg deployment
+      - op: add
+        path: /metadata/annotations/argocd.argoproj.io~1ignore-differences
+        value: |-
+          jsonPointers:
+          - /spec/replicas

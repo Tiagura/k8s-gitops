@@ -5,7 +5,8 @@ image:
   repository: gotenberg/gotenberg
   pullPolicy: IfNotPresent
 
-replicaCount: 1
+# Keda HTTP will scale up/down
+replicaCount: 0
 
 serviceAccount:
   create: false
@@ -14,8 +15,8 @@ podLabels:
   # Added for Cilium network policies
   netpol.cilium.io/egress-to-intra: "true"
   netpol.cilium.io/egress-to-kube-dns: "true"
-  netpol.cilium.io/ingress-from-intra: "true"
   netpol.cilium.io/ingress-from-ingress: "true"
+  netpol.cilium.io/ingress-from-keda-http: "true"
 
 podSecurityContext:
   runAsUser: 1000
@@ -35,6 +36,7 @@ resources:
     cpu: "100m"
     memory: "128Mi"
 
+# Using KEDA HTTP
 autoscaling:
   enabled: false
 
