@@ -29,7 +29,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: meilisearch
-          image: getmeili/meilisearch:v1.57.0
+          image: getmeili/meilisearch:v1.58.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 7700
